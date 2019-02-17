@@ -3,8 +3,7 @@
 
 #include <cstddef>
 
-const int MAX_LENGTH_STR = 35;
-
+const int MAX_LENGTH_NAME_ENTTITY_ = 35;
 
 namespace dictionary {
 
@@ -30,7 +29,7 @@ namespace dictionary {
             int* GetNextEntityAddress();
 
         private:
-            char name_[MAX_LENGTH_STR];
+            char name_[MAX_LENGTH_NAME_ENTTITY_];
             int* entity_address_;
             int* attribute_address_;
             int* data_address_;

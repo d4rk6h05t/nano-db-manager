@@ -1,35 +1,57 @@
 #ifndef DICTIONARY_CC_ATTRIBUTE_H_
 #define DICTIONARY_CC_ATTRIBUTE_H_
 
-const int MAX_LENGTH_STR = 35;
+#include <cstddef>
+
+const int MAX_LENGTH_NAME_ATTRIBUTE_ = 35;
+
 
 namespace dictionary {
-    
-    class Attribute {
 
+    class Attribute {
+    
         public:
              
             Attribute();
             Attribute(char* name);
+            Attribute(char* name, char data_type, int length_data_type, int* attribute_address,
+                int type_index,int* index_address, int* next_attribute_address);
             ~Attribute();
 
             void SetName(char* name); 
-            void SetAttributeAddress(int Attribute_address); 
-            void SetAttributeAddress(int attribute_address); 
-            void SetDataAddress(int data_address); 
-            void SetNextAttributeAddress(int next_Attribute_address);
+            void SetDataType(char data_type); 
+            void SetLengthDataType(char data_type); 
+            void SetAttributeAddress(int* attribute_address);
+            void SetTypeIndex(int type_index);
+            void SetIndexAddress(int* index_address); 
+            void SetNextAttributeAddress(int* next_attribute_address);
                   
             char* GetName(); 
-            int GetAttributeAddress(); 
-            int GetAttributeAddress();
-            int GetDataAddress();
-            int GetNextAttributeAddress();
+            char GetDataType();
+            int GetLengthDataType();
+            int* GetAttributeAddress(); 
+            int GetTypeIndex();
+            int* GetIndexAddress();
+            int* GetNextAttributeAddress();
 
         private:
-            char name_[MAX_LENGTH_STR];
-            char data_type_;
-            int length_data_type_;
-            int
+            char name_[MAX_LENGTH_NAME_ATTRIBUTE_];
+
+            // I: Integer or C: char
+            char data_type_; 
+            
+            int length_data_type_; 
+            int* attribute_address_;
+            
+            // 0: Without Type Index
+            // 1: Search Key
+            // 2: Primary Index
+            // 3: Secondary Index
+            int type_index_; 
+
+            int* index_address_;
+            int* next_attribute_address_;
+
     };
 
 

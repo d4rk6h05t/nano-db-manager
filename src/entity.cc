@@ -3,6 +3,7 @@
 
 namespace dictionary {
 
+
     Entity::Entity(){
         entity_address_ = NULL;
         attribute_address_ = NULL;
@@ -11,7 +12,7 @@ namespace dictionary {
     }
     
     Entity::Entity(char* name){
-        for (int i = 0; i < MAX_LENGTH_STR; i++){
+        for (int i = 0; i < MAX_LENGTH_NAME_ENTTITY_; i++){
             name_[i] = name[i];      
         }
         entity_address_ = NULL;
@@ -21,7 +22,7 @@ namespace dictionary {
     }
 
     Entity::Entity(char* name,int* entity_address, int* attribute_address, int* data_address, int* next_entity_address){
-        for (int i = 0; i < MAX_LENGTH_STR; i++){
+        for (int i = 0; i < MAX_LENGTH_NAME_ENTTITY_; i++){
             name_[i] = name[i];      
         }
         entity_address_ = entity_address;
@@ -33,7 +34,7 @@ namespace dictionary {
     Entity::~Entity(){}
 
     void Entity::SetName(char* name){ 
-        for (int i = 0; i < MAX_LENGTH_STR; i++){
+        for (int i = 0; i < MAX_LENGTH_NAME_ENTTITY_; i++){
             name_[i] = name[i];      
         }
     }
