@@ -11,7 +11,7 @@ namespace dictionary {
         next_entity_address_  = NULL;   
     }
     
-    Entity::Entity(char* name){
+    Entity::Entity(const std::string& name){
         for (int i = 0; i < MAX_LENGTH_NAME_ENTTITY_; i++){
             name_[i] = name[i];      
         }
@@ -21,7 +21,7 @@ namespace dictionary {
         next_entity_address_  = NULL;
     }
 
-    Entity::Entity(char* name,int* entity_address, int* attribute_address, int* data_address, int* next_entity_address){
+    Entity::Entity(const std::string& name,int* entity_address, int* attribute_address, int* data_address, int* next_entity_address){
         for (int i = 0; i < MAX_LENGTH_NAME_ENTTITY_; i++){
             name_[i] = name[i];      
         }
@@ -33,7 +33,7 @@ namespace dictionary {
 
     Entity::~Entity(){}
 
-    void Entity::SetName(char* name){ 
+    void Entity::SetName(const std::string& name){ 
         for (int i = 0; i < MAX_LENGTH_NAME_ENTTITY_; i++){
             name_[i] = name[i];      
         }

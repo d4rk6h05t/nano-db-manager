@@ -7,3 +7,6 @@ bin/*
 
 # Ignore Mac specific files
 .DB_Store
+
+.o
+.dat

@@ -2,9 +2,10 @@
 #define DICTIONARY_CC_ATTRIBUTE_H_
 
 #include <cstddef>
+#include <string>
 
 const int MAX_LENGTH_NAME_ATTRIBUTE_ = 35;
-
+const int MAX_LENGTH_ATTRIBUTE_ = 68;
 
 namespace dictionary {
 
@@ -13,12 +14,12 @@ namespace dictionary {
         public:
              
             Attribute();
-            Attribute(char* name);
-            Attribute(char* name, char data_type, int length_data_type, int* attribute_address,
+            Attribute(const std::string& name);
+            Attribute(const std::string& name, char data_type, int length_data_type, int* attribute_address,
                 int type_index,int* index_address, int* next_attribute_address);
             ~Attribute();
 
-            void SetName(char* name); 
+            void SetName(const std::string& name); 
             void SetDataType(char data_type); 
             void SetLengthDataType(char data_type); 
             void SetAttributeAddress(int* attribute_address);
