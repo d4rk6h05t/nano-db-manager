@@ -6,6 +6,7 @@
 
 const int MAX_LENGTH_NAME_ATTRIBUTE_ = 35;
 const int MAX_LENGTH_ATTRIBUTE_ = 68;
+const long int NULL_ATTRIBUTE_ = -1;
 
 namespace dictionary {
 
@@ -15,25 +16,28 @@ namespace dictionary {
              
             Attribute();
             Attribute(const std::string& name);
-            Attribute(const std::string& name, char data_type, int length_data_type, int* attribute_address,
-                int type_index,int* index_address, int* next_attribute_address);
+
+            Attribute(const std::string& name, char data_type, int length_data_type,int type_index);
+
+            Attribute(const std::string& name, char data_type, int length_data_type, long int attribute_address,
+                int type_index,long int index_address, long int next_attribute_address);
             ~Attribute();
 
             void SetName(const std::string& name); 
             void SetDataType(char data_type); 
             void SetLengthDataType(char data_type); 
-            void SetAttributeAddress(int* attribute_address);
+            void SetAttributeAddress(long int attribute_address);
             void SetTypeIndex(int type_index);
-            void SetIndexAddress(int* index_address); 
-            void SetNextAttributeAddress(int* next_attribute_address);
+            void SetIndexAddress(long int index_address); 
+            void SetNextAttributeAddress(long int next_attribute_address);
                   
             char* GetName(); 
             char GetDataType();
             int GetLengthDataType();
-            int* GetAttributeAddress(); 
+            long int GetAttributeAddress(); 
             int GetTypeIndex();
-            int* GetIndexAddress();
-            int* GetNextAttributeAddress();
+            long int GetIndexAddress();
+            long int GetNextAttributeAddress();
 
         private:
             char name_[MAX_LENGTH_NAME_ATTRIBUTE_];
@@ -42,7 +46,7 @@ namespace dictionary {
             char data_type_; 
             
             int length_data_type_; 
-            int* attribute_address_;
+            long int attribute_address_;
             
             // 0: Without Type Index
             // 1: Search Key
@@ -50,8 +54,8 @@ namespace dictionary {
             // 3: Secondary Index
             int type_index_; 
 
-            int* index_address_;
-            int* next_attribute_address_;
+            long int index_address_;
+            long int next_attribute_address_;
 
     };
 
