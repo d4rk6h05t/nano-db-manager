@@ -93,7 +93,7 @@ int main(){
 	    			 
 	    			view.Clear();
 		    		view.ShowDictionaryMenu();
-		    		view.ShowMessage("Select a option >_");
+		    		view.ShowMessage("Select an option >_");
 		    		cin >> option_dictionary;
 	    			switch (option_dictionary){
 				    	case 1: 
@@ -102,14 +102,13 @@ int main(){
 	    			       
 				    			view.Clear();
 					    		cout << endl << ":::::::::::::  File Header [ "<< data_dictionary.GetFileHeader() << " ]::::::::::::" << endl;
-					    		//cout << "Size of Entity structure: " << sizeof(Entity) << endl;
 					    		view.ShowEntityMenu();
-					    		view.ShowMessage("Select a option >_");
+					    		view.ShowMessage("Select an option >_");
 					    		cin >> option_entity;
 				    			switch (option_entity){
 							    	case 1: 
 							    		view.ShowMessage("Add Entity");
-							    		view.ShowMessage("Enter a new file name: ");
+							    		view.ShowMessage("Enter a new entity name: ");
 							    		cin >> new_entity;
 
 							    		if ( new_entity !="" ){
@@ -129,12 +128,13 @@ int main(){
                                             list<Entity>::iterator it_current = list_entities.begin();
 										    list<Entity>::iterator it_previus = std::prev( it_current , 1 );
 										    list<Entity>::iterator it_next = std::next( it_current , 1 );
+
 										    int i = 0; // first position
 										    int it_position = i;
 										    int flag;
 										    if( list_entities.empty() ) {
 										    	min = new_entity;
-										    	entity.SetNextEntityAddress( end_address );
+										    	//entity.SetNextEntityAddress( end_address );
 										    	data_dictionary.SetFileHeader( start_address );
 										    	flag = -1; 
 										    } else {
@@ -150,43 +150,36 @@ int main(){
 													current_address = it_current->GetEntityAddress();
 										    		next_address = it_current->GetNextEntityAddress();
 										    		
-										    		if ( i == 0 ){
+										    		if ( i == 0  ){
 										    			if ( comparison_response < 0 ) {
 										    				flag = 0;
 										    				min = new_entity;
 										    				it_position = i ; // first position
 										    				
-										    				entity.SetNextEntityAddress( current_address );
-										    				it_current->SetNextEntityAddress( end_address );
+										    				//entity.SetNextEntityAddress( current_address );
+										    				//it_current->SetNextEntityAddress( end_address );
 										    				data_dictionary.SetFileHeader( start_address );
 										    				
 										    			} else if ( comparison_response > 0 ) {										    	
 										    			    flag = 1;
 										    			    min = it_current->GetName();
 										    			    it_position = i + 1; // secon position			
-										    				entity.SetNextEntityAddress( end_address );
-										    				it_current->SetNextEntityAddress( data_dictionary.GetFileSize() );
+										    				//entity.SetNextEntityAddress( end_address );
+										    				//it_current->SetNextEntityAddress( data_dictionary.GetFileSize() );
 										    				data_dictionary.SetFileHeader( current_address );	
 										    			} 
 										    		} else if ( i > 0 ) {
 										    			flag = 2;
-                                                        /*
-                                                		string next_entity( it_next->GetName() );
-					    								int length_next_entity = next_entity.length();  
-														char char_next_entity[ length_next_entity + 1 ];
-														strcpy( char_next_entity, next_entity.c_str() );
-                                                        */
-														//string next_entity( it_next->GetName() );
-					    								
-										    			//int length_min_entity = new_entity.length();  
-														//char char_min_entity[ length_min_entity + 1 ];
-														//strcpy( char_min_entity, min.c_str() );
-                                                        //cout << endl << min << " VS " << it_current->GetName() << endl;
     													min = new_entity;
+    													long int entity_address_min = data_dictionary.GetFileSize();
+    													long int entity_next_address_min = it_current->GetEntityAddress(); 
     													int comparison_response_next = strcmp( char_new_entity, char_current_entity );
     													
-    													if ( comparison_response_next > 0 )
+    													if ( comparison_response_next > 0 ){
                                                         	min = it_current->GetName();
+                                                        	entity_address_min = it_current->GetEntityAddress();
+                                                        	int entity_next_address_min = data_dictionary.GetFileSize();
+    													}
                                                         
                                                         cout << endl << "new min -> " << min  << endl;
 										    			int length_min_new_entity = min.length();  
@@ -196,16 +189,15 @@ int main(){
 										    			int comparison_response_current_min = strcmp( char_new_entity, char_min_new_entity );
 										    			if ( comparison_response_current_min < 0 ) {
                                                         	it_position = i - 1;
-                                                        	entity.SetNextEntityAddress( current_address );
-										    				//it_current->SetNextEntityAddress( it_previus->GetNextEntityAddress() );
-										    				it_previus->SetNextEntityAddress( data_dictionary.GetFileSize() );
-										    				data_dictionary.SetFileHeader( it_previus->GetEntityAddress() );
+                                                        	//entity.SetNextEntityAddress( entity_address_min );
+										    				//it_current->SetNextEntityAddress( it_next->GetEntityAddress() );
+										    				//it_previus->SetNextEntityAddress( 54321 );
+										    				data_dictionary.SetFileHeader( 	data_dictionary.GetFileSize() );
 										    				break;
 										    			} else if ( comparison_response_current_min > 0 ) {
 										    				it_position = i + 1;
-										    				entity.SetNextEntityAddress( it_current->GetNextEntityAddress() );		
-											    			//it_previus->SetNextEntityAddress( it_current->GetNextEntityAddress() );
-											    			it_current->SetNextEntityAddress( data_dictionary.GetFileSize() );
+										    				//entity.SetNextEntityAddress( it_current->GetNextEntityAddress() );		
+											    			//it_current->SetNextEntityAddress( data_dictionary.GetFileSize() );
 										    				data_dictionary.SetFileHeader( it_current->GetEntityAddress() );	
 										    			}
 										    		} // end if else
@@ -215,32 +207,50 @@ int main(){
 										    		it_current++;	
 										    	} // end while
 										    } // end else != empty list
-                                            //list_entities.insert(it_current,i,entity);
-                                            // mylist.insert (it,2,20);  
-											data_dictionary.AddEntity(entity); // overwrite file 
-											cout << ":::::::: M I N :::::::: " << min << " | " << it_position << endl;
-											if ( flag == -1 )
+											
+
+											list<Entity>::iterator current = list_entities.begin();
+											list<Entity>::iterator previus = std::prev( current , 1 );
+										    list<Entity>::iterator next = std::next( current , 1 );
+
+											int it_count = 0;
+
+											if ( flag == -1 ){
 												list_entities.push_back(entity); 
-											else if ( flag == 0 || it_position == 0)
+											} else if ( flag == 0 || it_position == 0){
+												
+												entity.SetNextEntityAddress( current->GetEntityAddress() );
 												list_entities.push_front(entity);
-											else if (flag == 1 )
+											
+											} else if ( flag == 1 ){
+
+												current->SetNextEntityAddress( data_dictionary.GetFileSize() );
+												entity.SetNextEntityAddress( end_address );
 												list_entities.push_back(entity);
-											else if ( flag == 2  ){
-												cout << endl << "FLaG 2 ::::: it_position: "<< it_position << endl;
-												list<Entity>::iterator it = list_entities.begin();
-												int it_count = 0;
+											
+											} else if ( flag == 2  ){
+												
+												
 												do {
-													cout << endl << "IT COUNT :::::: "<< it_count << endl;
-                                                	if ( it_count == it_position ){
-                                                		cout << endl << "position found :::::: "<< it_count << endl;
-                                                		list_entities.insert(it,entity);  	
+
+
+
+													if ( it_count == it_position ){
+														long int previus_next_entity = previus->GetNextEntityAddress();
+														previus->SetNextEntityAddress( data_dictionary.GetFileSize() );
+														entity.SetNextEntityAddress( previus_next_entity ); 
+                                                		list_entities.insert(current,entity);  	
                                                   	}
+
 												  	it_count++;
-                                                  	it++; 
+                                                  	next++; 
+                                                  	current++; 
+                                                  	previus++; 
 												} while ( it_count <= it_position );
 												
 											}
-											
+
+											data_dictionary.AddEntity(entity); // overwrite file
 							    			view.ShowMessage(" / create Entity with name ==> ");
 							    			view.ShowMessage(entity.GetName());
 							    			
