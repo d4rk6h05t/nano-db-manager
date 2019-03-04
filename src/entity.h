@@ -2,7 +2,6 @@
 #define DICTIONARY_CC_ENTITY_H_
 
 #include <cstddef>
-#include <string>
 #include <iostream>
 
 const int MAX_LENGTH_NAME_ENTTITY_ = 35;
@@ -35,14 +34,16 @@ namespace dictionary {
             void DisplayEntity();
 
         private:
+
             char name_[MAX_LENGTH_NAME_ENTTITY_];
             long int entity_address_;
             long int attribute_address_;
             long int data_address_;
             long int next_entity_address_;
 
-    };
+            
 
+    }; 
 
 }  // end namespace dictionary
 

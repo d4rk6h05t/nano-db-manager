@@ -13,7 +13,7 @@ namespace dictionary {
         next_attribute_address_ = NULL_ATTRIBUTE_;
     }
     
-    Attribute::Attribute(const std::string& name){
+    Attribute::Attribute(char name[MAX_LENGTH_NAME_ATTRIBUTE_]){
         for (int i = 0; i < MAX_LENGTH_NAME_ATTRIBUTE_; i++){
             name_[i] = name[i];      
         }
@@ -26,7 +26,7 @@ namespace dictionary {
         
     }
 
-    Attribute::Attribute(const std::string& name, char data_type, int length_data_type, int type_index){
+    Attribute::Attribute(char name[MAX_LENGTH_NAME_ATTRIBUTE_], char data_type, int length_data_type, int type_index){
         
         for (int i = 0; i < MAX_LENGTH_NAME_ATTRIBUTE_; i++){
             name_[i] = name[i];      
@@ -44,7 +44,7 @@ namespace dictionary {
         
     }
 
-    Attribute::Attribute(const std::string& name, char data_type, int length_data_type, long int attribute_address,
+    Attribute::Attribute(char name[MAX_LENGTH_NAME_ATTRIBUTE_], char data_type, int length_data_type, long int attribute_address,
             int type_index,long int index_address, long int next_attribute_address){
         
         for (int i = 0; i < MAX_LENGTH_NAME_ATTRIBUTE_; i++){
@@ -69,7 +69,7 @@ namespace dictionary {
 
     Attribute::~Attribute(){}
 
-    void Attribute::SetName(const std::string& name){ 
+    void Attribute::SetName(char name[MAX_LENGTH_NAME_ATTRIBUTE_]){ 
         for (int i = 0; i < MAX_LENGTH_NAME_ATTRIBUTE_; i++){
             name_[i] = name[i];      
         }

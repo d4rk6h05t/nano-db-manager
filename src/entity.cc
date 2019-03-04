@@ -44,7 +44,11 @@ namespace dictionary {
     void Entity::SetDataAddress(long int data_address) { data_address_ = data_address; }
     void Entity::SetNextEntityAddress(long int next_entity_address) { next_entity_address_  = next_entity_address; }
                   
-    char* Entity::GetName() { return name_; }
+    char* Entity::GetName() { 
+        
+        return name_; 
+    }
+
     long int Entity::GetEntityAddress() { return entity_address_; }
     long int Entity::GetAttributeAddress() { return attribute_address_; }
     long int Entity::GetDataAddress() { return data_address_; }
