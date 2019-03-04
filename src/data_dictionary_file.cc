@@ -82,12 +82,6 @@ namespace dictionary {
     	long int attribute_address = entity.GetAttributeAddress();
     	long int data_address = entity.GetDataAddress();
     	long int next_entity_address = entity.GetNextEntityAddress();
-
-		std::cout << "::>>>> " << entity_address << std::endl;
-		std::cout << "::>>>> " << attribute_address << std::endl;
-		std::cout << "::>>>> " << data_address << std::endl;
-		std::cout << "::>>>> " << next_entity_address << std::endl;
-
         
     	list_entities_.push_back(entity);
 		
@@ -96,9 +90,6 @@ namespace dictionary {
     	file.seekg(0, std::fstream::end);
 		int file_length = file.tellg(); // Entity Address
 
-		
-		std::cout << std::endl << ":::::: File Size ::::::: ===>  " << file_length << std::endl;
-		std::cout << std::endl << ":::::: Header ::::::: ===>  " << file_header_ << std::endl;
 
 		file.seekg( file_length + sizeof(dictionary::Entity), std::fstream::end  );
 		
@@ -114,9 +105,56 @@ namespace dictionary {
 		efile.write( (char*) &attribute_address, sizeof(long int) );
 		efile.write( (char*) &data_address, sizeof(long int) );
 		efile.write( (char*) &next_entity_address, sizeof(long int) );
-	    
-	    std::cout << std::endl << name_ + ext_ << " successfully updated file!"  << std::endl;
 		efile.close(); 
+
+    }
+
+    void DataDictionaryFile::UpdateListEntities(std::list<Entity> list_entities, long int file_header ){
+		
+		file_header_ = file_header;
+		std::string file_name =  name_ + ext_;
+		std::fstream file ( file_name, std::fstream::binary | std::fstream::out );
+
+		file.open(file_name);
+		if ( file.is_open() ) {
+			file.close();
+			int length_file_name = file_name.length();  
+			char char_file_name[ length_file_name + 1 ];
+			strcpy( char_file_name, file_name.c_str() );
+			std::remove(char_file_name);    
+		}
+			std::ofstream out_file ( file_name, std::ofstream::binary | std::ofstream::out );
+			out_file.seekp (0);
+			std::cout << std::endl << " ::::: file_header :::: ***** >>> " << file_header_ << std::endl;
+			file.write( (char*) &file_header_, sizeof(long int) );
+			std::list<Entity>::iterator it_current = list_entities.begin();
+            out_file.seekp (8);
+			char name[MAX_LENGTH_NAME_ENTTITY_];
+			long int entity_address;
+		    long int attribute_address;
+		    long int data_address;
+		    long int next_entity_address;
+				
+			while( it_current != list_entities.end() ){
+				
+		    	for (int i = 0; i < MAX_LENGTH_NAME_ENTTITY_; i++){
+		            name[i] = it_current->GetName()[i];      
+		        }
+		        entity_address = it_current->GetEntityAddress();
+		    	attribute_address = it_current->GetAttributeAddress();
+		    	data_address = it_current->GetDataAddress();
+		    	next_entity_address = it_current->GetNextEntityAddress();
+				
+				out_file.write( (char*) &name, MAX_LENGTH_NAME_ENTTITY_ );
+				out_file.write( (char*) &entity_address, sizeof(long int) );
+				out_file.write( (char*) &attribute_address, sizeof(long int) );
+				out_file.write( (char*) &data_address, sizeof(long int) );
+				out_file.write( (char*) &next_entity_address, sizeof(long int) );
+			    				
+				it_current++;
+			}
+
+			out_file.close();
 
     }
 

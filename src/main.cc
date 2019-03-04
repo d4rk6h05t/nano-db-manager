@@ -120,7 +120,6 @@ int main(){
 										    Entity entity(new_entity);
 										    entity.SetEntityAddress( data_dictionary.GetFileSize() ); 
 										    
-										    //string previus_name, current_name, next_name;
 										    long int previus_address, current_address, next_address, start_address, end_address;
                                             start_address = data_dictionary.GetFileSize();
                                             end_address = -1;
@@ -134,7 +133,6 @@ int main(){
 										    int flag;
 										    if( list_entities.empty() ) {
 										    	min = new_entity;
-										    	//entity.SetNextEntityAddress( end_address );
 										    	data_dictionary.SetFileHeader( start_address );
 										    	flag = -1; 
 										    } else {
@@ -155,17 +153,12 @@ int main(){
 										    				flag = 0;
 										    				min = new_entity;
 										    				it_position = i ; // first position
-										    				
-										    				//entity.SetNextEntityAddress( current_address );
-										    				//it_current->SetNextEntityAddress( end_address );
 										    				data_dictionary.SetFileHeader( start_address );
 										    				
 										    			} else if ( comparison_response > 0 ) {										    	
 										    			    flag = 1;
 										    			    min = it_current->GetName();
 										    			    it_position = i + 1; // secon position			
-										    				//entity.SetNextEntityAddress( end_address );
-										    				//it_current->SetNextEntityAddress( data_dictionary.GetFileSize() );
 										    				data_dictionary.SetFileHeader( current_address );	
 										    			} 
 										    		} else if ( i > 0 ) {
@@ -189,15 +182,10 @@ int main(){
 										    			int comparison_response_current_min = strcmp( char_new_entity, char_min_new_entity );
 										    			if ( comparison_response_current_min < 0 ) {
                                                         	it_position = i - 1;
-                                                        	//entity.SetNextEntityAddress( entity_address_min );
-										    				//it_current->SetNextEntityAddress( it_next->GetEntityAddress() );
-										    				//it_previus->SetNextEntityAddress( 54321 );
-										    				data_dictionary.SetFileHeader( 	data_dictionary.GetFileSize() );
+                                                        	data_dictionary.SetFileHeader( 	data_dictionary.GetFileSize() );
 										    				break;
 										    			} else if ( comparison_response_current_min > 0 ) {
 										    				it_position = i + 1;
-										    				//entity.SetNextEntityAddress( it_current->GetNextEntityAddress() );		
-											    			//it_current->SetNextEntityAddress( data_dictionary.GetFileSize() );
 										    				data_dictionary.SetFileHeader( it_current->GetEntityAddress() );	
 										    			}
 										    		} // end if else
@@ -250,7 +238,7 @@ int main(){
 												
 											}
 
-											data_dictionary.AddEntity(entity); // overwrite file
+											data_dictionary.UpdateListEntities(list_entities, data_dictionary.GetFileHeader() );
 							    			view.ShowMessage(" / create Entity with name ==> ");
 							    			view.ShowMessage(entity.GetName());
 							    			

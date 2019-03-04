@@ -2,12 +2,18 @@
 #define DICTIONARY_CC_DATADICTIONARYFILE_H_
 
 #include <iostream>
+
 #include <cstddef>
+#include <cstdio>
+#include <bits/stdc++.h> 
+
 #include <string>
 #include <fstream>
+
 #include <list>
 #include <vector>
 #include <iterator>
+
 
 #include "entity.h"
 #include "attribute.h"
@@ -39,6 +45,7 @@ namespace dictionary {
             
             void CreateFile();            
             void AddEntity(Entity entity);
+            void UpdateListEntities(std::list<Entity> list_entities, long int file_header);
             void AddAttribute(Attribute attribute);
             /*
             long int UpdateEntity(long int position, Entity entity);
