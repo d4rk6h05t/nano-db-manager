@@ -5,6 +5,7 @@
 
 #include <cstddef>
 #include <cstdio>
+#include <cstdlib>
 #include <bits/stdc++.h> 
 
 #include <string>
@@ -17,6 +18,8 @@
 
 #include "entity.h"
 #include "attribute.h"
+
+typedef unsigned char BYTE;
 
 namespace dictionary {
 
@@ -46,6 +49,7 @@ namespace dictionary {
             void CreateFile();            
             void AddEntity(Entity entity);
             void UpdateListEntities(std::list<Entity> list_entities, long int file_header);
+            std::list<Entity> ReadListEntities();
             void AddAttribute(Attribute attribute);
             /*
             long int UpdateEntity(long int position, Entity entity);

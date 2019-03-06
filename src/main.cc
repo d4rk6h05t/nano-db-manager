@@ -5,6 +5,7 @@
 #include <string>
 #include <fstream>
 #include <list>
+#include <vector>
 #include <iterator> 
 #include <algorithm> 
 
@@ -19,6 +20,8 @@
 using namespace std; 
 using namespace dictionary;
 using namespace ui;
+
+typedef unsigned char BYTE;
 
 int main(){ 
 	
@@ -74,6 +77,18 @@ int main(){
 				    			if ( file_name !="" ){
 				    				data_dictionary.SetName( file_name );
 				    				view.ShowMessage("open file with name ==> " + file_name);
+				    				list_entities = data_dictionary.ReadListEntities();
+                                    //vector<BYTE> v = data_dictionary.readFile();
+
+				    				view.ShowMessage("\n::::: \t Metadata of Entity \t :::::\n");
+							    	
+									std::cout << "|  Name  | Entity Address | Attribute Address | Data Addres | Next Entity Address |" << endl; 
+									for (list<Entity>::iterator it = list_entities.begin(); it != list_entities.end(); ++it)
+    										cout << " | " << it->GetName()<< " | " << it->GetEntityAddress()<< " | " << it->GetAttributeAddress()<< " | " << it->GetDataAddress()<< " | " << it->GetNextEntityAddress() << endl;
+    								//for (int i = 0; i < v.size(); i++){
+    								//	cout << v[i] << endl; 	
+    								//}
+
 				    			}
 				    		break;
 				    	case 3:

@@ -9,6 +9,7 @@ namespace dictionary {
 		std::string path = "/home/ghostdev/Projects/cc/file_structures/";
 		std::string tmp_dir = "tmp/";
 		std::string tmp_name = "unamed";
+		//std::string ext = ".bin";
 		std::string ext = ".dat";
        
 		path_ = path;
@@ -123,12 +124,13 @@ namespace dictionary {
 			strcpy( char_file_name, file_name.c_str() );
 			std::remove(char_file_name);    
 		}
-			std::ofstream out_file ( file_name, std::ofstream::binary | std::ofstream::out );
-			out_file.seekp (0);
+			std::ofstream out_file( file_name, std::ios::binary | std::ios::out );
+			out_file.seekp(0);
 			std::cout << std::endl << " ::::: file_header :::: ***** >>> " << file_header_ << std::endl;
-			file.write( (char*) &file_header_, sizeof(long int) );
+			out_file.write( reinterpret_cast<const char*>(&file_header_), sizeof(long int) );
+			out_file.seekp(8);
 			std::list<Entity>::iterator it_current = list_entities.begin();
-            out_file.seekp (8);
+            
 			char name[MAX_LENGTH_NAME_ENTTITY_];
 			long int entity_address;
 		    long int attribute_address;
@@ -145,17 +147,59 @@ namespace dictionary {
 		    	data_address = it_current->GetDataAddress();
 		    	next_entity_address = it_current->GetNextEntityAddress();
 				
-				out_file.write( (char*) &name, MAX_LENGTH_NAME_ENTTITY_ );
-				out_file.write( (char*) &entity_address, sizeof(long int) );
-				out_file.write( (char*) &attribute_address, sizeof(long int) );
-				out_file.write( (char*) &data_address, sizeof(long int) );
-				out_file.write( (char*) &next_entity_address, sizeof(long int) );
+				out_file.write( reinterpret_cast<const char*>(name), MAX_LENGTH_NAME_ENTTITY_ );
+				out_file.write( reinterpret_cast<const char*>(&entity_address) , sizeof(long int) );
+				out_file.write( reinterpret_cast<const char*>(&attribute_address), sizeof(long int) );
+				out_file.write( reinterpret_cast<const char*>(&data_address), sizeof(long int) );
+				out_file.write( reinterpret_cast<const char*>(&next_entity_address), sizeof(long int) );
 			    				
 				it_current++;
 			}
 
 			out_file.close();
 
+    }
+
+    std::list<Entity> DataDictionaryFile::ReadListEntities(){
+    	
+    	std::list<Entity> list_entities;
+       	std::fstream file( name_ + ext_, std::ios::in  | std::ios::binary );
+       	
+       	file.seekp( 0 );
+       	long int file_header, next;
+    	file.read( reinterpret_cast<char*>( &file_header ), sizeof( long int ) );
+		
+		std::cout << std::endl << " ::::: file_header :::: ***** >>> " << file_header << std::endl;
+		next = file_header;
+
+		char name[MAX_LENGTH_NAME_ENTTITY_];
+		long int entity_address;
+		long int attribute_address;
+		long int data_address;
+		long int next_entity_address;
+			
+		while( next != -1 ){
+		
+			file.seekp( next );
+			file.read( reinterpret_cast<char*>( name) , MAX_LENGTH_NAME_ENTTITY_ );
+			file.read( reinterpret_cast<char*>(&entity_address), sizeof(long int) );
+			file.read( reinterpret_cast<char*>(&attribute_address), sizeof(long int) );
+			file.read( reinterpret_cast<char*>(&data_address), sizeof(long int) );
+			file.read( reinterpret_cast<char*>(&next_entity_address), sizeof(long int) );
+			next = next_entity_address;
+			std::string str_name(name);
+			Entity entity;
+			entity.SetName(str_name);
+			entity.SetEntityAddress(entity_address);
+		    entity.SetAttributeAddress(attribute_address);
+		    entity.SetDataAddress(data_address);
+		    entity.SetNextEntityAddress(next_entity_address);
+			list_entities.push_back(entity);
+		}
+		
+		file.close();	
+       	
+    	return list_entities;
     }
 
     void DataDictionaryFile::AddAttribute(Attribute attribute){
