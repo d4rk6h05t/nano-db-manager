@@ -19,7 +19,6 @@
 #include "entity.h"
 #include "attribute.h"
 
-typedef unsigned char BYTE;
 
 namespace dictionary {
 
@@ -46,11 +45,18 @@ namespace dictionary {
             long int GetFileHeader();
             long int GetFileSize();
             
-            void CreateFile();            
+            void CreateFile();
+            void UpdateHeader();
+            
+            void UpdateAddress(long int position, long int new_address);            
+
             void AddEntity(Entity entity);
+            
+
             void UpdateListEntities(std::list<Entity> list_entities, long int file_header);
             std::list<Entity> ReadListEntities();
             void AddAttribute(Attribute attribute);
+
             /*
             long int UpdateEntity(long int position, Entity entity);
             long int UpdateAttribute(long int position, Attribute attribute);

@@ -1,5 +1,3 @@
-
-
 #include <iostream>
 #include <cstddef>
 #include <string>
@@ -20,8 +18,6 @@
 using namespace std; 
 using namespace dictionary;
 using namespace ui;
-
-typedef unsigned char BYTE;
 
 int main(){ 
 	
@@ -78,16 +74,11 @@ int main(){
 				    				data_dictionary.SetName( file_name );
 				    				view.ShowMessage("open file with name ==> " + file_name);
 				    				list_entities = data_dictionary.ReadListEntities();
-                                    //vector<BYTE> v = data_dictionary.readFile();
-
-				    				view.ShowMessage("\n::::: \t Metadata of Entity \t :::::\n");
-							    	
+				    				view.ShowMessage("::::: \t Metadata of Entity \t :::::\n");
 									std::cout << "|  Name  | Entity Address | Attribute Address | Data Addres | Next Entity Address |" << endl; 
 									for (list<Entity>::iterator it = list_entities.begin(); it != list_entities.end(); ++it)
     										cout << " | " << it->GetName()<< " | " << it->GetEntityAddress()<< " | " << it->GetAttributeAddress()<< " | " << it->GetDataAddress()<< " | " << it->GetNextEntityAddress() << endl;
-    								//for (int i = 0; i < v.size(); i++){
-    								//	cout << v[i] << endl; 	
-    								//}
+    								
 
 				    			}
 				    		break;
@@ -142,7 +133,7 @@ int main(){
                                             list<Entity>::iterator it_current = list_entities.begin();
 										    list<Entity>::iterator it_previus = std::prev( it_current , 1 );
 										    list<Entity>::iterator it_next = std::next( it_current , 1 );
-
+										    
 										    int i = 0; // first position
 										    int it_position = i;
 										    int flag;
@@ -207,7 +198,8 @@ int main(){
 										    		
 										    		i++;
                                                     it_previus++;
-										    		it_current++;	
+										    		it_current++;
+										    		it_next++;	
 										    	} // end while
 										    } // end else != empty list
 											
@@ -228,6 +220,9 @@ int main(){
 											} else if ( flag == 1 ){
 
 												current->SetNextEntityAddress( data_dictionary.GetFileSize() );
+
+												data_dictionary.UpdateAddress( current->GetEntityAddress() + 24, data_dictionary.GetFileSize() );
+												
 												entity.SetNextEntityAddress( end_address );
 												list_entities.push_back(entity);
 											
@@ -241,6 +236,9 @@ int main(){
 													if ( it_count == it_position ){
 														long int previus_next_entity = previus->GetNextEntityAddress();
 														previus->SetNextEntityAddress( data_dictionary.GetFileSize() );
+														
+														data_dictionary.UpdateAddress( previus->GetEntityAddress() + 24, data_dictionary.GetFileSize() );
+														
 														entity.SetNextEntityAddress( previus_next_entity ); 
                                                 		list_entities.insert(current,entity);  	
                                                   	}
@@ -252,10 +250,13 @@ int main(){
 												} while ( it_count <= it_position );
 												
 											}
+                                             
 
-											data_dictionary.UpdateListEntities(list_entities, data_dictionary.GetFileHeader() );
-							    			view.ShowMessage(" / create Entity with name ==> ");
-							    			view.ShowMessage(entity.GetName());
+                                            data_dictionary.UpdateHeader();
+                                            cout << "  File size ::  " << data_dictionary.GetFileSize() << " Header :: " << data_dictionary.GetFileHeader();
+                                            data_dictionary.AddEntity( entity );
+											//data_dictionary.UpdateListEntities(list_entities, data_dictionary.GetFileHeader() );
+							    			
 							    			
 							    		}
 										break;
@@ -271,9 +272,9 @@ int main(){
 							    	case 5:
 							    		view.ShowMessage("\n::::: \t Metadata of Entity \t :::::\n");
 							    	
-									    std::cout << "|\t\t Name \t\t | Entity Address | Attribute Address | Data Addres | Next Entity Address |" << endl; 
+										std::cout << " Name  Entity Address  Attribute Address  Data Addres  Next Entity Address " << endl; 
 										for (list<Entity>::iterator it = list_entities.begin(); it != list_entities.end(); ++it)
-    										cout << " | " << it->GetName()<< " | " << it->GetEntityAddress()<< " | " << it->GetAttributeAddress()<< " | " << it->GetDataAddress()<< " | " << it->GetNextEntityAddress() << endl;
+    										cout << it->GetName()<< "\t\t" << it->GetEntityAddress()<< "\t\t" << it->GetAttributeAddress()<< "\t\t" << it->GetDataAddress()<< "\t\t" << it->GetNextEntityAddress() << endl;
 										
 							    		break;
 							    }

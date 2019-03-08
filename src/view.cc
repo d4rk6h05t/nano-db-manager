@@ -6,49 +6,49 @@ namespace ui {
 		View::View(){}
 		View::~View(){}
 		void View::Clear(){ system("clear"); }
-		void View::ShowTitle(){ std::cout << " \n\t\t Project Structure File \n"; }
-		void View::ShowMessage(std::string str ){ std::cout << "\t" + str ;  }
+		void View::ShowTitle(){ std::cout << std::endl << "\t\t Project Structure File "<< std::endl; }
+		void View::ShowMessage(std::string str ){ std::cout << std::endl << "\t" + str;  }
 		
 		void View::ShowMainMenu(){
-				std::cout << " \n\t\t ::::: Main Menu  ::::: ";
-    			std::cout << " \n\t\t\t [ 1 ]: File \n";
-    			std::cout << " \n\t\t\t [ 2 ]: Dictionary \n";	
-    			std::cout << " \n\t\t\t [ 3 ]: Exit \n";	
+				std::cout << std::endl << " \t\t ::::: Main Menu  ::::: ";
+    			std::cout << std::endl << " \t\t\t [ 1 ]: File " << std::endl;
+    			std::cout << std::endl << " \t\t\t [ 2 ]: Dictionary " << std::endl;	
+    			std::cout << std::endl << " \t\t\t [ 3 ]: Exit " << std::endl;	
 		}
 		
 		void View::ShowFileMenu(){
-				std::cout << " \n\t\t ::::: File Menu  ::::: ";
-		    	std::cout << " \n\t\t\t\t [ 1 ]: New File \n";
-		    	std::cout << " \n\t\t\t\t [ 2 ]: Open File \n";
-		    	std::cout << " \n\t\t\t\t [ 3 ]: Delete File \n";
-		    	std::cout << " \n\t\t\t\t [ 4 ]: Back to main menu \n";	
+				std::cout << std::endl << " \t\t ::::: File Menu  ::::: ";
+		    	std::cout << std::endl << " \t\t\t\t [ 1 ]: New File " << std::endl;
+		    	std::cout << std::endl << " \t\t\t\t [ 2 ]: Open File " << std::endl;
+		    	std::cout << std::endl << " \t\t\t\t [ 3 ]: Delete File " << std::endl;
+		    	std::cout << std::endl << " \t\t\t\t [ 4 ]: Back to main menu " << std::endl;	
 		}
 		
 		void View::ShowDictionaryMenu(){
-				std::cout << " \n\t\t ::::: Dictionary Menu  ::::: ";
-		 		std::cout << " \n\t\t\t\t [ 1 ]: Entity \n";
-    			std::cout << " \n\t\t\t\t [ 2 ]: Attribute \n";
-    			std::cout << " \n\t\t\t\t [ 3 ]: Back to main menu \n";
+				std::cout << std::endl << " \t\t ::::: Dictionary Menu  ::::: ";
+		 		std::cout << std::endl << " \t\t\t\t [ 1 ]: Entity " << std::endl;
+    			std::cout << std::endl << " \t\t\t\t [ 2 ]: Attribute " << std::endl;
+    			std::cout << std::endl << " \t\t\t\t [ 3 ]: Back to main menu " << std::endl;
 		}
 		
 		void View::ShowEntityMenu(){
-				std::cout << " \n\t\t ::::: Entity Menu  :::::  ";
-				std::cout << " \n\t\t\t\t [ 1 ]: Add Entity \n";
-	    		std::cout << " \n\t\t\t\t [ 2 ]: Update Entity \n";
-	    		std::cout << " \n\t\t\t\t [ 3 ]: Delete Entity \n";
-	    		std::cout << " \n\t\t\t\t [ 4 ]: Select Entity \n";
-	    		std::cout << " \n\t\t\t\t [ 5 ]: List of entities \n";
-	    		//std::cout << " \n\t\t\t\t [ 6 ]: List of entities sorted \n";
-	    		std::cout << " \n\t\t\t\t [ 6 ]: Back to main menu \n";		
+				std::cout << std::endl << " \t\t ::::: Entity Menu  :::::  ";
+				std::cout << std::endl << " \t\t\t\t [ 1 ]: Add Entity " << std::endl;
+	    		std::cout << std::endl << " \t\t\t\t [ 2 ]: Update Entity " << std::endl;
+	    		std::cout << std::endl << " \t\t\t\t [ 3 ]: Delete Entity " << std::endl;
+	    		std::cout << std::endl << " \t\t\t\t [ 4 ]: Select Entity " << std::endl;
+	    		std::cout << std::endl << " \t\t\t\t [ 5 ]: List of entities " << std::endl;
+	    		//std::cout << std::endl << " \t\t\t\t [ 6 ]: List of entities sorted " << std::endl;
+	    		std::cout << std::endl << " \t\t\t\t [ 6 ]: Back to main menu ";		
 		}
 
 		void View::ShowAttributeMenu(){
-				std::cout << " \n\t\t ::::: Attribute Menu  :::::  ";
-				std::cout << " \n\t\t\t\t [ 1 ]: Add Attribute \n";
-	    		std::cout << " \n\t\t\t\t [ 2 ]: Update Attribute \n";
-	    		std::cout << " \n\t\t\t\t [ 3 ]: Delete Attribute \n";
-	    		std::cout << " \n\t\t\t\t [ 4 ]: Select Attribute \n";
-	    		std::cout << " \n\t\t\t\t [ 5 ]: Back to main menu \n";		
+				std::cout << std::endl << " \t\t ::::: Attribute Menu  :::::  ";
+				std::cout << std::endl << " \t\t\t\t [ 1 ]: Add Attribute " << std::endl;
+	    		std::cout << std::endl << " \t\t\t\t [ 2 ]: Update Attribute " << std::endl;
+	    		std::cout << std::endl << " \t\t\t\t [ 3 ]: Delete Attribute " << std::endl;
+	    		std::cout << std::endl << " \t\t\t\t [ 4 ]: Select Attribute " << std::endl;
+	    		std::cout << std::endl << " \t\t\t\t [ 5 ]: Back to main menu " << std::endl;		
 		}
 
 
