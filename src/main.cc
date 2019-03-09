@@ -157,7 +157,6 @@ int main(){
 										    	min = new_entity;
 										    	entity_address_min = data_dictionary.GetFileSize();
 										    	entity_next_address_min = end_address;
-										    	//data_dictionary.SetFileHeader( start_address );
 										    	flag = -1; 
 										    
 										    } else {
@@ -181,7 +180,6 @@ int main(){
 										    				entity_address_min = data_dictionary.GetFileSize();
 										    				entity_next_address_min = it_current->GetEntityAddress();
 										    				it_position = i ; // first position
-										    				//data_dictionary.SetFileHeader( start_address );
 										    				
 										    			} else if ( comparison_response > 0 ) {										    	
 										    			    flag = 1;
@@ -189,7 +187,6 @@ int main(){
 										    			    entity_address_min = it_current->GetEntityAddress();
 										    				entity_next_address_min = data_dictionary.GetFileSize();
 										    			    it_position = i + 1; // secon position			
-										    				//data_dictionary.SetFileHeader( current_address );	
 										    			} 
 										    		} else if ( i > 0 ) {
 										    			flag = 2;
@@ -215,12 +212,10 @@ int main(){
 										    			int comparison_response_current_min = strcmp( char_new_entity, char_min_new_entity );
 										    			if ( comparison_response_current_min < 0 ) {
                                                         	it_position = i - 1;
-                                                        	//data_dictionary.SetFileHeader( 	data_dictionary.GetFileSize() );
 										    				
 										    				break;
 										    			} else if ( comparison_response_current_min > 0 ) {
 										    				it_position = i + 1;
-										    				//data_dictionary.SetFileHeader( it_current->GetEntityAddress() );	
 										    			}
 										    		} // end if else
 										    		
@@ -242,16 +237,17 @@ int main(){
 												list_entities.push_back(entity); 
 											} else if ( flag == 0 || it_position == 0){
 												
-												entity.SetNextEntityAddress( current->GetEntityAddress() );
+												entity.SetNextEntityAddress( list_entities.front().GetEntityAddress() );
 												list_entities.push_front(entity);
 											
 											} else if ( flag == 1 ){
-
-												current->SetNextEntityAddress( data_dictionary.GetFileSize() );
-
-												data_dictionary.UpdateAddress( current->GetEntityAddress() + 24, data_dictionary.GetFileSize() );
 												
+												list_entities.front().SetNextEntityAddress( data_dictionary.GetFileSize() );
+												
+												data_dictionary.UpdateAddress( list_entities.front().GetEntityAddress() , data_dictionary.GetFileSize() );
+							             
 												entity.SetNextEntityAddress( end_address );
+												
 												list_entities.push_back(entity);
 											
 											} else if ( flag == 2  ){
@@ -262,10 +258,12 @@ int main(){
 
 
 													if ( it_count == it_position ){
+														
 														long int previus_next_entity = previus->GetNextEntityAddress();
+
 														previus->SetNextEntityAddress( data_dictionary.GetFileSize() );
 														
-														data_dictionary.UpdateAddress( previus->GetEntityAddress() + 24, data_dictionary.GetFileSize() );
+														data_dictionary.UpdateAddress( previus->GetEntityAddress() , data_dictionary.GetFileSize() );
 														
 														entity.SetNextEntityAddress( previus_next_entity ); 
                                                 		list_entities.insert(current,entity);  	

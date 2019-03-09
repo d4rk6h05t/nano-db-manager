@@ -107,13 +107,38 @@ namespace dictionary {
     }
 
     void DataDictionaryFile::UpdateAddress(long int position, long int new_address){
+   		
+   		char name[MAX_LENGTH_NAME_ENTTITY_];
+		long int entity_address;
+		long int attribute_address;
+		long int data_address;
+		long int next_entity_address;
+
    		std::fstream out_file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
+		
+
 		out_file.seekp(position);
+		//out_file.write( reinterpret_cast<const char*>(&new_address), sizeof(long int) );
+		//out_file.seekp(position);
+		out_file.read( reinterpret_cast<char*>(name), MAX_LENGTH_NAME_ENTTITY_ );
+		out_file.read( reinterpret_cast<char*>(&entity_address) , sizeof(long int) );
+		out_file.read( reinterpret_cast<char*>(&attribute_address), sizeof(long int) );
+		out_file.read( reinterpret_cast<char*>(&data_address), sizeof(long int) );
+		out_file.read( reinterpret_cast<char*>(&next_entity_address), sizeof(long int) );
+		
+		std::cout << std::endl << " :: name -> " << name << std::endl
+							   << " :: entity addres -> " << entity_address << std::endl
+							   << " :: attribute addres -> " << attribute_address << std::endl
+							   << " :: data addres -> " << data_address << std::endl
+							   << " :: next entity addres -> " << next_entity_address << std::endl			
+							   << std::endl;
+		
+		out_file.seekp(position+35+8+8+8);
 		out_file.write( reinterpret_cast<const char*>(&new_address), sizeof(long int) );
-		long int save;
-		out_file.seekp(position);
-		out_file.read( reinterpret_cast<char*>(&save), sizeof(long int) );
-		std::cout << std::endl << " ::::: address changed :::: ***** >>>{saved..} " << save << std::endl;
+		out_file.seekp(position+35+8+8+8);
+		out_file.read( reinterpret_cast<char*>(&next_entity_address), sizeof(long int) );
+		
+		std::cout << std::endl << " :: new next entity addres -> " << next_entity_address << std::endl;
 		out_file.close();
     }
 
