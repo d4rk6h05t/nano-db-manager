@@ -18,18 +18,29 @@ INC := -I include # add Include for my project
 
 mainmake: main.cc 
 	@echo ":::::  Project File Structures ::::: "
-	@echo ""
-	@echo ":: wait a moment, please,  Compiling [entity] .......... Ok "
+	@echo "wait a moment, please ..."
+	@echo ":: Compiling [entity] ........................ Ok "
 	@g++ -c entity.cc
-	@echo ":: wait a moment, please,  Compiling [attribute] .......... Ok "
+	@echo ":: Compiling [attribute] ..................... Ok "
 	@g++ -c attribute.cc
-	@echo ":: wait a moment, please,  Compiling [data_dictionary_file] .......... Ok "
+	@echo ":: Compiling [data_dictionary_file] .......... Ok "
 	@g++ -c data_dictionary_file.cc
-	@echo ":: wait a moment, please,  Compiling [view] .......... Ok "
+	@echo ":: Compiling [view] .......................... Ok "
 	@g++ -c view.cc
-	@echo ":: wait a moment, please,  Linking [all project] .......... Ok "
+	@echo ":: Linking [all project] ..................... Ok "
 	@g++ -o app main.cc entity.o attribute.o data_dictionary_file.o view.o
 
+clean:
+	@echo ":::::  Project File Structures ::::: "
+	@echo "wait a moment, please ..."
+	
+	@echo ":: Remove from project [app] ................... Ok "
+	@rm -f app || true 
+	@echo ":: Remove from project [*.o] ................... Ok "
+	@rm  -f *.o || true 
+	@echo ":: Remove from project [*.dat] ................. Ok "
+	@rm -f *.dat || true
+	
 #$(TARGET): $(OBJECTS)
 #  @echo " =======> Linking ... ";
 #  @echo " =======> $(CC) $^ -o $(TARGET) $(LIB)"; $(CC) $^ -o $(TARGET) $(LIB)

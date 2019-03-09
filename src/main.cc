@@ -74,10 +74,18 @@ int main(){
 				    				data_dictionary.SetName( file_name );
 				    				view.ShowMessage("open file with name ==> " + file_name);
 				    				list_entities = data_dictionary.ReadListEntities();
-				    				view.ShowMessage("::::: \t Metadata of Entity \t :::::\n");
-									std::cout << "|  Name  | Entity Address | Attribute Address | Data Addres | Next Entity Address |" << endl; 
-									for (list<Entity>::iterator it = list_entities.begin(); it != list_entities.end(); ++it)
-    										cout << " | " << it->GetName()<< " | " << it->GetEntityAddress()<< " | " << it->GetAttributeAddress()<< " | " << it->GetDataAddress()<< " | " << it->GetNextEntityAddress() << endl;
+				    				cout << endl << "\t\t::::::::::::: \t Metadata of Entity \t ::::::::::::" << endl << endl;
+										std::cout << " Name  \t Entity Address  Attribute Address  Data Addres  Next Entity Address " << endl << endl; 
+	
+										for (list<Entity>::iterator it = list_entities.begin(); it != list_entities.end(); ++it)
+    										cout << it->GetName() 
+    											//<< std::setfill (' ') 
+    											//<< std::setw(10) << "\t" 
+    											 << "\t\t" << it->GetEntityAddress() 
+    											 << "\t\t" << it->GetAttributeAddress()
+    											 << "\t\t" << it->GetDataAddress()
+    											 << "\t\t" << it->GetNextEntityAddress() 
+    											 << endl;
     								
 
 				    			}
@@ -107,13 +115,13 @@ int main(){
 				    		do {
 	    			       
 				    			view.Clear();
-					    		cout << endl << ":::::::::::::  File Header [ "<< data_dictionary.GetFileHeader() << " ]::::::::::::" << endl;
+					    		cout << endl << "\t\t:::::  File Header [ "<< data_dictionary.GetFileHeader() << " ] ::::: File Size ["<<data_dictionary.GetFileSize()<<"]" << endl;
 					    		view.ShowEntityMenu();
 					    		view.ShowMessage("Select an option >_");
 					    		cin >> option_entity;
 				    			switch (option_entity){
 							    	case 1: 
-							    		view.ShowMessage("Add Entity");
+							    		view.ShowMessage("===> Add Entity");
 							    		view.ShowMessage("Enter a new entity name: ");
 							    		cin >> new_entity;
 
@@ -180,7 +188,7 @@ int main(){
                                                         	int entity_next_address_min = data_dictionary.GetFileSize();
     													}
                                                         
-                                                        cout << endl << "new min -> " << min  << endl;
+                                                        //cout << endl << "new min -> " << min  << endl;
 										    			int length_min_new_entity = min.length();  
 														char char_min_new_entity[ length_min_new_entity + 1 ];
 														strcpy( char_min_new_entity, min.c_str() );
@@ -250,31 +258,35 @@ int main(){
 												} while ( it_count <= it_position );
 												
 											}
-                                             
-
+                                            
                                             data_dictionary.UpdateHeader();
-                                            cout << "  File size ::  " << data_dictionary.GetFileSize() << " Header :: " << data_dictionary.GetFileHeader();
+                                            //cout << "  File size ::  " << data_dictionary.GetFileSize() << " Header :: " << data_dictionary.GetFileHeader();
                                             data_dictionary.AddEntity( entity );
-											//data_dictionary.UpdateListEntities(list_entities, data_dictionary.GetFileHeader() );
-							    			
-							    			
+											
 							    		}
 										break;
 							    	case 2: 
-							    		view.ShowMessage("Update Entity");
+							    		view.ShowMessage("===> Update Entity");
 							    		break;
 							    	case 3:
-							    		view.ShowMessage("Delete Entity");
+							    		view.ShowMessage("===> Delete Entity");
 							    		break;
 							    	case 4:
-							    		view.ShowMessage("Select Entity");
+							    		view.ShowMessage("===> Select Entity");
 							    		break;
 							    	case 5:
-							    		view.ShowMessage("\n::::: \t Metadata of Entity \t :::::\n");
-							    	
-										std::cout << " Name  Entity Address  Attribute Address  Data Addres  Next Entity Address " << endl; 
+							    		cout << endl << "\t\t::::::::::::: \t Metadata of Entity \t ::::::::::::" << endl << endl;
+										std::cout << " Name  \t Entity Address  Attribute Address  Data Addres  Next Entity Address " << endl << endl; 
+	
 										for (list<Entity>::iterator it = list_entities.begin(); it != list_entities.end(); ++it)
-    										cout << it->GetName()<< "\t\t" << it->GetEntityAddress()<< "\t\t" << it->GetAttributeAddress()<< "\t\t" << it->GetDataAddress()<< "\t\t" << it->GetNextEntityAddress() << endl;
+    										cout << it->GetName() 
+    											//<< std::setfill (' ') 
+    											//<< std::setw(10) << "\t" 
+    											 << "\t\t" << it->GetEntityAddress() 
+    											 << "\t\t" << it->GetAttributeAddress()
+    											 << "\t\t" << it->GetDataAddress()
+    											 << "\t\t" << it->GetNextEntityAddress() 
+    											 << endl;
 										
 							    		break;
 							    }
@@ -290,20 +302,20 @@ int main(){
 				    			view.Clear();
 				    			cout << "Size of Attribute structure: " << sizeof(Attribute) << endl;
 					    		view.ShowAttributeMenu();
-					    		view.ShowMessage("Select a option >_");
+					    		view.ShowMessage("\nSelect an option >_");
 					    		cin >> option_attribute;
 				    			switch (option_attribute){
 							    	case 1: 
-							    		view.ShowMessage("Add Attribute");
+							    		view.ShowMessage("===> Add Attribute");
 							    		break;
 							    	case 2: 
-							    		view.ShowMessage("Update Attribute");
+							    		view.ShowMessage("===> Update Attribute");
 							    		break;
 							    	case 3:
-							    		view.ShowMessage("Delete Attribute");
+							    		view.ShowMessage("===> Delete Attribute");
 							    		break;
 							    	case 4:
-							    		view.ShowMessage("Select Attribute");
+							    		view.ShowMessage("===>Select Attribute");
 							    		break;
 							    }
 				    		} while(option_attribute < 5);
@@ -320,7 +332,7 @@ int main(){
 	    		break;
 	    		 
 	    		case 3:
-	    		view.ShowMessage("\t\t Good bye! :'v \n ");
+	    		view.ShowMessage("::: ===> Good bye! :'v \n ");
 	    		return 0;
 	    		break;
 	    }
