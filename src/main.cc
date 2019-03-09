@@ -36,7 +36,10 @@ int main(){
 
     DataDictionaryFile data_dictionary;
 
-	string min;    
+	string min;
+	long int entity_address_min;
+	long int entity_next_address_min;
+
     list<Entity> list_entities;
     list<Attribute> list_attributes;
 
@@ -67,7 +70,10 @@ int main(){
 				    		}
 				    		view.ShowMessage("create file with name ==> " + file_name);
 				    		break;
-				    	case 2: 
+				    	case 2:
+				    		cout << endl << "\t\t:: File Name [ " << data_dictionary.GetName() 
+					    	     << " ] :: File Header [" << data_dictionary.GetFileHeader() << "]" 
+					    	     << " ] :: File Size [" << data_dictionary.GetFileSize() << "]" <<endl; 
 				    		view.ShowMessage("Enter a file name: ");
 				    		cin >> file_name;
 				    			if ( file_name !="" ){
@@ -115,14 +121,15 @@ int main(){
 				    		do {
 	    			       
 				    			view.Clear();
-					    		cout << endl << "\t\t:::::  File Header [ "<< data_dictionary.GetFileHeader() << " ] ::::: File Size ["<<data_dictionary.GetFileSize()<<"]" << endl;
+					    		cout << endl << "\t\t:: File Name [ " << data_dictionary.GetName() 
+					    			 << " ] :: File Header [" << data_dictionary.GetFileHeader()  
+					    			 << " ] :: File Size [" << data_dictionary.GetFileSize() << "]" <<endl;
 					    		view.ShowEntityMenu();
 					    		view.ShowMessage("Select an option >_");
 					    		cin >> option_entity;
 				    			switch (option_entity){
 							    	case 1: 
-							    		view.ShowMessage("===> Add Entity");
-							    		view.ShowMessage("Enter a new entity name: ");
+							    		view.ShowMessage("===> Add Entity ::: Enter a new entity name: ");
 							    		cin >> new_entity;
 
 							    		if ( new_entity !="" ){
@@ -146,10 +153,15 @@ int main(){
 										    int it_position = i;
 										    int flag;
 										    if( list_entities.empty() ) {
+										    	
 										    	min = new_entity;
-										    	data_dictionary.SetFileHeader( start_address );
+										    	entity_address_min = data_dictionary.GetFileSize();
+										    	entity_next_address_min = end_address;
+										    	//data_dictionary.SetFileHeader( start_address );
 										    	flag = -1; 
+										    
 										    } else {
+
 										    	while ( it_current != list_entities.end()  ){
 										    		string current_entity( it_current->GetName() );
 					    							int length_current_entity = current_entity.length();  
@@ -166,26 +178,33 @@ int main(){
 										    			if ( comparison_response < 0 ) {
 										    				flag = 0;
 										    				min = new_entity;
+										    				entity_address_min = data_dictionary.GetFileSize();
+										    				entity_next_address_min = it_current->GetEntityAddress();
 										    				it_position = i ; // first position
-										    				data_dictionary.SetFileHeader( start_address );
+										    				//data_dictionary.SetFileHeader( start_address );
 										    				
 										    			} else if ( comparison_response > 0 ) {										    	
 										    			    flag = 1;
 										    			    min = it_current->GetName();
+										    			    entity_address_min = it_current->GetEntityAddress();
+										    				entity_next_address_min = data_dictionary.GetFileSize();
 										    			    it_position = i + 1; // secon position			
-										    				data_dictionary.SetFileHeader( current_address );	
+										    				//data_dictionary.SetFileHeader( current_address );	
 										    			} 
 										    		} else if ( i > 0 ) {
 										    			flag = 2;
-    													min = new_entity;
-    													long int entity_address_min = data_dictionary.GetFileSize();
-    													long int entity_next_address_min = it_current->GetEntityAddress(); 
+    													 
     													int comparison_response_next = strcmp( char_new_entity, char_current_entity );
     													
-    													if ( comparison_response_next > 0 ){
-                                                        	min = it_current->GetName();
+    													if ( comparison_response_next < 0 ){
+                                                        	min = new_entity;
+    														entity_address_min = data_dictionary.GetFileSize();
+    														entity_next_address_min = it_current->GetEntityAddress();
+    														
+                                                        } else if ( comparison_response_next > 0 ){
+    														min = it_current->GetName();
                                                         	entity_address_min = it_current->GetEntityAddress();
-                                                        	int entity_next_address_min = data_dictionary.GetFileSize();
+                                                        	entity_next_address_min = data_dictionary.GetFileSize();
     													}
                                                         
                                                         //cout << endl << "new min -> " << min  << endl;
@@ -196,11 +215,12 @@ int main(){
 										    			int comparison_response_current_min = strcmp( char_new_entity, char_min_new_entity );
 										    			if ( comparison_response_current_min < 0 ) {
                                                         	it_position = i - 1;
-                                                        	data_dictionary.SetFileHeader( 	data_dictionary.GetFileSize() );
+                                                        	//data_dictionary.SetFileHeader( 	data_dictionary.GetFileSize() );
+										    				
 										    				break;
 										    			} else if ( comparison_response_current_min > 0 ) {
 										    				it_position = i + 1;
-										    				data_dictionary.SetFileHeader( it_current->GetEntityAddress() );	
+										    				//data_dictionary.SetFileHeader( it_current->GetEntityAddress() );	
 										    			}
 										    		} // end if else
 										    		
@@ -258,6 +278,8 @@ int main(){
 												} while ( it_count <= it_position );
 												
 											}
+
+											data_dictionary.SetFileHeader( list_entities.front().GetEntityAddress() );
                                             
                                             data_dictionary.UpdateHeader();
                                             //cout << "  File size ::  " << data_dictionary.GetFileSize() << " Header :: " << data_dictionary.GetFileHeader();
@@ -275,6 +297,9 @@ int main(){
 							    		view.ShowMessage("===> Select Entity");
 							    		break;
 							    	case 5:
+							    		cout << endl << "\t\t:: File Name [ " << data_dictionary.GetName() 
+					    			 		 << " ] :: File Header [" << data_dictionary.GetFileHeader() << "]" 
+					    			 		 << " ] :: File Size [" << data_dictionary.GetFileSize() << "]" <<endl;
 							    		cout << endl << "\t\t::::::::::::: \t Metadata of Entity \t ::::::::::::" << endl << endl;
 										std::cout << " Name  \t Entity Address  Attribute Address  Data Addres  Next Entity Address " << endl << endl; 
 	
@@ -300,7 +325,9 @@ int main(){
 							do {
 	    			 
 				    			view.Clear();
-				    			cout << "Size of Attribute structure: " << sizeof(Attribute) << endl;
+				    			cout << endl << "\t\t:: File Name [ " << data_dictionary.GetName() 
+					    			 << " ] :: File Header [" << data_dictionary.GetFileHeader() << "]" 
+					    			 << " ] :: File Size [" << data_dictionary.GetFileSize() << "]" <<endl;
 					    		view.ShowAttributeMenu();
 					    		view.ShowMessage("\nSelect an option >_");
 					    		cin >> option_attribute;
