@@ -53,7 +53,6 @@ namespace dictionary {
             void AddEntity(Entity entity);
             
 
-            void UpdateListEntities(std::list<Entity> list_entities, long int file_header);
             std::list<Entity> ReadListEntities();
             void AddAttribute(Attribute attribute);
 

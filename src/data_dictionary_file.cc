@@ -142,56 +142,7 @@ namespace dictionary {
 		out_file.close();
     }
 
-    void DataDictionaryFile::UpdateListEntities(std::list<Entity> list_entities, long int file_header ){
-		
-		file_header_ = file_header;
-		std::string file_name =  name_ + ext_;
-		std::fstream file ( file_name, std::fstream::binary | std::fstream::out );
-
-		file.open(file_name);
-		if ( file.is_open() ) {
-			file.close();
-			int length_file_name = file_name.length();  
-			char char_file_name[ length_file_name + 1 ];
-			strcpy( char_file_name, file_name.c_str() );
-			std::remove(char_file_name);    
-		}
-			std::ofstream out_file( file_name, std::ios::binary | std::ios::out );
-			out_file.seekp(0);
-			std::cout << std::endl << " ::::: file_header :::: ***** >>> " << file_header_ << std::endl;
-			out_file.write( reinterpret_cast<const char*>(&file_header_), sizeof(long int) );
-			out_file.seekp(8);
-			std::list<Entity>::iterator it_current = list_entities.begin();
-            
-			char name[MAX_LENGTH_NAME_ENTTITY_];
-			long int entity_address;
-		    long int attribute_address;
-		    long int data_address;
-		    long int next_entity_address;
-				
-			while( it_current != list_entities.end() ){
-				
-		    	for (int i = 0; i < MAX_LENGTH_NAME_ENTTITY_; i++){
-		            name[i] = it_current->GetName()[i];      
-		        }
-		        entity_address = it_current->GetEntityAddress();
-		    	attribute_address = it_current->GetAttributeAddress();
-		    	data_address = it_current->GetDataAddress();
-		    	next_entity_address = it_current->GetNextEntityAddress();
-				
-				out_file.write( reinterpret_cast<const char*>(name), MAX_LENGTH_NAME_ENTTITY_ );
-				out_file.write( reinterpret_cast<const char*>(&entity_address) , sizeof(long int) );
-				out_file.write( reinterpret_cast<const char*>(&attribute_address), sizeof(long int) );
-				out_file.write( reinterpret_cast<const char*>(&data_address), sizeof(long int) );
-				out_file.write( reinterpret_cast<const char*>(&next_entity_address), sizeof(long int) );
-			    				
-				it_current++;
-			}
-
-			out_file.close();
-
-    }
-
+    
     std::list<Entity> DataDictionaryFile::ReadListEntities(){
     	
     	std::list<Entity> list_entities;
