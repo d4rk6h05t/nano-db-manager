@@ -32,6 +32,7 @@ int main(){
     
     string file_name;
     string new_entity;
+    string remove_entity;
     string attribute_name;
 
     DataDictionaryFile data_dictionary;
@@ -85,8 +86,6 @@ int main(){
 	
 										for (list<Entity>::iterator it = list_entities.begin(); it != list_entities.end(); ++it)
     										cout << it->GetName() 
-    											//<< std::setfill (' ') 
-    											//<< std::setw(10) << "\t" 
     											 << "\t\t" << it->GetEntityAddress() 
     											 << "\t\t" << it->GetAttributeAddress()
     											 << "\t\t" << it->GetDataAddress()
@@ -204,7 +203,6 @@ int main(){
                                                         	entity_next_address_min = data_dictionary.GetFileSize();
     													}
                                                         
-                                                        //cout << endl << "new min -> " << min  << endl;
 										    			int length_min_new_entity = min.length();  
 														char char_min_new_entity[ length_min_new_entity + 1 ];
 														strcpy( char_min_new_entity, min.c_str() );
@@ -243,28 +241,19 @@ int main(){
 											} else if ( flag == 1 ){
 												
 												list_entities.front().SetNextEntityAddress( data_dictionary.GetFileSize() );
-												
 												data_dictionary.UpdateAddress( list_entities.front().GetEntityAddress() , data_dictionary.GetFileSize() );
-							             
 												entity.SetNextEntityAddress( end_address );
-												
 												list_entities.push_back(entity);
 											
 											} else if ( flag == 2  ){
-												
-												
+																								
 												do {
-
-
 
 													if ( it_count == it_position ){
 														
 														long int previus_next_entity = previus->GetNextEntityAddress();
-
 														previus->SetNextEntityAddress( data_dictionary.GetFileSize() );
-														
 														data_dictionary.UpdateAddress( previus->GetEntityAddress() , data_dictionary.GetFileSize() );
-														
 														entity.SetNextEntityAddress( previus_next_entity ); 
                                                 		list_entities.insert(current,entity);  	
                                                   	}
@@ -273,23 +262,63 @@ int main(){
                                                   	next++; 
                                                   	current++; 
                                                   	previus++; 
-												} while ( it_count <= it_position );
-												
+												} while ( it_count <= it_position );	
 											}
-
 											data_dictionary.SetFileHeader( list_entities.front().GetEntityAddress() );
-                                            
                                             data_dictionary.UpdateHeader();
-                                            //cout << "  File size ::  " << data_dictionary.GetFileSize() << " Header :: " << data_dictionary.GetFileHeader();
                                             data_dictionary.AddEntity( entity );
 											
 							    		}
 										break;
 							    	case 2: 
-							    		view.ShowMessage("===> Update Entity");
+
+							    		view.ShowMessage("===> Update Entity ::: First, Select a entity for update: ");
+							    		
+							    		cin >> new_entity;
+							    		
+							    		if ( new_entity !="" ){
+							    			if( new_entity == list_entities.front().GetName() )
+							    				data_dictionary.SetFileHeader( list_entities.front().GetNextEntityAddress() );	
+							    			list<Entity>::iterator i;
+											for (i = list_entities.begin(); i != list_entities.end(); i++)
+												if ( new_entity == i->GetName() )
+													break;
+											list_entities.erase(i);
+
+											
+
+							    		}
 							    		break;
 							    	case 3:
-							    		view.ShowMessage("===> Delete Entity");
+							    		view.ShowMessage("===> Remove Entity ::: Enter entity name: ");
+							    		cin >> remove_entity;
+							    		if ( remove_entity !="" ){
+							    			
+							    			if( remove_entity == list_entities.front().GetName() )
+							    				data_dictionary.SetFileHeader( list_entities.front().GetNextEntityAddress() );
+
+							    			list<Entity>::iterator it_current = list_entities.begin();
+							    			list<Entity>::iterator it_previus = std::prev( it_current , 1 );
+											
+											while ( it_current != list_entities.end() ){
+
+												if ( remove_entity == it_current->GetName() ){
+												
+													it_previus->SetNextEntityAddress( it_current->GetNextEntityAddress() );
+													data_dictionary.UpdateAddress( it_previus->GetEntityAddress() , it_current->GetNextEntityAddress() );
+													it_current->SetNextEntityAddress(-1);
+													data_dictionary.UpdateAddress(it_current->GetNextEntityAddress(), -1 );
+													list_entities.erase( it_current );
+													break;												
+												}
+
+											it_current++;
+											it_previus++;
+											}
+
+							    		}
+                                        
+
 							    		break;
 							    	case 4:
 							    		view.ShowMessage("===> Select Entity");
@@ -303,8 +332,6 @@ int main(){
 	
 										for (list<Entity>::iterator it = list_entities.begin(); it != list_entities.end(); ++it)
     										cout << it->GetName() 
-    											//<< std::setfill (' ') 
-    											//<< std::setw(10) << "\t" 
     											 << "\t\t" << it->GetEntityAddress() 
     											 << "\t\t" << it->GetAttributeAddress()
     											 << "\t\t" << it->GetDataAddress()

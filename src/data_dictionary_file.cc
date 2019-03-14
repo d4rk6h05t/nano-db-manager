@@ -6,7 +6,7 @@ namespace dictionary {
 	DataDictionaryFile::DataDictionaryFile(){ 
 		
 		id_ = 0;
-		std::string path = "/home/ghostdev/Projects/cc/file_structures/";
+		std::string path = "/home/someuser/myproject";
 		std::string tmp_dir = "tmp/";
 		std::string tmp_name = "unamed";
 		//std::string ext = ".bin";
@@ -25,7 +25,7 @@ namespace dictionary {
 	DataDictionaryFile::DataDictionaryFile(const std::string& name){ 
 		
 		id_ = 0;
-		std::string path = "/home/ghostdev/Projects/cc/file_structures/";
+		std::string path = "/home/someuser/myproject";
 		std::string tmp_dir = "tmp/";
 		std::string ext = ".dat";
 
@@ -106,6 +106,8 @@ namespace dictionary {
 		out_file.close();
     }
 
+
+
     void DataDictionaryFile::UpdateAddress(long int position, long int new_address){
    		
    		char name[MAX_LENGTH_NAME_ENTTITY_];
@@ -118,8 +120,7 @@ namespace dictionary {
 		
 
 		out_file.seekp(position);
-		//out_file.write( reinterpret_cast<const char*>(&new_address), sizeof(long int) );
-		//out_file.seekp(position);
+
 		out_file.read( reinterpret_cast<char*>(name), MAX_LENGTH_NAME_ENTTITY_ );
 		out_file.read( reinterpret_cast<char*>(&entity_address) , sizeof(long int) );
 		out_file.read( reinterpret_cast<char*>(&attribute_address), sizeof(long int) );
@@ -142,6 +143,20 @@ namespace dictionary {
 		out_file.close();
     }
 
+    void DataDictionaryFile::UpdateName(long int position, std::string new_name){
+   		
+   		char name[MAX_LENGTH_NAME_ENTTITY_];
+        for (int i = 0; i < MAX_LENGTH_NAME_ENTTITY_; i++)
+        	name[i] = new_name[i];
+
+   		std::fstream out_file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
+		
+		out_file.seekp(position);
+		out_file.write( reinterpret_cast<const char*>(&name), MAX_LENGTH_NAME_ENTTITY_ );
+		
+		out_file.close();
+    }
+
     
     std::list<Entity> DataDictionaryFile::ReadListEntities(){
     	
@@ -151,7 +166,7 @@ namespace dictionary {
        	file.seekp(0);
        	long int file_header, next;
     	file.read( reinterpret_cast<char*>( &file_header ), sizeof( long int ) );
-		
+		file_header_ = file_header;
 		std::cout << std::endl << " ::::: file_header :::: ***** >>> " << file_header << std::endl;
 		next = file_header;
 

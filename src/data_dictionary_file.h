@@ -52,7 +52,7 @@ namespace dictionary {
 
             void AddEntity(Entity entity);
             
-
+            void UpdateName(long int position, std::string new_name);
             std::list<Entity> ReadListEntities();
             void AddAttribute(Attribute attribute);
 
