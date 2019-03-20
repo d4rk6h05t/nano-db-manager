@@ -12,7 +12,7 @@
 
 #include "entity.h"
 #include "attribute.h"
-#include "data_dictionary_file.h"
+#include "data_dictionary.h"
 #include "view.h"
 
 using namespace std; 
@@ -35,7 +35,7 @@ int main(){
     string remove_entity;
     string attribute_name;
 
-    DataDictionaryFile data_dictionary;
+    DataDictionary data_dictionary;
 
 	string min;
 	long int entity_address_min;
@@ -277,17 +277,32 @@ int main(){
 							    		cin >> new_entity;
 							    		
 							    		if ( new_entity !="" ){
+							    		
+							    			
 							    			if( new_entity == list_entities.front().GetName() )
-							    				data_dictionary.SetFileHeader( list_entities.front().GetNextEntityAddress() );	
-							    			list<Entity>::iterator i;
-											for (i = list_entities.begin(); i != list_entities.end(); i++)
-												if ( new_entity == i->GetName() )
-													break;
-											list_entities.erase(i);
+							    				data_dictionary.SetFileHeader( list_entities.front().GetNextEntityAddress() );
 
+							    			list<Entity>::iterator it = list_entities.begin();
+							    			list<Entity>::iterator prev = std::prev( it , 1 );
 											
+											while ( it != list_entities.end() ){
 
-							    		}
+												if ( new_entity == it->GetName() ){
+
+													
+													
+													it->SetNextEntityAddress( it->GetNextEntityAddress() );
+													data_dictionary.UpdateAddress( prev->GetEntityAddress(), it->GetNextEntityAddress() );
+													
+													list_entities.erase( it );		
+													break;												
+												}
+
+											it++;
+											prev++;
+											}
+
+												} // first end if != ""
 							    		break;
 							    	case 3:
 							    		view.ShowMessage("===> Remove Entity ::: Enter entity name: ");

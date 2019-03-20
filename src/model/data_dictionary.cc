@@ -1,15 +1,14 @@
-#include "data_dictionary_file.h"
+#include "data_dictionary.h"
 
 namespace dictionary {
 
 	
-	DataDictionaryFile::DataDictionaryFile(){ 
+	DataDictionary::DataDictionary(){ 
 		
 		id_ = 0;
 		std::string path = "/home/someuser/myproject";
 		std::string tmp_dir = "tmp/";
 		std::string tmp_name = "unamed";
-		//std::string ext = ".bin";
 		std::string ext = ".dat";
        
 		path_ = path;
@@ -22,7 +21,7 @@ namespace dictionary {
          
 	}
 
-	DataDictionaryFile::DataDictionaryFile(const std::string& name){ 
+	DataDictionary::DataDictionary(const std::string& name){ 
 		
 		id_ = 0;
 		std::string path = "/home/someuser/myproject";
@@ -37,23 +36,23 @@ namespace dictionary {
         file_header_ = -1;
 	}
 
-	DataDictionaryFile::~DataDictionaryFile(){}
+	DataDictionary::~DataDictionary(){}
 	
-	void DataDictionaryFile::SetId(int id){ id_ = id; }
-	void DataDictionaryFile::SetName(const std::string& name){ name_ = name; }
-	void DataDictionaryFile::SetDir(const std::string& dir){ dir_ = dir; }
-	void DataDictionaryFile::SetPath(const std::string& path){ path_ = path; }
-	void DataDictionaryFile::SetExt(const std::string& ext){ ext_ = ext; }
-    void DataDictionaryFile::SetFileHeader(long int file_header){ file_header_ = file_header; }
+	void DataDictionary::SetId(int id){ id_ = id; }
+	void DataDictionary::SetName(const std::string& name){ name_ = name; }
+	void DataDictionary::SetDir(const std::string& dir){ dir_ = dir; }
+	void DataDictionary::SetPath(const std::string& path){ path_ = path; }
+	void DataDictionary::SetExt(const std::string& ext){ ext_ = ext; }
+    void DataDictionary::SetFileHeader(long int file_header){ file_header_ = file_header; }
 
-    int DataDictionaryFile::GetId(){ return id_;}
-    std::string DataDictionaryFile::GetName(){ return name_;}
-    std::string DataDictionaryFile::GetDir(){ return dir_;}
-    std::string DataDictionaryFile::GetPath(){ return path_;}
-    std::string DataDictionaryFile::GetExt(){ return ext_;}
-    long int DataDictionaryFile::GetFileHeader(){return file_header_;}
+    int DataDictionary::GetId(){ return id_;}
+    std::string DataDictionary::GetName(){ return name_;}
+    std::string DataDictionary::GetDir(){ return dir_;}
+    std::string DataDictionary::GetPath(){ return path_;}
+    std::string DataDictionary::GetExt(){ return ext_;}
+    long int DataDictionary::GetFileHeader(){return file_header_;}
     
-    long int DataDictionaryFile::GetFileSize(){
+    long int DataDictionary::GetFileSize(){
     	std::ifstream file ( name_ + ext_, std::ios::binary | std::ios::in );
     	file.seekg(0, std::ios::end);
     	file_size_ = file.tellg();
@@ -61,7 +60,7 @@ namespace dictionary {
 		return file_size_;
     }
     
-   void DataDictionaryFile::CreateFile(){
+   void DataDictionary::CreateFile(){
    			std::ofstream out_file( name_ + ext_, std::ios::binary | std::ios::out );
 			out_file.seekp(0);
 			std::cout << std::endl << " ::::: file_header :::: ***** >>> " << file_header_ << std::endl;
@@ -69,7 +68,7 @@ namespace dictionary {
 			out_file.close();
    }
 
-   void DataDictionaryFile::UpdateHeader(){
+   void DataDictionary::UpdateHeader(){
    		std::fstream out_file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
 		out_file.seekp(0);
 		out_file.write( reinterpret_cast<const char*>(&file_header_), sizeof(long int) );
@@ -80,7 +79,7 @@ namespace dictionary {
 		out_file.close();
     }
 
-    void DataDictionaryFile::AddEntity(Entity entity){
+    void DataDictionary::AddEntity(Entity entity){
         std::fstream out_file( name_ + ext_, std::ios::binary | std::ios::app);
 	
 	    char name[MAX_LENGTH_NAME_ENTTITY_];
@@ -105,10 +104,82 @@ namespace dictionary {
 	 
 		out_file.close();
     }
+    /*
+    void DataDictionary::AddEntity(Entity entity){
 
+        std::fstream out_file( name_ + ext_, std::ios::binary | std::ios::app);
+	
+	    char name[MAX_LENGTH_NAME_ENTTITY_];
+		long int entity_address;
+		long int attribute_address;
+		long int data_address;
+		long int next_entity_address;
+				
+		for (int i = 0; i < MAX_LENGTH_NAME_ENTTITY_; i++)
+		    name[i] = entity.GetName()[i];      
+		        
+		entity_address = entity.GetEntityAddress();
+		attribute_address = entity.GetAttributeAddress();
+		data_address = entity.GetDataAddress();
+		next_entity_address = entity.GetNextEntityAddress();
 
+		out_file.write( reinterpret_cast<const char*>(name), MAX_LENGTH_NAME_ENTTITY_ );
+		out_file.write( reinterpret_cast<const char*>(&entity_address) , sizeof(long int) );
+		out_file.write( reinterpret_cast<const char*>(&attribute_address), sizeof(long int) );
+		out_file.write( reinterpret_cast<const char*>(&data_address), sizeof(long int) );
+		out_file.write( reinterpret_cast<const char*>(&next_entity_address), sizeof(long int) );
+	 
+		out_file.close();
+    }
+    
+    void DataDictionary::AddEntity(Entity new_entity){
+    	
+    	std::list<Entity> list_entities;
+       	std::fstream file( name_ + ext_, std::ios::in | std::ios::out | std::ios::ate | std::ios::binary );
+       	file.seekp(0);
+       	long int file_header, next;
+    	file.read( reinterpret_cast<char*>( &file_header ), sizeof( long int ) );
+		file_header_ = file_header;
+		std::cout << std::endl << " ::::: file_header :::: ***** >>> " << file_header << std::endl;
+		
+		next = file_header;
+		char name[MAX_LENGTH_NAME_ENTTITY_];
+		long int entity_address;
+		long int next_entity_address;
+		
+		while( next != -1 ){
 
-    void DataDictionaryFile::UpdateAddress(long int position, long int new_address){
+			Entity current_entity; // entity tmp
+			file.seekg( next );
+			
+			file.read( reinterpret_cast<char*>( name) , MAX_LENGTH_NAME_ENTTITY_ );
+			file.read( reinterpret_cast<char*>(&entity_address), sizeof(long int) );
+			file.read( reinterpret_cast<char*>(&next_entity_address), sizeof(long int) );
+			
+			
+			std::string current_name(name);
+			current_entity.SetName(current_name);
+			
+			if ( new_entity.GetName() < current_entity.GetName() ) {
+
+			} else if ( new_entity.GetName() > current_entity.GetName() ) {
+
+			}
+			 
+			current_entity.SetEntityAddress(entity_address);
+		    current_entity.SetNextEntityAddress(next_entity_address);
+			
+            
+
+		    next = next_entity_address; // jump to next
+		}
+		file.close();	
+       	
+    	return list_entities;
+    }
+    */
+
+    void DataDictionary::UpdateAddress(long int position, long int new_address){
    		
    		char name[MAX_LENGTH_NAME_ENTTITY_];
 		long int entity_address;
@@ -143,7 +214,7 @@ namespace dictionary {
 		out_file.close();
     }
 
-    void DataDictionaryFile::UpdateName(long int position, std::string new_name){
+    void DataDictionary::UpdateName(long int position, std::string new_name){
    		
    		char name[MAX_LENGTH_NAME_ENTTITY_];
         for (int i = 0; i < MAX_LENGTH_NAME_ENTTITY_; i++)
@@ -158,7 +229,7 @@ namespace dictionary {
     }
 
     
-    std::list<Entity> DataDictionaryFile::ReadListEntities(){
+    std::list<Entity> DataDictionary::ReadListEntities(){
     	
     	std::list<Entity> list_entities;
        	std::fstream file( name_ + ext_, std::ios::in | std::ios::out | std::ios::binary );
@@ -202,7 +273,7 @@ namespace dictionary {
     	return list_entities;
     }
 
-    void DataDictionaryFile::AddAttribute(Attribute attribute){
+    void DataDictionary::AddAttribute(Attribute attribute){
     	list_attributes_.push_back(attribute);
     	std::fstream file ( name_ + ext_, std::fstream::binary | std::fstream::out );
         file.seekg (file_size_, std::fstream::end);

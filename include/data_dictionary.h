@@ -1,5 +1,5 @@
-#ifndef DICTIONARY_CC_DATADICTIONARYFILE_H_
-#define DICTIONARY_CC_DATADICTIONARYFILE_H_
+#ifndef DICTIONARY_CC_DATADICTIONARY_H_
+#define DICTIONARY_CC_DATADICTIONARY_H_
 
 #include <iostream>
 
@@ -22,13 +22,13 @@
 
 namespace dictionary {
 
-    class DataDictionaryFile {
+    class DataDictionary {
     
         public:
              
-            DataDictionaryFile();
-            DataDictionaryFile(const std::string& name);
-            ~DataDictionaryFile();
+            DataDictionary();
+            DataDictionary(const std::string& name);
+            ~DataDictionary();
 
             void SetId(int id);
             void SetName(const std::string& name);
@@ -85,5 +85,5 @@ namespace dictionary {
 
 }  // end namespace dictionary
 
-#endif  // DICTIONARY_CC_DATADICTIONARYFILE_H_
+#endif  // DICTIONARY_CC_DATADICTIONARY_H_
 

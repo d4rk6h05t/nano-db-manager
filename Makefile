@@ -1,32 +1,36 @@
+CXX      := -c++
+BUILD    := ./build
+OBJ_DIR  := $(BUILD)/objects
+APP_DIR  := $(BUILD)/apps
+MAIN     := ./src/main.cc 
+TARGET   := app
+INCLUDE  := -Iinclude/
+SRC      :=                      \
+	$(wildcard src/model/*.cc) \
+	$(wildcard src/view/*.cc) \
 
-# My first generic Makefile
+OBJECTS := $(SRC:%.cc=$(OBJ_DIR)/%.o)
 
-CC := g++ # Main compiler
-# CC := clang --analyze # Other compiler, Very good Clang XD 
-SRCDIR := src 
-BUILDDIR := build
-TARGET := bin/runner
-SRCEXT := cpp
-SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
-OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
-CFLAGS := -Wall -g
-#LIB := -pthread -L lib -lboost_thread-mt -lboost_filesystem-mt -lboost_system-mt # libs bootst
-INC := -I include # add Include for my project
+all: build $(APP_DIR)/$(TARGET)
 
-$(TARGET): $(OBJECTS)
-  @echo " =======> Linking ... ";
-  @echo " =======> $(CC) $^ -o $(TARGET) $(LIB)"; $(CC) $^ -o $(TARGET) $(LIB)
+$(OBJ_DIR)/%.o: %.cc
+	@mkdir -p $(@D)
+	$(CXX)  $(INCLUDE) -o $@ -c $<
 
-$(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
-  @mkdir -p $(BUILDDIR)
-  @echo " =======> $(CC) $(CFLAGS) $(INC) -c -o $@ $&lt;"; $(CC) $(CFLAGS) $(INC) -c -o $@ $&lt;
+$(APP_DIR)/$(TARGET): $(OBJECTS)
+	@mkdir -p $(@D)
+	$(CXX)  $(INCLUDE) $(MAIN) -o $(APP_DIR)/$(TARGET) $(OBJECTS)
+
+.PHONY: all build clean debug release
+
+build:
+	@mkdir -p $(APP_DIR)
+	@mkdir -p $(OBJ_DIR)
+
+debug: all
+
+release: all
 
 clean:
-	@echo " =======> Cleaning ..."; 
-	@echo " =======> $(RM) -r $(BUILDDIR) $(TARGET)"; $(RM) -r $(BUILDDIR) $(TARGET)
-
-# Tests
-tester:
-	$(CC) $(CFLAGS) test/tester.cpp $(INC) $(LIB) -o bin/tester
-
-.PHONY: clean
+	-@rm -rvf $(OBJ_DIR)/*
+	-@rm -rvf $(APP_DIR)/*
