@@ -1,3 +1,4 @@
+# Makefile for project nano-db-manager
 CXX      := -c++
 BUILD    := ./build
 OBJ_DIR  := $(BUILD)/objects
