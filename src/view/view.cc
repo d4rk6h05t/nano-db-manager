@@ -16,7 +16,7 @@ namespace ui {
 		void View::ShowStatusBar(std::string name, long int header, long int size ){
 			
 			std::cout << std::endl << "\t\t:: File Name [ " << name 
-					  << " ] :: File Header [" << header << "]" 
+					  << " ] :: File Header [" << header 
 					  << " ] :: File Size [" << size << "]" << std::endl;
 		}
 

@@ -2,12 +2,9 @@
 #define UI_CC_VIEW_H_
 
 #include <iostream>
-#include <cstddef>
 #include <string>
 #include <list>
 #include <iterator>
-
-
 
 #include "entity.h"
 #include "attribute.h"
@@ -28,6 +25,7 @@ class View {
 		void ShowDictionaryMenu();
 		void ShowEntityMenu();
 		void ShowAttributeMenu();
+
 
 };
 

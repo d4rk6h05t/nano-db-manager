@@ -1,15 +1,8 @@
 // Includes
 #include <iostream>
-#include <cstddef>
 #include <string>
-#include <fstream>
 #include <list>
-#include <vector>
-#include <iterator> 
-#include <algorithm> 
-
-#include <bits/stdc++.h> 
-
+#include <iterator>
 // personal includes
 #include "entity.h"
 #include "attribute.h"
@@ -117,11 +110,7 @@ int main(){
 							    		cin >> new_entity;
 
 							    		if ( new_entity !="" ){
-											
-							    			int n = new_entity.length();  
-										    char char_new_entity[ n + 1];    
-										    strcpy(char_new_entity, new_entity.c_str());  
-
+						
 										    Entity entity(new_entity);
 										    entity.SetEntityAddress( data_dictionary.GetFileSize() ); 
 										    
@@ -147,11 +136,8 @@ int main(){
 
 										    	while ( it_current != list_entities.end()  ){
 										    		string current_entity( it_current->GetName() );
-					    							int length_current_entity = current_entity.length();  
-													char char_current_entity[ length_current_entity + 1 ];
-													strcpy( char_current_entity, current_entity.c_str() );
-
-    												int comparison_response = strcmp( char_new_entity, char_current_entity );
+					    							
+					    							int comparison_response = new_entity.compare(current_entity); 
 	    											
 	    											previus_address = it_previus->GetNextEntityAddress();
 													current_address = it_current->GetEntityAddress();
@@ -175,8 +161,7 @@ int main(){
 										    		} else if ( i > 0 ) {
 										    			flag = 2;
     													 
-    													int comparison_response_next = strcmp( char_new_entity, char_current_entity );
-    													
+    													int comparison_response_next = new_entity.compare(current_entity);
     													if ( comparison_response_next < 0 ){
                                                         	min = new_entity;
     														entity_address_min = data_dictionary.GetFileSize();
@@ -188,11 +173,7 @@ int main(){
                                                         	entity_next_address_min = data_dictionary.GetFileSize();
     													}
                                                         
-										    			int length_min_new_entity = min.length();  
-														char char_min_new_entity[ length_min_new_entity + 1 ];
-														strcpy( char_min_new_entity, min.c_str() );
-
-										    			int comparison_response_current_min = strcmp( char_new_entity, char_min_new_entity );
+										    			int comparison_response_current_min = new_entity.compare(min); 
 										    			if ( comparison_response_current_min < 0 ) {
                                                         	it_position = i - 1;
 										    				
@@ -209,7 +190,6 @@ int main(){
 										    	} // end while
 										    } // end else != empty list
 											
-
 											list<Entity>::iterator current = list_entities.begin();
 											list<Entity>::iterator previus = std::prev( current , 1 );
 										    list<Entity>::iterator next = std::next( current , 1 );
@@ -262,23 +242,17 @@ int main(){
 							    		cin >> new_entity;
 							    		
 							    		if ( new_entity !="" ){
-							    		
-							    			
+							    
 							    			if( new_entity == list_entities.front().GetName() )
 							    				data_dictionary.SetFileHeader( list_entities.front().GetNextEntityAddress() );
-
+							    			
 							    			list<Entity>::iterator it = list_entities.begin();
 							    			list<Entity>::iterator prev = std::prev( it , 1 );
-											
+												
 											while ( it != list_entities.end() ){
-
 												if ( new_entity == it->GetName() ){
-
-													
-													
 													it->SetNextEntityAddress( it->GetNextEntityAddress() );
-													data_dictionary.UpdateAddress( prev->GetEntityAddress(), it->GetNextEntityAddress() );
-													
+													data_dictionary.UpdateAddress( prev->GetEntityAddress(), it->GetNextEntityAddress() );														
 													list_entities.erase( it );		
 													break;												
 												}

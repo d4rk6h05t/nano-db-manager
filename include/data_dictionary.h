@@ -2,19 +2,10 @@
 #define DICTIONARY_CC_DATADICTIONARY_H_
 
 #include <iostream>
-
-#include <cstddef>
-#include <cstdio>
-#include <cstdlib>
-#include <bits/stdc++.h> 
-
 #include <string>
 #include <fstream>
-
 #include <list>
-#include <vector>
 #include <iterator>
-
 
 #include "entity.h"
 #include "attribute.h"

@@ -14,9 +14,9 @@ namespace dictionary {
     }
     
     Attribute::Attribute(char name[MAX_LENGTH_NAME_ATTRIBUTE_]){
-        for (int i = 0; i < MAX_LENGTH_NAME_ATTRIBUTE_; i++){
+        for (int i = 0; i < MAX_LENGTH_NAME_ATTRIBUTE_; i++)
             name_[i] = name[i];      
-        }
+        
         data_type_ = '\0'; 
         length_data_type_= 0; 
         attribute_address_ = NULL_ATTRIBUTE_;
@@ -28,9 +28,8 @@ namespace dictionary {
 
     Attribute::Attribute(char name[MAX_LENGTH_NAME_ATTRIBUTE_], char data_type, int length_data_type, int type_index){
         
-        for (int i = 0; i < MAX_LENGTH_NAME_ATTRIBUTE_; i++){
+        for (int i = 0; i < MAX_LENGTH_NAME_ATTRIBUTE_; i++)
             name_[i] = name[i];      
-        }
 
         data_type_ = data_type;
         
@@ -47,9 +46,8 @@ namespace dictionary {
     Attribute::Attribute(char name[MAX_LENGTH_NAME_ATTRIBUTE_], char data_type, int length_data_type, long int attribute_address,
             int type_index,long int index_address, long int next_attribute_address){
         
-        for (int i = 0; i < MAX_LENGTH_NAME_ATTRIBUTE_; i++){
+        for (int i = 0; i < MAX_LENGTH_NAME_ATTRIBUTE_; i++)
             name_[i] = name[i];      
-        }
 
         data_type_ = data_type;
         
@@ -70,9 +68,8 @@ namespace dictionary {
     Attribute::~Attribute(){}
 
     void Attribute::SetName(char name[MAX_LENGTH_NAME_ATTRIBUTE_]){ 
-        for (int i = 0; i < MAX_LENGTH_NAME_ATTRIBUTE_; i++){
+        for (int i = 0; i < MAX_LENGTH_NAME_ATTRIBUTE_; i++)
             name_[i] = name[i];      
-        }
     }
     
     void Attribute::SetDataType(char data_type) { data_type_ = data_type; }

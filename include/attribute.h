@@ -1,8 +1,6 @@
 #ifndef DICTIONARY_CC_ATTRIBUTE_H_
 #define DICTIONARY_CC_ATTRIBUTE_H_
 
-#include <cstddef>
-
 const int MAX_LENGTH_NAME_ATTRIBUTE_ = 35;
 const int MAX_LENGTH_ATTRIBUTE_ = 68;
 const long int NULL_ATTRIBUTE_ = -1;
