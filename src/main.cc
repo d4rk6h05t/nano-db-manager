@@ -1,3 +1,4 @@
+// Includes
 #include <iostream>
 #include <cstddef>
 #include <string>
@@ -7,14 +8,15 @@
 #include <iterator> 
 #include <algorithm> 
 
-
 #include <bits/stdc++.h> 
 
+// personal includes
 #include "entity.h"
 #include "attribute.h"
 #include "data_dictionary.h"
 #include "view.h"
 
+// namespaces to use
 using namespace std; 
 using namespace dictionary;
 using namespace ui;
@@ -44,16 +46,14 @@ int main(){
     list<Entity> list_entities;
     list<Attribute> list_attributes;
 
-
-    do {
-    	
+    do {    	
 		view.ShowTitle();
 		view.ShowMainMenu();
 	    view.ShowMessage("Select a option >_");
 	    cin >> option;
 
 	    switch (option){
-	    	case 1: 
+	    	case 1: /* :::::::::::::::: F i l e  M e n u  ::::::::::::::::::::::::: */ 
 
 	    		do {
 	    			 
@@ -72,27 +72,14 @@ int main(){
 				    		view.ShowMessage("create file with name ==> " + file_name);
 				    		break;
 				    	case 2:
-				    		cout << endl << "\t\t:: File Name [ " << data_dictionary.GetName() 
-					    	     << " ] :: File Header [" << data_dictionary.GetFileHeader() << "]" 
-					    	     << " ] :: File Size [" << data_dictionary.GetFileSize() << "]" <<endl; 
+				    		view.ShowStatusBar(data_dictionary.GetName(), data_dictionary.GetFileHeader(), data_dictionary.GetFileSize() );
 				    		view.ShowMessage("Enter a file name: ");
 				    		cin >> file_name;
 				    			if ( file_name !="" ){
 				    				data_dictionary.SetName( file_name );
 				    				view.ShowMessage("open file with name ==> " + file_name);
 				    				list_entities = data_dictionary.ReadListEntities();
-				    				cout << endl << "\t\t::::::::::::: \t Metadata of Entity \t ::::::::::::" << endl << endl;
-										std::cout << " Name  \t Entity Address  Attribute Address  Data Addres  Next Entity Address " << endl << endl; 
-	
-										for (list<Entity>::iterator it = list_entities.begin(); it != list_entities.end(); ++it)
-    										cout << it->GetName() 
-    											 << "\t\t" << it->GetEntityAddress() 
-    											 << "\t\t" << it->GetAttributeAddress()
-    											 << "\t\t" << it->GetDataAddress()
-    											 << "\t\t" << it->GetNextEntityAddress() 
-    											 << endl;
-    								
-
+				    				view.ShowListEntities(list_entities);
 				    			}
 				    		break;
 				    	case 3:
@@ -106,7 +93,7 @@ int main(){
 	    		if (option_file > 3 ) view.Clear();
 	    		break;
 
-	    	case 2:
+	    	case 2:  /* :::::::::::::::: D i c  t i  o n a r  y   M e n u  ::::::::::::::::::::::::: */ 
 
 	    		do {
 	    			 
@@ -120,9 +107,7 @@ int main(){
 				    		do {
 	    			       
 				    			view.Clear();
-					    		cout << endl << "\t\t:: File Name [ " << data_dictionary.GetName() 
-					    			 << " ] :: File Header [" << data_dictionary.GetFileHeader()  
-					    			 << " ] :: File Size [" << data_dictionary.GetFileSize() << "]" <<endl;
+					    		view.ShowStatusBar(data_dictionary.GetName(), data_dictionary.GetFileHeader(), data_dictionary.GetFileSize() );
 					    		view.ShowEntityMenu();
 					    		view.ShowMessage("Select an option >_");
 					    		cin >> option_entity;
@@ -339,20 +324,8 @@ int main(){
 							    		view.ShowMessage("===> Select Entity");
 							    		break;
 							    	case 5:
-							    		cout << endl << "\t\t:: File Name [ " << data_dictionary.GetName() 
-					    			 		 << " ] :: File Header [" << data_dictionary.GetFileHeader() << "]" 
-					    			 		 << " ] :: File Size [" << data_dictionary.GetFileSize() << "]" <<endl;
-							    		cout << endl << "\t\t::::::::::::: \t Metadata of Entity \t ::::::::::::" << endl << endl;
-										std::cout << " Name  \t Entity Address  Attribute Address  Data Addres  Next Entity Address " << endl << endl; 
-	
-										for (list<Entity>::iterator it = list_entities.begin(); it != list_entities.end(); ++it)
-    										cout << it->GetName() 
-    											 << "\t\t" << it->GetEntityAddress() 
-    											 << "\t\t" << it->GetAttributeAddress()
-    											 << "\t\t" << it->GetDataAddress()
-    											 << "\t\t" << it->GetNextEntityAddress() 
-    											 << endl;
-										
+							    		view.ShowStatusBar(data_dictionary.GetName(), data_dictionary.GetFileHeader(), data_dictionary.GetFileSize() );
+							    		view.ShowListEntities(list_entities);
 							    		break;
 							    }
 				    		} while(option_entity < 6);
@@ -360,15 +333,13 @@ int main(){
 				    		if (option_entity > 5 ) view.Clear();
 				    		break;
 				    		
-						case 2:
+						case 2: 
 
 							do {
 	    			 
 				    			view.Clear();
-				    			cout << endl << "\t\t:: File Name [ " << data_dictionary.GetName() 
-					    			 << " ] :: File Header [" << data_dictionary.GetFileHeader() << "]" 
-					    			 << " ] :: File Size [" << data_dictionary.GetFileSize() << "]" <<endl;
-					    		view.ShowAttributeMenu();
+				    			view.ShowStatusBar(data_dictionary.GetName(), data_dictionary.GetFileHeader(), data_dictionary.GetFileSize() );
+				    			view.ShowAttributeMenu();
 					    		view.ShowMessage("\nSelect an option >_");
 					    		cin >> option_attribute;
 				    			switch (option_attribute){
@@ -398,10 +369,10 @@ int main(){
 	    		if (option_dictionary > 2 ) view.Clear();
 	    		break;
 	    		 
-	    		case 3:
-	    		view.ShowMessage("::: ===> Good bye! :'v \n ");
-	    		return 0;
-	    		break;
+	    		case 3:  /* :::::::::::::::: Exit  M e n u  ::::::::::::::::::::::::: */ 
+	    			view.ShowMessage("::: ===> Good bye! :'v \n ");
+	    			return 0;
+	    			break;
 	    }
 	    
     } while(option <= 3);

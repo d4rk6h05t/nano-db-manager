@@ -132,7 +132,7 @@ namespace dictionary {
 		out_file.close();
     }
     
-    void DataDictionary::AddEntity(Entity new_entity){
+    void DataDictionary::AddEntityV2(Entity new_entity){
     	
     	std::list<Entity> list_entities;
        	std::fstream file( name_ + ext_, std::ios::in | std::ios::out | std::ios::ate | std::ios::binary );
@@ -197,20 +197,21 @@ namespace dictionary {
 		out_file.read( reinterpret_cast<char*>(&attribute_address), sizeof(long int) );
 		out_file.read( reinterpret_cast<char*>(&data_address), sizeof(long int) );
 		out_file.read( reinterpret_cast<char*>(&next_entity_address), sizeof(long int) );
-		
+		/*
 		std::cout << std::endl << " :: name -> " << name << std::endl
 							   << " :: entity addres -> " << entity_address << std::endl
 							   << " :: attribute addres -> " << attribute_address << std::endl
 							   << " :: data addres -> " << data_address << std::endl
 							   << " :: next entity addres -> " << next_entity_address << std::endl			
 							   << std::endl;
-		
-		out_file.seekp(position+35+8+8+8);
+		*/
+		// 59 = 35 + 8 + 8 + 8
+		out_file.seekp( position + 59 );
 		out_file.write( reinterpret_cast<const char*>(&new_address), sizeof(long int) );
-		out_file.seekp(position+35+8+8+8);
+		out_file.seekp( position + 59 );
 		out_file.read( reinterpret_cast<char*>(&next_entity_address), sizeof(long int) );
 		
-		std::cout << std::endl << " :: new next entity addres -> " << next_entity_address << std::endl;
+		//std::cout << std::endl << " :: new next entity addres -> " << next_entity_address << std::endl;
 		out_file.close();
     }
 
