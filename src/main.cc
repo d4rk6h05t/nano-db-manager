@@ -3,6 +3,9 @@
 #include <string>
 #include <list>
 #include <iterator>
+
+#include <algorithm>
+#include <functional>
 // personal includes
 #include "entity.h"
 #include "attribute.h"
@@ -62,7 +65,6 @@ int main(){
 				    			data_dictionary.SetName( file_name );
 				    			data_dictionary.CreateFile();
 				    		}
-				    		view.ShowMessage("create file with name ==> " + file_name);
 				    		break;
 				    	case 2:
 				    		view.ShowStatusBar(data_dictionary.GetName(), data_dictionary.GetFileHeader(), data_dictionary.GetFileSize() );
@@ -70,9 +72,7 @@ int main(){
 				    		cin >> file_name;
 				    			if ( file_name !="" ){
 				    				data_dictionary.SetName( file_name );
-				    				view.ShowMessage("open file with name ==> " + file_name);
 				    				list_entities = data_dictionary.ReadListEntities();
-				    				view.ShowListEntities(list_entities);
 				    			}
 				    		break;
 				    	case 3:
@@ -82,23 +82,18 @@ int main(){
 				    		break;
 				    }
 	    		} while(option_file < 4);
-
 	    		if (option_file > 3 ) view.Clear();
-	    		break;
-
-	    	case 2:  /* :::::::::::::::: D i c  t i  o n a r  y   M e n u  ::::::::::::::::::::::::: */ 
+	    			break;
+	    	case 2:  /* :::::::::::::::::::::::::::: D i c  t i  o n a r  y   M e n u  ::::::::::::::::::::::::::::::::::::::: */ 
 
 	    		do {
-	    			 
 	    			view.Clear();
 		    		view.ShowDictionaryMenu();
 		    		view.ShowMessage("Select an option >_");
 		    		cin >> option_dictionary;
 	    			switch (option_dictionary){
 				    	case 1: 
-
-				    		do {
-	    			       
+				    		do {       
 				    			view.Clear();
 					    		view.ShowStatusBar(data_dictionary.GetName(), data_dictionary.GetFileHeader(), data_dictionary.GetFileSize() );
 					    		view.ShowEntityMenu();
@@ -108,132 +103,23 @@ int main(){
 							    	case 1: 
 							    		view.ShowMessage("===> Add Entity ::: Enter a new entity name: ");
 							    		cin >> new_entity;
-
 							    		if ( new_entity !="" ){
-						
+/***********************************************************************************************************************************************/
 										    Entity entity(new_entity);
 										    entity.SetEntityAddress( data_dictionary.GetFileSize() ); 
-										    
-										    long int previus_address, current_address, next_address, start_address, end_address;
-                                            start_address = data_dictionary.GetFileSize();
-                                            end_address = -1;
+									        data_dictionary.UpdateEntity(&entity); 								        
+									        data_dictionary.AddEntity( entity );
+									       	list_entities = data_dictionary.ReadListEntities();
+									        if (	list_entities.empty() )
+									       		cout << "( ) more empty" << list_entities.front().GetEntityAddress();
+									        else
+									        	cout << "->" << list_entities.front().GetEntityAddress();
 
-                                            list<Entity>::iterator it_current = list_entities.begin();
-										    list<Entity>::iterator it_previus = std::prev( it_current , 1 );
-										    list<Entity>::iterator it_next = std::next( it_current , 1 );
-										    
-										    int i = 0; // first position
-										    int it_position = i;
-										    int flag;
-										    if( list_entities.empty() ) {
-										    	
-										    	min = new_entity;
-										    	entity_address_min = data_dictionary.GetFileSize();
-										    	entity_next_address_min = end_address;
-										    	flag = -1; 
-										    
-										    } else {
-
-										    	while ( it_current != list_entities.end()  ){
-										    		string current_entity( it_current->GetName() );
-					    							
-					    							int comparison_response = new_entity.compare(current_entity); 
-	    											
-	    											previus_address = it_previus->GetNextEntityAddress();
-													current_address = it_current->GetEntityAddress();
-										    		next_address = it_current->GetNextEntityAddress();
-										    		
-										    		if ( i == 0  ){
-										    			if ( comparison_response < 0 ) {
-										    				flag = 0;
-										    				min = new_entity;
-										    				entity_address_min = data_dictionary.GetFileSize();
-										    				entity_next_address_min = it_current->GetEntityAddress();
-										    				it_position = i ; // first position
-										    				
-										    			} else if ( comparison_response > 0 ) {										    	
-										    			    flag = 1;
-										    			    min = it_current->GetName();
-										    			    entity_address_min = it_current->GetEntityAddress();
-										    				entity_next_address_min = data_dictionary.GetFileSize();
-										    			    it_position = i + 1; // secon position			
-										    			} 
-										    		} else if ( i > 0 ) {
-										    			flag = 2;
-    													 
-    													int comparison_response_next = new_entity.compare(current_entity);
-    													if ( comparison_response_next < 0 ){
-                                                        	min = new_entity;
-    														entity_address_min = data_dictionary.GetFileSize();
-    														entity_next_address_min = it_current->GetEntityAddress();
-    														
-                                                        } else if ( comparison_response_next > 0 ){
-    														min = it_current->GetName();
-                                                        	entity_address_min = it_current->GetEntityAddress();
-                                                        	entity_next_address_min = data_dictionary.GetFileSize();
-    													}
-                                                        
-										    			int comparison_response_current_min = new_entity.compare(min); 
-										    			if ( comparison_response_current_min < 0 ) {
-                                                        	it_position = i - 1;
-										    				
-										    				break;
-										    			} else if ( comparison_response_current_min > 0 ) {
-										    				it_position = i + 1;
-										    			}
-										    		} // end if else
-										    		
-										    		i++;
-                                                    it_previus++;
-										    		it_current++;
-										    		it_next++;	
-										    	} // end while
-										    } // end else != empty list
-											
-											list<Entity>::iterator current = list_entities.begin();
-											list<Entity>::iterator previus = std::prev( current , 1 );
-										    list<Entity>::iterator next = std::next( current , 1 );
-
-											int it_count = 0;
-
-											if ( flag == -1 ){
-												list_entities.push_back(entity); 
-											} else if ( flag == 0 || it_position == 0){
-												
-												entity.SetNextEntityAddress( list_entities.front().GetEntityAddress() );
-												list_entities.push_front(entity);
-											
-											} else if ( flag == 1 ){
-												
-												list_entities.front().SetNextEntityAddress( data_dictionary.GetFileSize() );
-												data_dictionary.UpdateAddress( list_entities.front().GetEntityAddress() , data_dictionary.GetFileSize() );
-												entity.SetNextEntityAddress( end_address );
-												list_entities.push_back(entity);
-											
-											} else if ( flag == 2  ){
-																								
-												do {
-
-													if ( it_count == it_position ){
-														
-														long int previus_next_entity = previus->GetNextEntityAddress();
-														previus->SetNextEntityAddress( data_dictionary.GetFileSize() );
-														data_dictionary.UpdateAddress( previus->GetEntityAddress() , data_dictionary.GetFileSize() );
-														entity.SetNextEntityAddress( previus_next_entity ); 
-                                                		list_entities.insert(current,entity);  	
-                                                  	}
-
-												  	it_count++;
-                                                  	next++; 
-                                                  	current++; 
-                                                  	previus++; 
-												} while ( it_count <= it_position );	
-											}
-											data_dictionary.SetFileHeader( list_entities.front().GetEntityAddress() );
-                                            data_dictionary.UpdateHeader();
-                                            data_dictionary.AddEntity( entity );
-											
-							    		}
+									        //data_dictionary.SetFileHeader( list_entities.front().GetEntityAddress() );
+                                            //data_dictionary.UpdateHeader(  );
+                                            
+/********************************************************************************************************************************************/				    		
+										}
 										break;
 							    	case 2: 
 

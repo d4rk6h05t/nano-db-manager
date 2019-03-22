@@ -41,7 +41,9 @@ namespace dictionary {
             
             void UpdateAddress(long int position, long int new_address);            
 
+            void UpdateEntity(Entity *entity);
             void AddEntity(Entity entity);
+
             
             void UpdateName(long int position, std::string new_name);
             std::list<Entity> ReadListEntities();

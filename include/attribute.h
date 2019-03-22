@@ -1,6 +1,9 @@
 #ifndef DICTIONARY_CC_ATTRIBUTE_H_
 #define DICTIONARY_CC_ATTRIBUTE_H_
 
+#include <iostream>
+#include <string>
+
 const int MAX_LENGTH_NAME_ATTRIBUTE_ = 35;
 const int MAX_LENGTH_ATTRIBUTE_ = 68;
 const long int NULL_ATTRIBUTE_ = -1;
@@ -12,15 +15,13 @@ namespace dictionary {
         public:
              
             Attribute();
-            Attribute(char name[MAX_LENGTH_NAME_ATTRIBUTE_]);
-
-            Attribute(char name[MAX_LENGTH_NAME_ATTRIBUTE_], char data_type, int length_data_type,int type_index);
-
-            Attribute(char name[MAX_LENGTH_NAME_ATTRIBUTE_], char data_type, int length_data_type, long int attribute_address,
+            Attribute(const std::string& name);
+            Attribute(const std::string& name, char data_type, int length_data_type,int type_index);
+            Attribute(const std::string& name, char data_type, int length_data_type, long int attribute_address,
                 int type_index,long int index_address, long int next_attribute_address);
             ~Attribute();
 
-            void SetName(char name[MAX_LENGTH_NAME_ATTRIBUTE_]); 
+            void SetName(const std::string& name); 
             void SetDataType(char data_type); 
             void SetLengthDataType(char data_type); 
             void SetAttributeAddress(long int attribute_address);
