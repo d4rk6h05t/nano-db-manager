@@ -9,4 +9,5 @@ bin/*
 .DB_Store
 
 .o
-.dat
+build/apps/*.dat
+*.dat
