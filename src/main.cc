@@ -177,7 +177,7 @@ int main(){
 							    	case 5:
 							    		list_entities = data_dictionary.ReadListEntities();
 							    		view.ShowListEntities(list_entities);
-							    		view.ShowStatusBar(data_dictionary.GetName(), data_dictionary.GetFileHeader(), data_dictionary.GetFileSize() );
+							    		//view.ShowStatusBar(data_dictionary.GetName(), data_dictionary.GetFileHeader(), data_dictionary.GetFileSize() );
 							    		
 							    		break;
 							    }
