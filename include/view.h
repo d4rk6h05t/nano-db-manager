@@ -2,6 +2,8 @@
 #define UI_CC_VIEW_H_
 
 #include <iostream>
+#include <iomanip>    
+#include <sstream>
 #include <string>
 #include <list>
 #include <iterator>

@@ -16,7 +16,6 @@ namespace dictionary {
              
             Entity();
             Entity(const std::string& name);
-            Entity(const std::string& name,long int entity_address, long int attribute_address, long int data_address, long int next_entity_address);
             ~Entity();
 
             void SetName(const std::string& name); 
@@ -38,12 +37,8 @@ namespace dictionary {
             long int attribute_address_;
             long int data_address_;
             long int next_entity_address_;
-
-            
-
     }; 
 
 }  // end namespace dictionary
 
 #endif  // DICTIONARY_CC_ENTITY_H_
-

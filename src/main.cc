@@ -104,21 +104,12 @@ int main(){
 							    		view.ShowMessage("===> Add Entity ::: Enter a new entity name: ");
 							    		cin >> new_entity;
 							    		if ( new_entity !="" ){
-/***********************************************************************************************************************************************/
 										    Entity entity(new_entity);
 										    entity.SetEntityAddress( data_dictionary.GetFileSize() ); 
 									        data_dictionary.UpdateEntity(&entity); 								        
 									        data_dictionary.AddEntity( entity );
-									       	list_entities = data_dictionary.ReadListEntities();
-									        if (	list_entities.empty() )
-									       		cout << "( ) more empty" << list_entities.front().GetEntityAddress();
-									        else
-									        	cout << "->" << list_entities.front().GetEntityAddress();
-
-									        //data_dictionary.SetFileHeader( list_entities.front().GetEntityAddress() );
-                                            //data_dictionary.UpdateHeader(  );
-                                            
-/********************************************************************************************************************************************/				    		
+									       	//list_entities = data_dictionary.ReadListEntities();
+									    	
 										}
 										break;
 							    	case 2: 
@@ -184,8 +175,10 @@ int main(){
 							    		view.ShowMessage("===> Select Entity");
 							    		break;
 							    	case 5:
-							    		view.ShowStatusBar(data_dictionary.GetName(), data_dictionary.GetFileHeader(), data_dictionary.GetFileSize() );
+							    		list_entities = data_dictionary.ReadListEntities();
 							    		view.ShowListEntities(list_entities);
+							    		view.ShowStatusBar(data_dictionary.GetName(), data_dictionary.GetFileHeader(), data_dictionary.GetFileSize() );
+							    		
 							    		break;
 							    }
 				    		} while(option_entity < 6);

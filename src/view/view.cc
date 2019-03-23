@@ -21,16 +21,41 @@ namespace ui {
 		}
 
 		void View::ShowListEntities(std::list<dictionary::Entity> list_entities){
+   			
+   			std::cout << std::endl 
+   				<< std::left << std::setw(16) << std::setfill('-') << std::left 
+   				<< '+' << std::setw(17) << std::setfill('-') << std::left 
+   				<< '+' << std::setw(20) << std::setfill('-') << std::left
+   				<< '+' << std::setw(15) << std::setfill('-') << std::left 
+   				<< '+' << std::setw(22) << std::setfill('-')
+		        << '+' << '+' << std::endl;
 
-			std::cout << " Name  \t Entity Address  Attribute Address  Data Addres  Next Entity Address " << std::endl << std::endl; 
+		   	std::cout << std::setfill(' ') << '|' << std::setw(15)
+	        << " Name " << std::setfill(' ') << '|' << std::setw(13) 
+	        << " Entity Address " << std::setfill(' ') << '|' << std::setw(13) 
+	        << " Attribute Address " << std::setfill(' ') << '|' << std::setw(13) 
+	        << " Data Address " << std::setfill(' ') << '|' << std::setw(13) 
+	        << " Next Entity Address " << '|' << std::endl;
+
+	        std::cout 
+   				<< std::left << std::setw(16) << std::setfill('-') << std::left 
+   				<< '+' << std::setw(17) << std::setfill('-') << std::left 
+   				<< '+' << std::setw(20) << std::setfill('-') << std::left
+   				<< '+' << std::setw(15) << std::setfill('-') << std::left 
+   				<< '+' << std::setw(22) << std::setfill('-')
+		        << '+' << '+' << std::endl;
+			//std::cout << " Name  \t Entity Address  Attribute Address  Data Addres  Next Entity Address " << std::endl << std::endl; 
 	
 			for (std::list<dictionary::Entity>::iterator it = list_entities.begin(); it != list_entities.end(); ++it)
-    			std::cout << it->GetName() 
-    				 << "\t\t" << it->GetEntityAddress() 
-    			     << "\t\t" << it->GetAttributeAddress()
-    				 << "\t\t" << it->GetDataAddress()
-    			     << "\t\t" << it->GetNextEntityAddress() 
-    				 << std::endl;
+    			std::cout << std::setfill(' ') << '|' 
+    				<< std::setw(15) << " " <<  '|'
+    				//<< std::setw(7) << " " << it->GetName() << " " <<  '|' 
+    				<< std::setw(16) << " " <<  '|'
+    				//<< std::setw(12) << " " << it->GetEntityAddress() << " " <<  '|' 
+    				<< std::setw(18) << " " << it->GetAttributeAddress() << " " <<  '|' 
+    				<< std::setw(15) << " " << it->GetDataAddress() << " " <<  '|' 
+    				<< std::setw(17) << " " << it->GetNextEntityAddress() << " " <<  '|' << std::setw(13) 
+    				<< std::endl;
     								
 		}
 		

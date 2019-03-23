@@ -17,8 +17,6 @@ namespace dictionary {
             Attribute();
             Attribute(const std::string& name);
             Attribute(const std::string& name, char data_type, int length_data_type,int type_index);
-            Attribute(const std::string& name, char data_type, int length_data_type, long int attribute_address,
-                int type_index,long int index_address, long int next_attribute_address);
             ~Attribute();
 
             void SetName(const std::string& name); 

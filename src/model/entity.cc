@@ -20,15 +20,6 @@ namespace dictionary {
         next_entity_address_  = NULL_ENTITY_;
     }
 
-    Entity::Entity(const std::string& name,long int entity_address, long int attribute_address, long int data_address, long int next_entity_address){
-        for (int i = 0; i < MAX_LENGTH_NAME_ENTTITY_; i++)
-            name_[i] = name[i];      
-        entity_address_ = entity_address;
-        attribute_address_ = attribute_address;
-        data_address_ = data_address;
-        next_entity_address_  = next_entity_address;   
-    }
-
     Entity::~Entity(){}
 
     void Entity::SetName(const std::string& name){ 
