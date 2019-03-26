@@ -38,24 +38,15 @@ namespace dictionary {
             
             void CreateFile();
             void UpdateHeader();
-            
+            Entity SearchEntity(std::list<Entity> list_entities, std::string new_entity);
             void UpdateAddress(long int position, long int new_address);            
-
-            void UpdateEntity(Entity *entity);
+            void UpdateEntity(std::list<Entity> list_entities, Entity *entity);
             void AddEntity(Entity entity);
-
             void UpdateName(long int position, std::string new_name);
+            
             std::list<Entity> ReadListEntities();
             void AddAttribute(Attribute attribute);
-
-            /*
-            long int UpdateEntity(long int position, Entity entity);
-            long int UpdateAttribute(long int position, Attribute attribute);
-            long int RemoveEntity(long int position, Entity entity);
-            long int RemoveAttribute(long int position, Attribute attribute);
-            long int ReadEntity(long int position, Entity entity);
-            long int ReadAttribute(long int position, Attribute attribute);
-            */
+            void RemoveEntity(std::string remove_entity);
 
         private:
             // file metadata
@@ -64,14 +55,8 @@ namespace dictionary {
             std::string dir_;
             std::string path_;
             std::string ext_;
-
             long int file_header_;
             long int file_size_;
-
-            std::list<Entity> list_entities_;
-            std::list<Attribute> list_attributes_;
-
-
     };
 
 

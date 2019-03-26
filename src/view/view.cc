@@ -44,8 +44,7 @@ namespace ui {
    				<< '+' << std::setw(15) << std::setfill('-') << std::left 
    				<< '+' << std::setw(22) << std::setfill('-')
 		        << '+' << '+' << std::endl;
-			//std::cout << " Name  \t Entity Address  Attribute Address  Data Addres  Next Entity Address " << std::endl << std::endl; 
-	
+			
 			for (std::list<dictionary::Entity>::iterator it = list_entities.begin(); it != list_entities.end(); ++it){
     			
     			std::string name( it->GetName() );
@@ -68,15 +67,7 @@ namespace ui {
     				<< " " << it->GetNextEntityAddress() << std::setw(length_next_entity_address) << " " <<  '|' // next entity address
 					<< std::endl;
 			}
-			/*
-			std::cout 
-   				<< std::left << std::setw(35) << std::setfill('-') << std::left 
-   				<< '+' << std::setw(17) << std::setfill('-') << std::left 
-   				<< '+' << std::setw(20) << std::setfill('-') << std::left
-   				<< '+' << std::setw(15) << std::setfill('-') << std::left 
-   				<< '+' << std::setw(22) << std::setfill('-')
-		        << '+' << '+' << std::endl;
-		    */
+			
     								
 		}
 		

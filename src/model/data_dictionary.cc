@@ -59,73 +59,43 @@ namespace dictionary {
 		file.close();
     }
 
-    void DataDictionary::UpdateEntity(Entity *entity){
-        
-       	char name[MAX_LENGTH_NAME_ENTTITY_];
-		long int entity_address;
-		long int attribute_address;
-		long int data_address;
-		long int next_entity_address;
+    Entity DataDictionary::SearchEntity(std::list<Entity> list_entities, std::string name_entity){
+    	Entity entity;
+    	for (std::list<Entity>::iterator it = list_entities.begin(); it != list_entities.end(); it++){
+    		std::string current_name( it->GetName() );
+    		if ( name_entity.compare( current_name ) == 0 ){
+    			entity.SetName( current_name );
+    			entity.SetEntityAddress( it->GetEntityAddress() );
+    			entity.SetAttributeAddress( it->GetAttributeAddress() );
+    			entity.SetDataAddress( it->GetDataAddress() );
+    			entity.SetNextEntityAddress( it->GetNextEntityAddress() );
+    		}
+    	}
+    	return entity;
+    }
 
-       	std::list<Entity> list_entities;
-       	
+    void DataDictionary::UpdateEntity(std::list<Entity> list_entities, Entity *entity){
        	std::fstream file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
-
        	file.seekg(0, std::ios::end);
     	file_size_ = file.tellg();
-       	
-       	file.seekp(0);
-       	long int file_header, next;
-    	file.read( reinterpret_cast<char*>( &file_header ), sizeof( long int ) );
-		file_header_ = file_header;
-
-		next = file_header;
-			
-		while( next != -1 ){
-		
-			file.seekg( next );
-			file.read( reinterpret_cast<char*>( name) , MAX_LENGTH_NAME_ENTTITY_ );
-			file.read( reinterpret_cast<char*>(&entity_address), sizeof(long int) );
-			file.read( reinterpret_cast<char*>(&attribute_address), sizeof(long int) );
-			file.read( reinterpret_cast<char*>(&data_address), sizeof(long int) );
-			file.read( reinterpret_cast<char*>(&next_entity_address), sizeof(long int) );
-
-			next = next_entity_address;
-			
-			std::string str_name(name);
-			Entity current_entity;
-			current_entity.SetName(str_name);
-			current_entity.SetEntityAddress(entity_address);
-		    current_entity.SetAttributeAddress(attribute_address);
-		    current_entity.SetDataAddress(data_address);
-		    current_entity.SetNextEntityAddress(next_entity_address);
-			list_entities.push_back(current_entity);
-		}
-		
-	    /* ::::: create a sort list  ::::: */
+       	/* ::::: create a sort list  ::::: */
 		long int  end_address = -1;
         long int entity_address_min,entity_next_address_min;
         int i = 0; // first position
 		int it_position = i;
 		int flag;
         std::string min;
-        std::list<Entity>::iterator it_current = list_entities.begin();
-										     								    
-		if( list_entities.empty() ) {
-										    	
+        std::list<Entity>::iterator it_current = list_entities.begin();	     								    
+		if( list_entities.empty() ) {				    	
 			min = entity->GetName();
 			entity_address_min = file_size_;
 			entity_next_address_min = end_address;
-			flag = -1; 
-										    
+			flag = -1; 				    
 		} else {
-
-			while ( it_current != list_entities.end()  ){
-                                                     
+			while ( it_current != list_entities.end()  ){                         
                 std::string new_entity( entity->GetName() );
                 std::string it_current_entity( it_current->GetName() ); 										    
-				int comparison_response = new_entity.compare( it_current_entity ); 
-										    		
+				int comparison_response = new_entity.compare( it_current_entity ); 			    		
 				if ( i == 0  ){
 					if ( comparison_response < 0 ) {
 						flag = 0;
@@ -151,36 +121,29 @@ namespace dictionary {
     					min = it_current->GetName();
                         entity_address_min = it_current->GetEntityAddress();
                         entity_next_address_min = file_size_;
-    				}
-                                                        
+    				}                                 
 					int comparison_response_current_min = new_entity.compare(min); 
 					if ( comparison_response_current_min < 0 ) { it_position = i - 1; break; } 
 					else if ( comparison_response_current_min > 0 ) it_position = i + 1;
 										    			
-				} // end if else
-										    		
+				} // end if else			    		
 				i++;
-				it_current++;
-										    
+				it_current++;    
 				} // end while
-			} // end else != empty list
-											
+			} // end else != empty list			
 			std::list<Entity>::iterator current = list_entities.begin();
 			std::list<Entity>::iterator previus = std::prev( current , 1 );
-
 			int it_count = 0;
-
 			if ( flag == -1 ) list_entities.push_back(*entity); 
 			else if ( flag == 0 || it_position == 0){								
 				entity->SetNextEntityAddress( list_entities.front().GetEntityAddress() );
 				list_entities.push_front(*entity);
 			} else if ( flag == 1 ){
-				file.seekp( list_entities.front().GetEntityAddress() );
+				file.seekp( list_entities.front().GetEntityAddress() + 59 );
 				file.write( reinterpret_cast<const char*>(&file_size_), sizeof(long int) );
 				entity->SetNextEntityAddress( end_address );
 				list_entities.push_back(*entity);						
 			} else if ( flag == 2  ){																				
-				
 				do {
 					if ( it_count == it_position ){
 						file.seekp( previus->GetEntityAddress() + 59 );
@@ -201,7 +164,7 @@ namespace dictionary {
     }
 
     void DataDictionary::AddEntity(Entity entity){
-        std::fstream out_file( name_ + ext_, std::ios::binary | std::ios::app);
+        std::fstream file( name_ + ext_, std::ios::binary | std::ios::app);
 	
 	    char name[MAX_LENGTH_NAME_ENTTITY_];
 		long int entity_address;
@@ -217,13 +180,12 @@ namespace dictionary {
 		data_address = entity.GetDataAddress();
 		next_entity_address = entity.GetNextEntityAddress();
 
-		out_file.write( reinterpret_cast<const char*>(name), MAX_LENGTH_NAME_ENTTITY_ );
-		out_file.write( reinterpret_cast<const char*>(&entity_address) , sizeof(long int) );
-		out_file.write( reinterpret_cast<const char*>(&attribute_address), sizeof(long int) );
-		out_file.write( reinterpret_cast<const char*>(&data_address), sizeof(long int) );
-		out_file.write( reinterpret_cast<const char*>(&next_entity_address), sizeof(long int) );
-	 
-		out_file.close();
+		file.write( reinterpret_cast<const char*>(name), MAX_LENGTH_NAME_ENTTITY_ );
+		file.write( reinterpret_cast<const char*>(&entity_address) , sizeof(long int) );
+		file.write( reinterpret_cast<const char*>(&attribute_address), sizeof(long int) );
+		file.write( reinterpret_cast<const char*>(&data_address), sizeof(long int) );
+		file.write( reinterpret_cast<const char*>(&next_entity_address), sizeof(long int) );	 
+		file.close();
     }
 
 
@@ -235,23 +197,20 @@ namespace dictionary {
 		long int data_address;
 		long int next_entity_address;
 
-   		std::fstream out_file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
+   		std::fstream file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
 		
-
-		out_file.seekp(position);
-
-		out_file.read( reinterpret_cast<char*>(name), MAX_LENGTH_NAME_ENTTITY_ );
-		out_file.read( reinterpret_cast<char*>(&entity_address) , sizeof(long int) );
-		out_file.read( reinterpret_cast<char*>(&attribute_address), sizeof(long int) );
-		out_file.read( reinterpret_cast<char*>(&data_address), sizeof(long int) );
-		out_file.read( reinterpret_cast<char*>(&next_entity_address), sizeof(long int) );
+		file.seekp(position);
+		file.read( reinterpret_cast<char*>(name), MAX_LENGTH_NAME_ENTTITY_ );
+		file.read( reinterpret_cast<char*>(&entity_address) , sizeof(long int) );
+		file.read( reinterpret_cast<char*>(&attribute_address), sizeof(long int) );
+		file.read( reinterpret_cast<char*>(&data_address), sizeof(long int) );
+		file.read( reinterpret_cast<char*>(&next_entity_address), sizeof(long int) );
 		// 59 = 35 + 8 + 8 + 8
-		out_file.seekp( position + 59 );
-		out_file.write( reinterpret_cast<const char*>(&new_address), sizeof(long int) );
-		out_file.seekp( position + 59 );
-		out_file.read( reinterpret_cast<char*>(&next_entity_address), sizeof(long int) );
-		
-		out_file.close();
+		file.seekp( position + 59 );
+		file.write( reinterpret_cast<const char*>(&new_address), sizeof(long int) );
+		file.seekp( position + 59 );
+		file.read( reinterpret_cast<char*>(&next_entity_address), sizeof(long int) );
+		file.close();
     }
 
     void DataDictionary::UpdateName(long int position, std::string new_name){
@@ -260,12 +219,10 @@ namespace dictionary {
         for (int i = 0; i < MAX_LENGTH_NAME_ENTTITY_; i++)
         	name[i] = new_name[i];
 
-   		std::fstream out_file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
-		
-		out_file.seekp(position);
-		out_file.write( reinterpret_cast<const char*>(&name), MAX_LENGTH_NAME_ENTTITY_ );
-		
-		out_file.close();
+   		std::fstream file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
+		file.seekp(position);
+		file.write( reinterpret_cast<const char*>(name), MAX_LENGTH_NAME_ENTTITY_ );
+		file.close();
     }
 
     
@@ -313,13 +270,77 @@ namespace dictionary {
     }
 
     void DataDictionary::AddAttribute(Attribute attribute){
-    	list_attributes_.push_back(attribute);
-    	std::fstream file ( name_ + ext_, std::fstream::binary | std::fstream::out );
-        file.seekg (file_size_, std::fstream::end);
-		file.write( (char*) &attribute, sizeof(dictionary::Attribute) );
-		file.close(); 
+    	 
     }
-    
+
+    void DataDictionary::RemoveEntity(std::string remove_entity){
+        
+        char name[MAX_LENGTH_NAME_ENTTITY_];
+		long int entity_address;
+		long int attribute_address;
+		long int data_address;
+		long int next_entity_address;
+        long int end_address = -1;
+       	std::list<Entity> list_entities;
+       	
+       	std::fstream file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
+
+       	file.seekg(0, std::ios::end);
+    	file_size_ = file.tellg();
+       	
+       	file.seekp(0);
+       	long int file_header, next;
+    	file.read( reinterpret_cast<char*>( &file_header ), sizeof( long int ) );
+		file_header_ = file_header;
+
+		next = file_header;
+			
+		while( next != -1 ){
+		
+			file.seekg( next );
+			file.read( reinterpret_cast<char*>( name) , MAX_LENGTH_NAME_ENTTITY_ );
+			file.read( reinterpret_cast<char*>(&entity_address), sizeof(long int) );
+			file.read( reinterpret_cast<char*>(&attribute_address), sizeof(long int) );
+			file.read( reinterpret_cast<char*>(&data_address), sizeof(long int) );
+			file.read( reinterpret_cast<char*>(&next_entity_address), sizeof(long int) );
+
+			next = next_entity_address;
+			
+			std::string str_name(name);
+			Entity current_entity;
+			current_entity.SetName(str_name);
+			current_entity.SetEntityAddress(entity_address);
+		    current_entity.SetAttributeAddress(attribute_address);
+		    current_entity.SetDataAddress(data_address);
+		    current_entity.SetNextEntityAddress(next_entity_address);
+			list_entities.push_back(current_entity);
+		}
+        
+        if ( !list_entities.empty() ){
+        	std::string first_entity( list_entities.front().GetName() );
+			if( remove_entity.compare(first_entity) ==  0 ){
+				file_header_ = list_entities.front().GetNextEntityAddress();
+				file.seekp( 0 );
+				file.write( reinterpret_cast<const char*>(&file_header_), sizeof(long int) );
+			}
+			std::list<Entity>::iterator it_current = list_entities.begin();
+			std::list<Entity>::iterator it_previus = std::prev( it_current , 1 );
+			while ( it_current != list_entities.end() ){
+				std::string it_current_entity( it_current->GetName() );
+				if ( remove_entity.compare(it_current_entity) == 0 ){
+					file.seekp( it_previus->GetEntityAddress() + 59 );
+					long int new_next_entity_address = it_current->GetNextEntityAddress();
+					file.write( reinterpret_cast<const char*>(&new_next_entity_address), sizeof(long int) );
+					file.seekp( it_current->GetEntityAddress() + 59 );
+					file.write( reinterpret_cast<const char*>(&end_address), sizeof(long int) );		 
+					break;
+				}
+				it_current++;
+				it_previus++;
+			}
+        } 
+		file.close();											
+    }
 
 }  // end namespace dictionary
 

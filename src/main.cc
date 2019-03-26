@@ -39,9 +39,6 @@ int main(){
 	long int entity_address_min;
 	long int entity_next_address_min;
 
-    list<Entity> list_entities;
-    list<Attribute> list_attributes;
-
     do {    	
 		view.ShowTitle();
 		view.ShowMainMenu();
@@ -52,7 +49,6 @@ int main(){
 	    	case 1: /* :::::::::::::::: F i l e  M e n u  ::::::::::::::::::::::::: */ 
 
 	    		do {
-	    			 
 	    			view.Clear();
 		    		view.ShowFileMenu();
 		    		view.ShowMessage("Select a option >_");
@@ -72,7 +68,6 @@ int main(){
 				    		cin >> file_name;
 				    			if ( file_name !="" ){
 				    				data_dictionary.SetName( file_name );
-				    				list_entities = data_dictionary.ReadListEntities();
 				    			}
 				    		break;
 				    	case 3:
@@ -106,90 +101,47 @@ int main(){
 							    		if ( new_entity !="" ){
 										    Entity entity(new_entity);
 										    entity.SetEntityAddress( data_dictionary.GetFileSize() ); 
-									        data_dictionary.UpdateEntity(&entity); 								        
+									        data_dictionary.UpdateEntity( data_dictionary.ReadListEntities(), &entity); 								        
 									        data_dictionary.AddEntity( entity );
-									       	//list_entities = data_dictionary.ReadListEntities();
-									    	
 										}
 										break;
 							    	case 2: 
-
 							    		view.ShowMessage("===> Update Entity ::: First, Select a entity for update: ");
-							    		
 							    		cin >> new_entity;
-							    		
 							    		if ( new_entity !="" ){
-							    
-							    			if( new_entity == list_entities.front().GetName() )
-							    				data_dictionary.SetFileHeader( list_entities.front().GetNextEntityAddress() );
-							    			
-							    			list<Entity>::iterator it = list_entities.begin();
-							    			list<Entity>::iterator prev = std::prev( it , 1 );
-												
-											while ( it != list_entities.end() ){
-												if ( new_entity == it->GetName() ){
-													it->SetNextEntityAddress( it->GetNextEntityAddress() );
-													data_dictionary.UpdateAddress( prev->GetEntityAddress(), it->GetNextEntityAddress() );														
-													list_entities.erase( it );		
-													break;												
-												}
-
-											it++;
-											prev++;
-											}
-
-												} // first end if != ""
+							    			Entity entity_selected = data_dictionary.SearchEntity( data_dictionary.ReadListEntities(), new_entity);
+							    			if(entity_selected.GetEntityAddress() != -1 ){
+							    				string new_name;
+								    			view.ShowMessage("===> Change name entity ::: Enter new entity name: ");
+								    			cin >> new_name;
+								    			if ( new_name !="" ){
+								    				data_dictionary.UpdateName( entity_selected.GetEntityAddress(), new_name );
+								    			}	
+							    			} else {
+							    				view.ShowMessage("===> I'm sorry not found entity ");
+							    			}		
+										} // first end if != ""
 							    		break;
 							    	case 3:
 							    		view.ShowMessage("===> Remove Entity ::: Enter entity name: ");
 							    		cin >> remove_entity;
 							    		if ( remove_entity !="" ){
-							    			
-							    			if( remove_entity == list_entities.front().GetName() )
-							    				data_dictionary.SetFileHeader( list_entities.front().GetNextEntityAddress() );
-
-							    			list<Entity>::iterator it_current = list_entities.begin();
-							    			list<Entity>::iterator it_previus = std::prev( it_current , 1 );
-											
-											while ( it_current != list_entities.end() ){
-
-												if ( remove_entity == it_current->GetName() ){
-												
-													it_previus->SetNextEntityAddress( it_current->GetNextEntityAddress() );
-													data_dictionary.UpdateAddress( it_previus->GetEntityAddress() , it_current->GetNextEntityAddress() );
-													it_current->SetNextEntityAddress(-1);
-													data_dictionary.UpdateAddress(it_current->GetNextEntityAddress(), -1 );
-													list_entities.erase( it_current );
-													break;												
-												}
-
-											it_current++;
-											it_previus++;
-											}
-
-							    		}
-                                        
-
+							    			data_dictionary.RemoveEntity(remove_entity);
+							    		}	
 							    		break;
 							    	case 4:
 							    		view.ShowMessage("===> Select Entity");
 							    		break;
 							    	case 5:
-							    		list_entities = data_dictionary.ReadListEntities();
-							    		view.ShowListEntities(list_entities);
-							    		//view.ShowStatusBar(data_dictionary.GetName(), data_dictionary.GetFileHeader(), data_dictionary.GetFileSize() );
-							    		
+							    		view.ShowListEntities( data_dictionary.ReadListEntities() );
 							    		break;
 							    }
 				    		} while(option_entity < 6);
 
 				    		if (option_entity > 5 ) view.Clear();
 				    		break;
-				    		
 						case 2: 
-
-							do {
-	    			 
+							do { 
 				    			view.Clear();
 				    			view.ShowStatusBar(data_dictionary.GetName(), data_dictionary.GetFileHeader(), data_dictionary.GetFileSize() );
 				    			view.ShowAttributeMenu();
@@ -210,24 +162,18 @@ int main(){
 							    		break;
 							    }
 				    		} while(option_attribute < 5);
-
 				    		if (option_attribute > 4 ) view.Clear();
-				    		break;
-
+				    		//break;
 				    		break;
 				    }
-
 	    		} while(option_dictionary < 3);
-
 	    		if (option_dictionary > 2 ) view.Clear();
 	    		break;
-	    		 
 	    		case 3:  /* :::::::::::::::: Exit  M e n u  ::::::::::::::::::::::::: */ 
 	    			view.ShowMessage("::: ===> Good bye! :'v \n ");
 	    			return 0;
 	    			break;
 	    }
-	    
     } while(option <= 3);
     return 0;
     
