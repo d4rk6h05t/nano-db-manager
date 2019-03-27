@@ -16,18 +16,18 @@ namespace dictionary {
     class DataDictionary {
     
         public:
-             
+            // Constructor & destructors
             DataDictionary();
             DataDictionary(const std::string& name);
             ~DataDictionary();
-
+            // Setters
             void SetId(int id);
             void SetName(const std::string& name);
             void SetDir(const std::string& dir); 
             void SetPath(const std::string& path); 
             void SetExt(const std::string& ext);
             void SetFileHeader(long int file_header);
-
+            // Getters
             int GetId();
             std::string GetName();
             std::string GetDir();
@@ -36,17 +36,22 @@ namespace dictionary {
             long int GetFileHeader();
             long int GetFileSize();
             
+            // Methods of File
             void CreateFile();
             void UpdateHeader();
-            Entity SearchEntity(std::list<Entity> list_entities, std::string new_entity);
-            void UpdateAddress(long int position, long int new_address);            
-            void UpdateEntity(std::list<Entity> list_entities, Entity *entity);
-            void AddEntity(Entity entity);
+            void UpdateAddress(long int position, long int new_address);
             void UpdateName(long int position, std::string new_name);
             
+            // Methods of entities
+            void AddEntity(Entity entity);
+            void UpdateEntity(std::list<Entity> list_entities, Entity *entity);
+            void RemoveEntity(std::list<Entity> list_entities, std::string remove_entity);
+            Entity SearchEntity(std::list<Entity> list_entities, std::string new_entity);            
             std::list<Entity> ReadListEntities();
+            
             void AddAttribute(Attribute attribute);
-            void RemoveEntity(std::string remove_entity);
+            void UpdateAttribute(std::list<Attribute> list_attributes, Attribute attribute);
+            std::list<Attribute> ReadListAttributes(Entity entity);
 
         private:
             // file metadata

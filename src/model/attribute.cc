@@ -1,4 +1,3 @@
-
 #include "attribute.h"
 
 namespace dictionary {
@@ -32,12 +31,9 @@ namespace dictionary {
             name_[i] = name[i];      
 
         data_type_ = data_type;
-        
         length_data_type_ = length_data_type;
-
         attribute_address_ = NULL_ATTRIBUTE_;
         type_index_ = type_index; 
-
         index_address_ = NULL_ATTRIBUTE_;
         next_attribute_address_ = NULL_ATTRIBUTE_;
         
@@ -51,16 +47,7 @@ namespace dictionary {
     }
     
     void Attribute::SetDataType(char data_type) { data_type_ = data_type; }
-    
-    void Attribute::SetLengthDataType(char data_type) { 
-        if (data_type_ == 'C') 
-            length_data_type_= sizeof(char);
-        else if (data_type_ == 'I')
-            length_data_type_= sizeof(int);
-        else
-            length_data_type_ = 0;
-    }
-    
+    void Attribute::SetLengthDataType(int length_data_type) { length_data_type_= length_data_type; }
     void Attribute::SetAttributeAddress(long int attribute_address) { attribute_address_ = attribute_address; }
     void Attribute::SetTypeIndex(int type_index){ type_index_ = type_index; }
     void Attribute::SetIndexAddress(long int index_address){ index_address_ = index_address; }

@@ -21,7 +21,7 @@ namespace dictionary {
 
             void SetName(const std::string& name); 
             void SetDataType(char data_type); 
-            void SetLengthDataType(char data_type); 
+            void SetLengthDataType(int length_data_type); 
             void SetAttributeAddress(long int attribute_address);
             void SetTypeIndex(int type_index);
             void SetIndexAddress(long int index_address); 
@@ -52,7 +52,6 @@ namespace dictionary {
 
             long int index_address_;
             long int next_attribute_address_;
-
     };
 
 
