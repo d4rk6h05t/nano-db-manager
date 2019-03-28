@@ -22,6 +22,7 @@ class View {
 		void ShowMessage(std::string str );
 		void ShowStatusBar(std::string name, long int header, long int size );
 		void ShowListEntities(std::list<dictionary::Entity> list_entities);
+		void ShowListAttributes(std::list<dictionary::Attribute> list_attributes);
 		void ShowMainMenu();
 		void ShowFileMenu();
 		void ShowDictionaryMenu();

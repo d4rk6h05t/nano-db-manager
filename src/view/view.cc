@@ -70,6 +70,67 @@ namespace ui {
 			
     								
 		}
+
+		void View::ShowListAttributes(std::list<dictionary::Attribute> list_attributes){
+   			
+   			std::cout << std::endl 
+   				<< std::left << std::setw(35) << std::setfill('-') << std::left 
+   				<< '+' << std::setw(12) << std::setfill('-') << std::left 
+   				<< '+' << std::setw(10) << std::setfill('-') << std::left
+   				<< '+' << std::setw(21) << std::setfill('-') << std::left
+   				<< '+' << std::setw(13) << std::setfill('-') << std::left 
+   				<< '+' << std::setw(16) << std::setfill('-') << std::left
+   				<< '+' << std::setw(25) << std::setfill('-') << std::left
+		        << '+' << '+' << std::endl;
+           
+		   	std::cout << std::setfill(' ') << '|' 
+		   		<< std::setw(34)  << " Name " << std::setfill(' ') << '|' 
+		   		<< std::setw(10)  << " Data Type " << std::setfill(' ') << '|' 
+		   		<< std::setw(6)  << " Length  " << std::setfill(' ') << '|' 
+		   		<< std::setw(15)  << " Attribute  Address " << std::setfill(' ') << '|'
+		   		<< std::setw(12)  << " Type Index " << std::setfill(' ') << '|'
+		   		<< std::setw(12)  << " Index Address " << std::setfill(' ') << '|' 
+		   		<< std::setw(10)  << " Next Attribute Address " << '|' << std::endl;
+
+	        std::cout 
+   				<< std::left << std::setw(35) << std::setfill('-') << std::left 
+   				<< '+' << std::setw(12) << std::setfill('-') << std::left 
+   				<< '+' << std::setw(10) << std::setfill('-') << std::left
+   				<< '+' << std::setw(21) << std::setfill('-') << std::left 
+   				<< '+' << std::setw(13) << std::setfill('-') << std::left
+   				<< '+' << std::setw(16) << std::setfill('-') << std::left
+   				<< '+' << std::setw(25) << std::setfill('-') << std::left
+		        << '+' << '+' << std::endl;
+			
+			for (std::list<dictionary::Attribute>::iterator it = list_attributes.begin(); it != list_attributes.end(); ++it){
+    		
+    			std::string name( it->GetName() );
+    			std::string data_type = std::to_string( it->GetDataType() );
+    			std::string length_data_type = std::to_string( it->GetLengthDataType() );
+    			std::string attribute_address = std::to_string( it->GetAttributeAddress() );
+    			std::string type_index = std::to_string( it->GetTypeIndex() );
+    			std::string index_address = std::to_string( it->GetIndexAddress() );
+    			std::string next_attribute_address = std::to_string( it->GetNextAttributeAddress() );
+    		
+    			int length_name = 34 - ( name.length() + 1 );
+    			int length_dt = 16 - ( data_type.length() + 1);
+    			int length_lgth_dt = 19 - ( length_data_type.length() + 1);
+    			int length_attribute_address = 14 - ( attribute_address.length() + 1);
+    			int length_type_index = 21 - ( type_index.length() + 1);
+    			int length_index_address = 21 - ( index_address.length() + 1);
+    			int length_next_attribute_address = 21 - ( next_attribute_address.length() + 1);
+
+    			std::cout << std::setfill(' ') << '|' 
+    				<< " " << it->GetName() << std::setw(length_name) << " " <<  '|' // name
+    				<< " " << it->GetDataType() << std::setw(length_dt) << " " <<  '|' // entity address
+    				<< " " << it->GetLengthDataType() << std::setw(length_lgth_dt) << " " <<  '|' // attribute address
+    				<< " " << it->GetAttributeAddress() << std::setw(length_attribute_address) << " " <<  '|' // data  address
+    				<< " " << it->GetTypeIndex() << std::setw(length_next_attribute_address) << " " <<  '|' // next entity address
+					<< std::endl;
+			}
+			
+    								
+		}
 		
 		void View::ShowMainMenu(){
 				std::cout << std::endl << " \t\t::::::::::::: \t Main Menu \t ::::::::::::" << std::endl;

@@ -205,6 +205,7 @@ int main(){
 										    		break;
 										    	case 5: /*  :::::::::::  S h o w  l i s t   o f  A t t r i b u t e s  ::::::::::  */
 										    		view.ShowMessage("===>Show list entities");
+										    		view.ShowListAttributes( data_dictionary.ReadListAttributes(current_entity) );
 										    		break;
 										    	case 6: /*  ::::::::::: E x i t  ::::::::::  */
 										    		view.ShowMessage("===>Return back");
