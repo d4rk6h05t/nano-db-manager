@@ -69,8 +69,10 @@ namespace dictionary {
 		long int data_address;
 		long int next_entity_address;
 
+		long int data_saved;
+
    		std::fstream file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
-		
+		/*
 		file.seekp(position);
 		file.read( reinterpret_cast<char*>(name), MAX_LENGTH_NAME_ENTTITY_ );
 		file.read( reinterpret_cast<char*>(&entity_address) , sizeof(long int) );
@@ -78,10 +80,16 @@ namespace dictionary {
 		file.read( reinterpret_cast<char*>(&data_address), sizeof(long int) );
 		file.read( reinterpret_cast<char*>(&next_entity_address), sizeof(long int) );
 		// 59 = 35 + 8 + 8 + 8
-		file.seekp( position + 59 );
+		*/
+		std::cout << "position " << position << std::endl;
+		file.seekp( position  );
+		file.read( reinterpret_cast<char*>(&data_saved), sizeof(long int) );
+		std::cout << "data old: " << data_saved << std::endl;
+		file.seekp( position  );
 		file.write( reinterpret_cast<const char*>(&new_address), sizeof(long int) );
-		file.seekp( position + 59 );
-		file.read( reinterpret_cast<char*>(&next_entity_address), sizeof(long int) );
+		file.seekp( position  );
+		file.read( reinterpret_cast<char*>(&data_saved), sizeof(long int) );
+		std::cout << "data new: " << data_saved << std::endl;
 		file.close();
     }
 
@@ -349,11 +357,13 @@ namespace dictionary {
 		file.close();
     }
 
+
     void DataDictionary::UpdateAttribute(std::list<Attribute> list_attributes, Attribute attribute){
 
        	std::fstream file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
        	long int end_address = -1;
         long int attribute_address = attribute.GetAttributeAddress();
+
     	if ( !list_attributes.empty() ){
     	    file.seekp( list_attributes.back().GetAttributeAddress() + 35 + 1 + 4 + 8 + 4 + 8 );
 			file.write( reinterpret_cast<const char*>(&attribute_address), sizeof(long int) );
@@ -368,7 +378,7 @@ namespace dictionary {
        	std::fstream file( name_ + ext_, std::ios::in | std::ios::out | std::ios::binary );
      	
 		long int next = entity.GetAttributeAddress();
-
+    	std::cout << ":: next : " << next;
 		char name[MAX_LENGTH_NAME_ATTRIBUTE_];
 		char data_type;
 		int length_data_type;

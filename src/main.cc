@@ -171,21 +171,25 @@ int main(){
 										    		//view.ShowMessage("===> Add Attribute");
 										    		
 
-										    		view.ShowMessage("===> Add Entity ::: Enter a new attribute name: ");
+										    		view.ShowMessage("===> Add Entity ");
+										    		view.ShowMessage(":: Enter a new attribute name: ");
 										    		cin >> attr_name;
 										    		
 										    		if ( attr_name != "" ){
-										    			view.ShowMessage(" ::: Enter data type: ");
+										    			view.ShowMessage(" :: Enter data type: ");
 											    		cin >> attr_data_type;
 											    		if ( attr_data_type != '\0'  ){
-											    			view.ShowMessage(" ::: Enter lenngth of data type: ");
+											    			view.ShowMessage(":: Enter lenngth of data type: ");
 												    		cin >> attr_length;
 												    		if ( attr_length > 0 ){
-												    			view.ShowMessage(" ::: Enter type index: ");
+												    			view.ShowMessage(":: Enter type index: ");
 													    		cin >> attr_index;
-													    		if ( attr_index > 0 ){
+													    		if ( attr_index > -1 ){
 													    			Attribute attribute( attr_name, attr_data_type, attr_length, attr_index );
-																    attribute.SetAttributeAddress( data_dictionary.GetFileSize() ); 
+																    attribute.SetAttributeAddress( data_dictionary.GetFileSize() );  
+															        cout << endl << "current_entity.GetAttributeAddress(): " << current_entity.GetEntityAddress()  << "data_dictionary.GetFileSize()" << data_dictionary.GetFileSize();
+															        if ( current_entity.GetAttributeAddress() == -1)
+															        	data_dictionary.UpdateAddress( (current_entity.GetEntityAddress() + 35 + 8) , data_dictionary.GetFileSize() );
 															        data_dictionary.UpdateAttribute( data_dictionary.ReadListAttributes( current_entity ), attribute); 								        
 															        data_dictionary.AddAttribute( attribute );			
 													    		}	

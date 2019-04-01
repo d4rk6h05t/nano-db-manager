@@ -11,7 +11,7 @@ namespace ui {
 		
 		void View::ShowTitle(){ std::cout << std::endl << "\t\t Project Structure File "<< std::endl; }
 		
-		void View::ShowMessage(std::string str ){ std::cout << std::endl << std::endl << " \t " + str;  }
+		void View::ShowMessage(std::string str ){ std::cout << std::endl << " \t " + str;  }
 
 		void View::ShowStatusBar(std::string name, long int header, long int size ){
 			
