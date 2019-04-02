@@ -62,34 +62,9 @@ namespace dictionary {
     }
 
     void DataDictionary::UpdateAddress(long int position, long int new_address){
-   		
-   		char name[MAX_LENGTH_NAME_ENTTITY_];
-		long int entity_address;
-		long int attribute_address;
-		long int data_address;
-		long int next_entity_address;
-
-		long int data_saved;
-
    		std::fstream file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
-		/*
-		file.seekp(position);
-		file.read( reinterpret_cast<char*>(name), MAX_LENGTH_NAME_ENTTITY_ );
-		file.read( reinterpret_cast<char*>(&entity_address) , sizeof(long int) );
-		file.read( reinterpret_cast<char*>(&attribute_address), sizeof(long int) );
-		file.read( reinterpret_cast<char*>(&data_address), sizeof(long int) );
-		file.read( reinterpret_cast<char*>(&next_entity_address), sizeof(long int) );
-		// 59 = 35 + 8 + 8 + 8
-		*/
-		std::cout << "position " << position << std::endl;
-		file.seekp( position  );
-		file.read( reinterpret_cast<char*>(&data_saved), sizeof(long int) );
-		std::cout << "data old: " << data_saved << std::endl;
 		file.seekp( position  );
 		file.write( reinterpret_cast<const char*>(&new_address), sizeof(long int) );
-		file.seekp( position  );
-		file.read( reinterpret_cast<char*>(&data_saved), sizeof(long int) );
-		std::cout << "data new: " << data_saved << std::endl;
 		file.close();
     }
 

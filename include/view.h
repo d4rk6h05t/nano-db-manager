@@ -28,6 +28,7 @@ class View {
 		void ShowDictionaryMenu();
 		void ShowEntityMenu();
 		void ShowAttributeMenu();
+		void ShowDataFileMenu();
 
 
 };

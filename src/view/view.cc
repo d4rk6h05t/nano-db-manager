@@ -11,13 +11,13 @@ namespace ui {
 		
 		void View::ShowTitle(){ std::cout << std::endl << "\t\t Project Structure File "<< std::endl; }
 		
-		void View::ShowMessage(std::string str ){ std::cout << std::endl << " \t " + str;  }
+		void View::ShowMessage(std::string str ){ std::cout << str;  }
 
 		void View::ShowStatusBar(std::string name, long int header, long int size ){
 			
 			std::cout << std::endl << "\t\t:: File Name [ " << name 
-					  << " ] :: File Header [" << header 
-					  << " ] :: File Size [" << size << "]" << std::endl;
+					  << " ] :: File Header [ " << header 
+					  << " ] :: File Size [ " << size << " ]" << std::endl;
 		}
 
 		void View::ShowListEntities(std::list<dictionary::Entity> list_entities){
@@ -122,10 +122,12 @@ namespace ui {
 
     			std::cout << std::setfill(' ') << '|' 
     				<< " " << it->GetName() << std::setw(length_name) << " " <<  '|' // name
-    				<< " " << it->GetDataType() << std::setw(length_dt) << " " <<  '|' // entity address
-    				<< " " << it->GetLengthDataType() << std::setw(length_lgth_dt) << " " <<  '|' // attribute address
-    				<< " " << it->GetAttributeAddress() << std::setw(length_attribute_address) << " " <<  '|' // data  address
-    				<< " " << it->GetTypeIndex() << std::setw(length_next_attribute_address) << " " <<  '|' // next entity address
+    				<< " " << it->GetDataType() << std::setw(length_dt-3) << " " <<  '|' // entity address
+    				<< " " << it->GetLengthDataType() << std::setw(length_lgth_dt-9) << " " <<  '|' // attribute address
+    				<< " " << it->GetAttributeAddress() << std::setw(length_attribute_address+5) << " " <<  '|' // data  address
+    				<< " " << it->GetTypeIndex() << std::setw(length_type_index) << " " <<  '|' //  type index
+    				<< " " << it->GetIndexAddress() << std::setw(length_index_address) << " " <<  '|' // index address
+    				<< " " << it->GetNextAttributeAddress() << std::setw(length_next_attribute_address) << " " <<  '|' // next entity address
 					<< std::endl;
 			}
 			
@@ -136,7 +138,8 @@ namespace ui {
 				std::cout << std::endl << " \t\t::::::::::::: \t Main Menu \t ::::::::::::" << std::endl;
     			std::cout << std::endl << " \t\t [ 1 ]: File ";
     			std::cout << std::endl << " \t\t [ 2 ]: Dictionary ";	
-    			std::cout << std::endl << " \t\t [ 3 ]: Exit ";	
+    			std::cout << std::endl << " \t\t [ 3 ]: Data File ";	
+    			std::cout << std::endl << " \t\t [ 4 ]: Exit ";	
 		}
 		
 		void View::ShowFileMenu(){
@@ -170,7 +173,16 @@ namespace ui {
 	    		std::cout << std::endl << " \t\t\t [ 2 ]: Update Attribute ";
 	    		std::cout << std::endl << " \t\t\t [ 3 ]: Delete Attribute ";
 	    		std::cout << std::endl << " \t\t\t [ 4 ]: Select Attribute ";
-	    		std::cout << std::endl << " \t\t\t [ 5 ]: Back to main menu ";		
+	    		std::cout << std::endl << " \t\t\t [ 5 ]: List of attributes ";
+	    		std::cout << std::endl << " \t\t\t [ 6 ]: Back to main menu ";		
+		}
+
+		void View::ShowDataFileMenu(){
+				std::cout << std::endl << " \t\t::::::::::::: \t Data File Menu \t ::::::::::::" << std::endl;
+    			std::cout << std::endl << " \t\t [ 1 ]: Add a register ";
+    			std::cout << std::endl << " \t\t [ 2 ]: Remove a register ";	
+    			std::cout << std::endl << " \t\t [ 3 ]: Show Data File ";	
+    			std::cout << std::endl << " \t\t [ 4 ]: Back to main menu ";	
 		}
 
 
