@@ -80,101 +80,92 @@ namespace archive {
 		file.close();	
     }
 
+    void DataFile::AppendAddress(long int new_address){
+    	std::fstream file( name_ + ext_, std::ios::binary | std::ios::app);
+		file.write( reinterpret_cast<const char*>(&new_address), sizeof(long int) );
+		file.close();	
+    }
+
     
-    void DataFile::ReadRegister(dictionary::Entity entity, std::list<dictionary::Attribute> list_attributes){
-    	
-    	//long int next = entity.GetDataAddress();
+    void DataFile::ReadRegister(std::list<dictionary::Attribute> list_attributes){
     	long int register_address;
     	long int next_register_address;
-    	//std::cout << ":: next : " << next << std::endl;
-        std::list<dictionary::Attribute>::iterator it = list_attributes.begin();
+    	std::list<dictionary::Attribute>::iterator it = list_attributes.begin();
         std::fstream file( name_ + ext_, std::ios::in | std::ios::out | std::ios::binary );
-        
-        //file.seekg( next );
         long int next = 0;
         file.seekg( next );
         while( next != -1 ){
-            
-            
 			file.read( reinterpret_cast<char*>(&register_address) , sizeof(long int) );
-			//next = next + sizeof(long int);
-            std::cout << "->" << register_address << " \t ";
-
+			std::cout << "\t" << register_address << "\t";
 	        while ( it != list_attributes.end() ) {
-        	
-
 	        	if ( it->GetDataType() == 'c' ){
-					
 					char str[ it->GetLengthDataType() ];
-					//file.seekg( next );
 					file.read( reinterpret_cast<char*>(str) , it->GetLengthDataType() );
-					//next = next + it->GetLengthDataType();
-					std::cout << "->" << str << " \t ";		
-				
+					std::cout << str << "\t";		
 				} else if ( it->GetDataType() == 'i' ){
-					
 					int  x;
-					//file.seekg( next );
 					file.read( reinterpret_cast<char*>(&x), sizeof( int ) );
-					//next = next + it->GetLengthDataType();
-					std::cout << "->" << x << " \t ";
+					std::cout << x << "\t";
 				}
-
 	        	it++;
 	        }
+	        file.read( reinterpret_cast<char*>(&next_register_address) , sizeof(long int) );
+            std::cout << next_register_address << " \t ";
+            next = next_register_address;
+    	}
+    	file.close();
+    }
 
-	        //file.seekg( next );
-			file.read( reinterpret_cast<char*>(&next_register_address) , sizeof(long int) );
+
+    int DataFile::GetSizeRegister(std::list<dictionary::Attribute> list_attributes){
+    	int length = sizeof(long int)*2; // because start address & end addres
+    	std::list<dictionary::Attribute>::iterator it = list_attributes.begin();
+	        while ( it != list_attributes.end() ) {
+	        	if ( it->GetDataType() == 'c' )
+		            length = length + it->GetLengthDataType();	
+				else if ( it->GetDataType() == 'i' )
+					length = length + sizeof( int );
+	        	it++;
+	        }
+	    return length; 
+    }
+
+    /*
+    void DataFile::UpdateRegister(std::list<dictionary::Attribute> list_attributes,long int position ,long int new_address){
+    	
+    	long int register_address;
+    	long int next_register_address;
+		
+		std::fstream file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
+        
+        long int next = position;
+        file.seekg( next );
+        while( next != -1 ){
+			file.read( reinterpret_cast<char*>(&register_address) , sizeof(long int) );
+	        while ( it != list_attributes.end() ) {
+	        	if ( it->GetDataType() == 'c' ){
+					char str[ it->GetLengthDataType() ];
+					file.read( reinterpret_cast<char*>(str) , it->GetLengthDataType() );
+				} else if ( it->GetDataType() == 'i' ){
+					int  x;
+					file.read( reinterpret_cast<char*>(&x), sizeof( int ) );
+				}
+	        	it++;
+	        }
+	        file.read( reinterpret_cast<char*>(&next_register_address) , sizeof(long int) );
             std::cout << "->" << next_register_address << " \t ";
             next = next_register_address;
+            if (next == -1 ){
+            	file.seekp( next - sizeof(long int) );
+                file.write( reinterpret_cast<const char*>(&), sizeof(int) );
+            }
+            list_next_addres.push_back(next);
     	}
 
     	file.close();	
+        return list_next_addres;
+    }*/
 
-
-       	
-     	
-        /*
-     	
-		
-		char name[MAX_LENGTH_NAME_DATA_FILE_];
-		char data_type;
-		int length_data_type;
-		long int attribute_address;
-		int type_index;
-		long int index_address;
-		long int next_attribute_address;
-			
-		while( next != -1 ){
-		
-			file.seekg( next );
-			file.read( reinterpret_cast<char*>( name) , MAX_LENGTH_NAME_ENTTITY_ );
-			file.read( reinterpret_cast<char*>(&data_type), sizeof(char) );
-			file.read( reinterpret_cast<char*>(&length_data_type), sizeof(int) );
-			file.read( reinterpret_cast<char*>(&attribute_address), sizeof(long int) );
-			file.read( reinterpret_cast<char*>(&type_index), sizeof(int) );
-			file.read( reinterpret_cast<char*>(&index_address), sizeof(long int) );
-			file.read( reinterpret_cast<char*>(&next_attribute_address), sizeof(long int) );
-
-			next = next_attribute_address;
-			
-			std::string str_name(name);
-			Attribute attribute;
-			attribute.SetName(str_name);
-			attribute.SetDataType(data_type);
-			attribute.SetLengthDataType(length_data_type);
-			attribute.SetAttributeAddress(attribute_address);
-			attribute.SetTypeIndex(type_index);
-			attribute.SetIndexAddress(index_address);
-			attribute.SetNextAttributeAddress(next_attribute_address);
-
-			list_attributes.push_back(attribute);
-		}
-		
-		file.close();	
-       	
-    	*/
-    }
 
    
 

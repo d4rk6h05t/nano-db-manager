@@ -353,7 +353,6 @@ namespace dictionary {
        	std::fstream file( name_ + ext_, std::ios::in | std::ios::out | std::ios::binary );
      	
 		long int next = entity.GetAttributeAddress();
-    	std::cout << ":: next : " << next;
 		char name[MAX_LENGTH_NAME_ATTRIBUTE_];
 		char data_type;
 		int length_data_type;

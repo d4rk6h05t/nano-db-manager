@@ -46,8 +46,10 @@ namespace archive {
 
             void AppendCharData(char * char_data,int length_char_data);
             void AppendIntData(int int_data);
+            void AppendAddress(long int new_address);
             
-            void ReadRegister(dictionary::Entity entity, std::list<dictionary::Attribute> list_attributes);
+            void ReadRegister(std::list<dictionary::Attribute> list_attributes);
+            int GetSizeRegister(std::list<dictionary::Attribute> list_attributes);
 
         private:
             std::string name_;

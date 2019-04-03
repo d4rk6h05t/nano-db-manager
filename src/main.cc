@@ -45,6 +45,7 @@ int main(){
 
 	long int entity_address_min;
 	long int entity_next_address_min;
+	long int list_next_address;
 
 	list<Attribute> list_attributes;
 
@@ -64,7 +65,7 @@ int main(){
 		    		cin >> option_file;
 	    			switch (option_file){
 				    	case 1: /* ::::::::::: N e w   f i l e  ::::::::::  */ 
-				    		view.ShowMessage("\n\t\tEnter a new file name: ");
+				    		view.ShowMessage("\n\t\tfile name: ");
 				    		cin >> file_name;
 				    		if ( file_name !="" ){
 				    			data_dictionary.SetName( file_name );
@@ -73,14 +74,14 @@ int main(){
 				    		break;
 				    	case 2: /* ::::::::::: O p e n  f i l e  ::::::::::  */
 				    		view.ShowStatusBar(data_dictionary.GetName(), data_dictionary.GetFileHeader(), data_dictionary.GetFileSize() );
-				    		view.ShowMessage("\n\t\tEnter a file name: ");
+				    		view.ShowMessage("\n\t\tfile name: ");
 				    		cin >> file_name;
 				    			if ( file_name !="" ){
 				    				data_dictionary.SetName( file_name );
 				    			}
 				    		break;
 				    	case 3:/* ::::::::::: R e m o ve   f i l e  ::::::::::  */
-				    		view.ShowMessage("\n\t\tEnter a new file name: ");
+				    		view.ShowMessage("\n\t\tfile name: ");
 				    		cin >> file_name;
 				    		view.ShowMessage("Deleted file with name ==> " + file_name);
 				    		break;
@@ -181,17 +182,17 @@ int main(){
 										    		
 
 										    		view.ShowMessage("\n\t\t===> Add Entity ");
-										    		view.ShowMessage("\n\t\t:: Enter a new attribute name: ");
+										    		view.ShowMessage("\n\t\t:: Attribute Name: ");
 										    		cin >> attr_name;
 										    		
 										    		if ( attr_name != "" ){
-										    			view.ShowMessage("\n\t\t:: Enter data type: ");
+										    			view.ShowMessage("\n\t\t:: Data Type: ");
 											    		cin >> attr_data_type;
 											    		if ( attr_data_type != '\0'  ){
-											    			view.ShowMessage("\n\t\t:: Enter lenngth of data type: ");
+											    			view.ShowMessage("\n\t\t:: Length Of Data Type: ");
 												    		cin >> attr_length;
 												    		if ( attr_length > 0 ){
-												    			view.ShowMessage("\n\t\t:: Enter type index: ");
+												    			view.ShowMessage("\n\t\t:: Type Index: ");
 													    		cin >> attr_index;
 													    		if ( attr_index > -1 ){
 													    			Attribute attribute( attr_name, attr_data_type, attr_length, attr_index );
@@ -264,15 +265,12 @@ int main(){
 				    		view.ShowStatusBar(data_file.GetName(), 0 , data_file.GetFileSize() );
 				    		list_attributes = data_dictionary.ReadListAttributes(current_entity);
 				    		
-				    		//if ( data_file.GetFileHeader() == -1){
-				    			//data_file.SetFileHeader( data_file.GetFileSize() );
-				    			//data_file.UpdateHeader();
-				    			data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , 0 );
-				    		//}
-                            cout << endl << "data_file.GetFileSize(): " << data_file.GetFileSize() << endl;
-				    		data_file.UpdateAddress( data_file.GetFileSize(), data_file.GetFileSize() ); // address
+				    		data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , 0 );
+				    		
+                            
+				    		data_file.AppendAddress( data_file.GetFileSize() );
 				    		current_length_structure = current_length_structure + sizeof(long int); 
-				    		cout << endl << ":: current_length_structure: " << current_length_structure << ": ";
+				    		
 				    		for (list<Attribute>::iterator it = list_attributes.begin(); it != list_attributes.end() ; ++it){
 				    			
 				    			cout << endl << ":: " << it->GetName() << ": ";
@@ -282,20 +280,27 @@ int main(){
 				    				cin >> str;
 				    				data_file.AppendCharData(str, it->GetLengthDataType() );
 				    				current_length_structure = current_length_structure + it->GetLengthDataType();
-				    				cout << endl << ":: current_length_structure: +str " << current_length_structure << ": "; 
+ 
 				    			} else if ( it->GetDataType() == 'i' ){
 				    				int  x;
 				    				cin >> x;
 				    				data_file.AppendIntData(x);
 				    				current_length_structure = current_length_structure + sizeof(int);
-				    				cout << endl << ":: current_length_structure: +int" << current_length_structure << ": ";
 				    			}
-				    			
-				    			   	
-				    		} 
-				    		cout << endl << ":: current_length_structure: finally" << current_length_structure << ": ";
-				    		data_file.UpdateAddress( current_length_structure , -1 ); // next address
+				    				   	
+				    		}
+				    		data_file.AppendAddress(-1);
 				    		
+				    		current_entity = data_dictionary.SearchEntity( data_dictionary.ReadListEntities(), current_entity_name);
+				    		if (data_file.GetFileSize() > ( data_file.GetSizeRegister( data_dictionary.ReadListAttributes(current_entity) )  + sizeof(long int) ) ){
+                               
+				    			int previus_next_address = data_file.GetFileSize() - ( data_file.GetSizeRegister( data_dictionary.ReadListAttributes(current_entity) )  + sizeof(long int) ); 
+				    			int current_next_address = data_file.GetFileSize() - data_file.GetSizeRegister( data_dictionary.ReadListAttributes(current_entity) );
+				    			data_file.UpdateAddress( previus_next_address , current_next_address  );
+				    			//cout << "->" << data_file.GetFileSize() - ( data_file.GetSizeRegister( data_dictionary.ReadListAttributes(current_entity) )  + sizeof(long int) ) <<"<-";
+				    		    cout << "->p" << previus_next_address;
+				    		    cout << "->c" << current_next_address;
+				    		}
 				    		
 				    			
 				    		break;
@@ -311,9 +316,8 @@ int main(){
 				    		
 							current_entity = data_dictionary.SearchEntity( data_dictionary.ReadListEntities(), current_entity_name);
 							
-							list_attributes = data_dictionary.ReadListAttributes(current_entity);
-
-							data_file.ReadRegister( current_entity, data_dictionary.ReadListAttributes(current_entity) );
+							
+							data_file.ReadRegister( data_dictionary.ReadListAttributes(current_entity) );
 							//view.ShowListAttributes( data_dictionary.ReadListAttributes(current_entity) );
 				    		break;
 				    }
