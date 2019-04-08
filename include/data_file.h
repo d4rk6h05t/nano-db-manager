@@ -41,12 +41,15 @@ namespace archive {
             // Methods of File
             void CreateFile();
             void UpdateHeader();
+            long int ReadAddress(long int position);
             void UpdateAddress(long int position, long int new_address);
             void UpdateName(long int position, std::string new_name);
 
             void AppendCharData(char * char_data,int length_char_data);
             void AppendIntData(int int_data);
             void AppendAddress(long int new_address);
+
+            void AppendData(std::list<dictionary::Attribute> list_attributes);
             
             void ReadRegister(std::list<dictionary::Attribute> list_attributes);
             int GetSizeRegister(std::list<dictionary::Attribute> list_attributes);

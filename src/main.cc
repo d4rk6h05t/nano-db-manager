@@ -249,7 +249,11 @@ int main(){
 
 				if ( current_entity_name !="" ){
 					current_entity = data_dictionary.SearchEntity( data_dictionary.ReadListEntities(), current_entity_name);
+					list_attributes = data_dictionary.ReadListAttributes(current_entity);
 				    if ( current_entity.GetEntityAddress() != -1 ){
+				    	data_file.SetName( current_entity_name );
+				    	data_file.CreateFile();
+
 
 	    		do {
 	    			view.Clear();
@@ -259,50 +263,27 @@ int main(){
 	    			switch (option_file){
                         /* ::::::::::: A d d   R e g i s t e  r  ::::::::::  */
 				    	case 1: {
-				    		int current_length_structure = 0;
-				    		data_file.SetName( current_entity_name );
-				    		data_file.CreateFile();
-				    		view.ShowStatusBar(data_file.GetName(), 0 , data_file.GetFileSize() );
-				    		list_attributes = data_dictionary.ReadListAttributes(current_entity);
 				    		
-				    		data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , 0 );
+				    		
+				    		view.ShowStatusBar(data_file.GetName(), 0 , data_file.GetFileSize() );
+				    		
+				    		if ( current_entity.GetDataAddress() == -1 )
+				    			data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , 0 );
+				    		data_file.AppendData(list_attributes);
 				    		
                             
-				    		data_file.AppendAddress( data_file.GetFileSize() );
-				    		current_length_structure = current_length_structure + sizeof(long int); 
-				    		
-				    		for (list<Attribute>::iterator it = list_attributes.begin(); it != list_attributes.end() ; ++it){
-				    			
-				    			cout << endl << ":: " << it->GetName() << ": ";
-
-				    			if ( it->GetDataType() == 'c' ){
-				    				char str[ it->GetLengthDataType() ];
-				    				cin >> str;
-				    				data_file.AppendCharData(str, it->GetLengthDataType() );
-				    				current_length_structure = current_length_structure + it->GetLengthDataType();
- 
-				    			} else if ( it->GetDataType() == 'i' ){
-				    				int  x;
-				    				cin >> x;
-				    				data_file.AppendIntData(x);
-				    				current_length_structure = current_length_structure + sizeof(int);
-				    			}
-				    				   	
-				    		}
-				    		data_file.AppendAddress(-1);
-				    		
-				    		current_entity = data_dictionary.SearchEntity( data_dictionary.ReadListEntities(), current_entity_name);
 				    		if (data_file.GetFileSize() > ( data_file.GetSizeRegister( data_dictionary.ReadListAttributes(current_entity) )  + sizeof(long int) ) ){
                                
-				    			int previus_next_address = data_file.GetFileSize() - ( data_file.GetSizeRegister( data_dictionary.ReadListAttributes(current_entity) )  + sizeof(long int) ); 
-				    			int current_next_address = data_file.GetFileSize() - data_file.GetSizeRegister( data_dictionary.ReadListAttributes(current_entity) );
-				    			data_file.UpdateAddress( previus_next_address , current_next_address  );
-				    			//cout << "->" << data_file.GetFileSize() - ( data_file.GetSizeRegister( data_dictionary.ReadListAttributes(current_entity) )  + sizeof(long int) ) <<"<-";
-				    		    cout << "->p" << previus_next_address;
-				    		    cout << "->c" << current_next_address;
-				    		}
-				    		
+				    			long int previus_next_address = data_file.GetFileSize() - ( data_file.GetSizeRegister( data_dictionary.ReadListAttributes(current_entity) )  + sizeof(long int) ); 
+				    			long int current_next_address = data_file.GetFileSize() - data_file.GetSizeRegister( data_dictionary.ReadListAttributes(current_entity) );
 				    			
+				    			cout << "-> ( " << previus_next_address << " , "<< current_next_address <<" ) <-";
+				    		   	data_file.UpdateAddress( previus_next_address , current_next_address  );
+				    		   	cout << endl << " ==> " << data_file.ReadAddress(previus_next_address);
+				    		   	cout << endl << " ==> " << data_file.ReadAddress(current_next_address+previus_next_address );
+
+				    		}	
+				    		
 				    		break;
 				    	} 
 				    		
@@ -311,12 +292,9 @@ int main(){
 				    		break;
 				    	case 3:/* ::::::::::: S h o w   d a t a    f i l e  ::::::::::  */
 				    		view.ShowMessage("===>Show data file");
-
 				    		view.ShowStatusBar(data_file.GetName(), 0, data_file.GetFileSize() );
-				    		
 							current_entity = data_dictionary.SearchEntity( data_dictionary.ReadListEntities(), current_entity_name);
-							
-							
+							cout << "-> " << current_entity.GetName() << " -> " << current_entity.GetAttributeAddress(); 
 							data_file.ReadRegister( data_dictionary.ReadListAttributes(current_entity) );
 							//view.ShowListAttributes( data_dictionary.ReadListAttributes(current_entity) );
 				    		break;
