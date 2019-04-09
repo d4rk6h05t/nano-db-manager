@@ -52,6 +52,7 @@ namespace dictionary {
             void AddAttribute(Attribute attribute);
             void UpdateAttribute(std::list<Attribute> list_attributes, Attribute attribute);
             std::list<Attribute> ReadListAttributes(Entity entity);
+            void RemoveAttribute(Entity current_entity, std::list<Attribute> list_attributes, std::string remove_attribute);
 
         private:
             // file metadata

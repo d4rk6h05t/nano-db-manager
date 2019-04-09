@@ -215,7 +215,9 @@ int main(){
 										    		view.ShowMessage("===> Update Attribute");
 										    		break;
 										    	case 3: /*  :::::::::::  R e m o v e    A t t r i b u t e  ::::::::::  */
-										    		view.ShowMessage("===> Delete Attribute");
+										    		view.ShowMessage("\n===> Delete Attribute \t\t:: Attribute Name:");
+										    		cin >> attr_name;
+										    		data_dictionary.RemoveAttribute(current_entity, data_dictionary.ReadListAttributes(current_entity), attr_name);
 										    		break;
 										    	case 4: /*  :::::::::::  S e l e c t   A t t r i b u t e  ::::::::::  */
 										    		view.ShowMessage("===>Select Attribute");

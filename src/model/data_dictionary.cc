@@ -392,5 +392,53 @@ namespace dictionary {
     	return list_attributes;
     }
 
+    void DataDictionary::RemoveAttribute(Entity current_entity, std::list<Attribute> list_attributes, std::string remove_attribute){
+       	
+       	long int end_address = -1;
+       	std::fstream file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
+        
+        if ( !list_attributes.empty() ){
+        
+        	std::string first_attribute( list_attributes.front().GetName() );
+		    
+			
+		
+			std::list<Attribute>::iterator it_current = list_attributes.begin();
+			std::list<Attribute>::iterator it_previus = std::prev( it_current , 1 );
+			std::list<Attribute>::iterator it_next = std::next( it_current , 1 );
+		    
+			
+
+			while ( it_current != list_attributes.end() ){
+		
+				std::string it_current_attribute( it_current->GetName() );
+		        
+		        if( remove_attribute.compare(first_attribute) ==  0 ){
+				    file.seekp( current_entity.GetEntityAddress() + 35 + 8 );
+				    long int next_attr = it_next->GetAttributeAddress();
+				    file.write( reinterpret_cast<const char*>(&next_attr), sizeof(long int) );
+
+				}
+
+				if ( remove_attribute.compare(it_current_attribute) == 0 ){
+					
+					file.seekp( it_previus->GetAttributeAddress() + 35 + 1 + 4 + 8 + 4 + 8  );
+					long int new_next_attribute_address = it_current->GetNextAttributeAddress();
+					file.write( reinterpret_cast<const char*>(&new_next_attribute_address), sizeof(long int) );
+					
+					file.seekp( it_current->GetAttributeAddress() + 35 + 1 + 4 + 8 + 4 + 8 );
+					file.write( reinterpret_cast<const char*>(&end_address), sizeof(long int) );		 
+					break;
+				
+				}
+		
+				it_current++;
+				it_previus++;
+				it_next++;
+			}
+        } 
+		file.close();											
+    }
+
 }  // end namespace dictionary
 
