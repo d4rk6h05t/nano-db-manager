@@ -41,7 +41,10 @@ namespace dictionary {
             void UpdateHeader();
             void UpdateAddress(long int position, long int new_address);
             void UpdateName(long int position, std::string new_name);
-            
+
+            void UpdateChar(long int position, char new_char);
+            void UpdateInt(long int position, int new_int);
+
             // Methods of entities
             void AddEntity(Entity entity);
             void UpdateEntity(std::list<Entity> list_entities, Entity *entity);
@@ -53,6 +56,7 @@ namespace dictionary {
             void UpdateAttribute(std::list<Attribute> list_attributes, Attribute attribute);
             std::list<Attribute> ReadListAttributes(Entity entity);
             void RemoveAttribute(Entity current_entity, std::list<Attribute> list_attributes, std::string remove_attribute);
+            Attribute SearchAttribute(std::list<Attribute> list_attributes, std::string name_attribute);
 
         private:
             // file metadata

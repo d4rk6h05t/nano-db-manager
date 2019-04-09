@@ -181,15 +181,15 @@ int main(){
 										    		//view.ShowMessage("===> Add Attribute");
 										    		
 
-										    		view.ShowMessage("\n\t\t===> Add Entity ");
-										    		view.ShowMessage("\n\t\t:: Attribute Name: ");
+										    		view.ShowMessage("\n\t\t===> Add Attribute ");
+										    		view.ShowMessage("\n\t\t:: Name: ");
 										    		cin >> attr_name;
 										    		
 										    		if ( attr_name != "" ){
 										    			view.ShowMessage("\n\t\t:: Data Type: ");
 											    		cin >> attr_data_type;
 											    		if ( attr_data_type != '\0'  ){
-											    			view.ShowMessage("\n\t\t:: Length Of Data Type: ");
+											    			view.ShowMessage("\n\t\t:: Length: ");
 												    		cin >> attr_length;
 												    		if ( attr_length > 0 ){
 												    			view.ShowMessage("\n\t\t:: Type Index: ");
@@ -211,13 +211,46 @@ int main(){
 													    
 													}
 										    		break;
-										    	case 2: /*  :::::::::::  U p d a t e   A t t r i b u t e  ::::::::::  */
+
+										    	case 2: { /*  :::::::::::  U p d a t e   A t t r i b u t e  ::::::::::  */
 										    		view.ShowMessage("===> Update Attribute");
+										    		view.ShowMessage("\n\t\t:: Select a attribute : ");
+										    		string current_attr_name;
+										    		cin >> current_attr_name;
+										    		if ( current_attr_name != "" ){
+										    			Attribute attr = data_dictionary.SearchAttribute( data_dictionary.ReadListAttributes( current_entity ) ,current_attr_name );
+										    				view.ShowMessage("\n\t\t:: Name: ");
+												    		cin >> attr_name;
+												    		
+												    		if ( attr_name != "" ){
+												    			data_dictionary.UpdateName( attr.GetAttributeAddress() ,attr_name);
+												    			view.ShowMessage("\n\t\t:: Data Type: ");
+													    		cin >> attr_data_type;
+													    		
+													    		if ( attr_data_type != '\0'  ){
+													    			data_dictionary.UpdateChar( attr.GetAttributeAddress() + 35 ,attr_data_type);
+													    			view.ShowMessage("\n\t\t:: Length: ");
+														    		cin >> attr_length;
+														    		
+														    		if ( attr_length > 0 ){
+														    			data_dictionary.UpdateInt( attr.GetAttributeAddress() + 35 + 1 ,attr_length);
+														    			view.ShowMessage("\n\t\t:: Type Index: ");
+															    		cin >> attr_index;
+															    		if ( attr_index > -1 ){
+															    			data_dictionary.UpdateInt( attr.GetAttributeAddress() + 35 + 1 + 4 + 8 ,attr_index);
+															    		}	
+														    		}	
+													    		}
+															    
+															}
+										    		}
 										    		break;
+										    	}
 										    	case 3: /*  :::::::::::  R e m o v e    A t t r i b u t e  ::::::::::  */
 										    		view.ShowMessage("\n===> Delete Attribute \t\t:: Attribute Name:");
 										    		cin >> attr_name;
-										    		data_dictionary.RemoveAttribute(current_entity, data_dictionary.ReadListAttributes(current_entity), attr_name);
+										    		if (attr_name != "")
+										    			data_dictionary.RemoveAttribute(current_entity, data_dictionary.ReadListAttributes(current_entity), attr_name);
 										    		break;
 										    	case 4: /*  :::::::::::  S e l e c t   A t t r i b u t e  ::::::::::  */
 										    		view.ShowMessage("===>Select Attribute");

@@ -80,6 +80,20 @@ namespace dictionary {
 		file.close();
     }
 
+    void DataDictionary::UpdateChar(long int position, char new_char){
+   		std::fstream file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
+		file.seekp(position);
+		file.write( reinterpret_cast<const char*>(&new_char), sizeof( char ) );
+		file.close();
+    }
+
+    void DataDictionary::UpdateInt(long int position, int new_int){
+   		std::fstream file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
+		file.seekp(position);
+		file.write( reinterpret_cast<const char*>(&new_int), sizeof( int ) );
+		file.close();
+    }
+
     // Methods of entities
 
     void DataDictionary::AddEntity(Entity entity){
@@ -438,6 +452,29 @@ namespace dictionary {
 			}
         } 
 		file.close();											
+    }
+
+    Attribute DataDictionary::SearchAttribute(std::list<Attribute> list_attributes, std::string name_attribute){
+    	
+    	Attribute attribute;
+    	
+    	for (std::list<Attribute>::iterator it = list_attributes.begin(); it != list_attributes.end(); it++){
+    	
+    		std::string current_name( it->GetName() );
+    	
+    		if ( name_attribute.compare( current_name ) == 0 ){
+    			attribute.SetName( current_name );
+    		    attribute.SetDataType( it->GetDataType() );
+    			attribute.SetLengthDataType( it->GetLengthDataType() );
+    			attribute.SetAttributeAddress( it->GetAttributeAddress() );
+    			attribute.SetTypeIndex( it->GetTypeIndex() );
+    			attribute.SetIndexAddress( it->GetIndexAddress() );
+    			attribute.SetNextAttributeAddress( it->GetNextAttributeAddress() );	
+    		}
+    	
+    	}
+
+    	return attribute;
     }
 
 }  // end namespace dictionary
