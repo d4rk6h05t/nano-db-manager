@@ -48,6 +48,16 @@ namespace dictionary {
     
    // Methods of file 
    void DataDictionary::CreateFile(){
+   			
+   			char str[dir_.length()];
+           for (int i = 0; i < dir_.length() ; ++i)
+            	str[i] = dir_[i];
+
+		    if (mkdir(str, 0777) == -1) 
+		        std::cerr << "Error :  " << strerror(errno) << std::endl; 
+		    else
+		        std::cout << "Directory created"; 
+
    			std::ofstream file( name_ + ext_, std::ios::binary | std::ios::out );
 			file.seekp(0);
 			file.write( reinterpret_cast<const char*>(&file_header_), sizeof(long int) );
