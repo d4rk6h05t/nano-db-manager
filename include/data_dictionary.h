@@ -7,6 +7,10 @@
 #include <list>
 #include <iterator>
 
+#include <bits/stdc++.h> 
+#include <sys/stat.h> 
+#include <sys/types.h> 
+
 #include "entity.h"
 #include "attribute.h"
 
