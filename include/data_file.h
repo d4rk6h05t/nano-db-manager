@@ -27,13 +27,11 @@ namespace archive {
             // Setters
             void SetName(const std::string& name);
             void SetDir(const std::string& dir); 
-            void SetPath(const std::string& path); 
             void SetExt(const std::string& ext);
             void SetFileHeader(long int file_header);
             // Getters
             std::string GetName();
             std::string GetDir();
-            std::string GetPath();
             std::string GetExt();                        
             long int GetFileHeader();
             long int GetFileSize();
@@ -57,7 +55,6 @@ namespace archive {
         private:
             std::string name_;
             std::string dir_;
-            std::string path_;
             std::string ext_;
             long int file_header_;
             long int file_size_;
