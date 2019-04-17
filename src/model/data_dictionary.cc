@@ -5,19 +5,17 @@ namespace dictionary {
 	// Constructors & destructosr
 	DataDictionary::DataDictionary(){ 
 		id_ = 0;
-		path_ = "/home/someuser/myproject";
 		dir_ = "tmp/";
 		name_ = "unamed"; 
-		ext_ = ".dat";
+		ext_ = ".dd";
         file_header_ = -1;
 	}
 
 	DataDictionary::DataDictionary(const std::string& name){ 
 		id_ = 0;
-		path_ = "/home/someuser/myproject";
 		dir_ = "tmp/";
 		name_ = name; 
-		ext_ = ".dat";
+		ext_ = ".dd";
         file_header_ = -1;
 	}
 
@@ -27,19 +25,17 @@ namespace dictionary {
 	void DataDictionary::SetId(int id){ id_ = id; }
 	void DataDictionary::SetName(const std::string& name){ name_ = name; }
 	void DataDictionary::SetDir(const std::string& dir){ dir_ = dir; }
-	void DataDictionary::SetPath(const std::string& path){ path_ = path; }
 	void DataDictionary::SetExt(const std::string& ext){ ext_ = ext; }
     void DataDictionary::SetFileHeader(long int file_header){ file_header_ = file_header; }
     // Getters
     int DataDictionary::GetId(){ return id_;}
     std::string DataDictionary::GetName(){ return name_;}
     std::string DataDictionary::GetDir(){ return dir_;}
-    std::string DataDictionary::GetPath(){ return path_;}
     std::string DataDictionary::GetExt(){ return ext_;}
     long int DataDictionary::GetFileHeader(){return file_header_;}
     
     long int DataDictionary::GetFileSize(){
-    	std::ifstream file ( name_ + ext_, std::ios::binary | std::ios::in );
+    	std::ifstream file ( dir_ + name_ + ext_, std::ios::binary | std::ios::in );
     	file.seekg(0, std::ios::end);
     	file_size_ = file.tellg();
     	file.close();
@@ -55,24 +51,27 @@ namespace dictionary {
 
 		    if (mkdir(str, 0777) == -1) 
 		        std::cerr << "Error :  " << strerror(errno) << std::endl; 
-		    else
-		        std::cout << "Directory created"; 
+		    else {
 
-   			std::ofstream file( name_ + ext_, std::ios::binary | std::ios::out );
-			file.seekp(0);
-			file.write( reinterpret_cast<const char*>(&file_header_), sizeof(long int) );
-			file.close();
+		        std::cout << "Directory created"; 
+		    	std::ofstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::out );
+				file.seekp(0);
+				file.write( reinterpret_cast<const char*>(&file_header_), sizeof(long int) );
+				file.close();
+		    }
+
+   			
    }
 
    void DataDictionary::UpdateHeader(){
-   		std::fstream file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
+   		std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
 		file.seekp(0);
 		file.write( reinterpret_cast<const char*>(&file_header_), sizeof(long int) );
 		file.close();
     }
 
     void DataDictionary::UpdateAddress(long int position, long int new_address){
-   		std::fstream file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
+   		std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
 		file.seekp( position  );
 		file.write( reinterpret_cast<const char*>(&new_address), sizeof(long int) );
 		file.close();
@@ -84,21 +83,21 @@ namespace dictionary {
         for (int i = 0; i < MAX_LENGTH_NAME_ENTTITY_; i++)
         	name[i] = new_name[i];
 
-   		std::fstream file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
+   		std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
 		file.seekp(position);
 		file.write( reinterpret_cast<const char*>(name), MAX_LENGTH_NAME_ENTTITY_ );
 		file.close();
     }
 
     void DataDictionary::UpdateChar(long int position, char new_char){
-   		std::fstream file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
+   		std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
 		file.seekp(position);
 		file.write( reinterpret_cast<const char*>(&new_char), sizeof( char ) );
 		file.close();
     }
 
     void DataDictionary::UpdateInt(long int position, int new_int){
-   		std::fstream file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
+   		std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
 		file.seekp(position);
 		file.write( reinterpret_cast<const char*>(&new_int), sizeof( int ) );
 		file.close();
@@ -107,7 +106,7 @@ namespace dictionary {
     // Methods of entities
 
     void DataDictionary::AddEntity(Entity entity){
-        std::fstream file( name_ + ext_, std::ios::binary | std::ios::app);
+        std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::app);
 	
 	    char name[MAX_LENGTH_NAME_ENTTITY_];
 		long int entity_address;
@@ -132,7 +131,7 @@ namespace dictionary {
     }
 
     void DataDictionary::UpdateEntity(std::list<Entity> list_entities, Entity *entity){
-       	std::fstream file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
+       	std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
        	file.seekg(0, std::ios::end);
     	file_size_ = file.tellg();
        	/* ::::: create a sort list  ::::: */
@@ -223,7 +222,7 @@ namespace dictionary {
     void DataDictionary::RemoveEntity(std::list<Entity> list_entities, std::string remove_entity){
        	
        	long int end_address = -1;
-       	std::fstream file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
+       	std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
         
         if ( !list_entities.empty() ){
         
@@ -284,7 +283,7 @@ namespace dictionary {
     std::list<Entity> DataDictionary::ReadListEntities(){
     	
     	std::list<Entity> list_entities;
-       	std::fstream file( name_ + ext_, std::ios::in | std::ios::out | std::ios::binary );
+       	std::fstream file( dir_ + name_ + ext_, std::ios::in | std::ios::out | std::ios::binary );
        	
        	file.seekp(0);
        	long int file_header, next;
@@ -326,7 +325,7 @@ namespace dictionary {
 
     void DataDictionary::AddAttribute(Attribute attribute){
     	
-    	std::fstream file( name_ + ext_, std::ios::binary | std::ios::app);
+    	std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::app);
 	
 	    char name[MAX_LENGTH_NAME_ATTRIBUTE_];
 		char data_type;
@@ -359,7 +358,7 @@ namespace dictionary {
 
     void DataDictionary::UpdateAttribute(std::list<Attribute> list_attributes, Attribute attribute){
 
-       	std::fstream file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
+       	std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
        	long int end_address = -1;
         long int attribute_address = attribute.GetAttributeAddress();
 
@@ -374,7 +373,7 @@ namespace dictionary {
     std::list<Attribute> DataDictionary::ReadListAttributes(Entity entity){
     	
     	std::list<Attribute> list_attributes;
-       	std::fstream file( name_ + ext_, std::ios::in | std::ios::out | std::ios::binary );
+       	std::fstream file( dir_ + name_ + ext_, std::ios::in | std::ios::out | std::ios::binary );
      	
 		long int next = entity.GetAttributeAddress();
 		char name[MAX_LENGTH_NAME_ATTRIBUTE_];
@@ -419,7 +418,7 @@ namespace dictionary {
     void DataDictionary::RemoveAttribute(Entity current_entity, std::list<Attribute> list_attributes, std::string remove_attribute){
        	
        	long int end_address = -1;
-       	std::fstream file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
+       	std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
         
         if ( !list_attributes.empty() ){
         
