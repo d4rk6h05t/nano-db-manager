@@ -33,12 +33,13 @@ namespace archive {
     
     long int DataFile::GetFileSize(){
     	std::ifstream file ( dir_ + name_ + ext_, std::ios::binary | std::ios::in );
-    	file.exceptions( std::ifstream::badbit );
+    	file.exceptions( file.failbit | file.badbit );
 			try { 
 		    	file.seekg(0, std::ios::end);
 		    	file_size_ = file.tellg();
-		    } catch (const std::ifstream::failure & e) {
-    			std::cout << ":: warning Exception:  reading file";
+		    } catch (const std::ios_base::failure & e) {
+    				std::cout << ":: Warning Exception: " << e.what() << std::endl
+                  		  	  << ":: Error code: " << e.code() << std::endl;
   			}
     	file.close();
 		return file_size_;
@@ -47,38 +48,41 @@ namespace archive {
    // Methods of file 
    void DataFile::CreateFile(){
    		std::ofstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::out );
-			file.exceptions( std::ofstream::badbit );
+			file.exceptions( file.failbit | file.badbit );
 				try {
 					file.seekp(0);
 					//file.write( reinterpret_cast<const char*>(&file_header_), sizeof(long int) );
-				} catch (const std::ofstream::failure & e) {
-	    			std::cout << ":: warning Exception:  creating file";
-	  			}
+				} catch (const std::ios_base::failure & e) {
+    				std::cout << ":: Warning Exception: " << e.what() << std::endl
+                  		  	  << ":: Error code: " << e.code() << std::endl;
+  				}
 		file.close();
    }
 
    void DataFile::UpdateHeader(){
    		std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
-		file.exceptions( std::fstream::badbit );
+		file.exceptions( file.failbit | file.badbit );
 			try {
 				file.seekp(0);
 				file.write( reinterpret_cast<const char*>(&file_header_), sizeof(long int) );
-			} catch (const std::fstream::failure & e) {
-	    		std::cout << ":: warning Exception:  writing file";
-	  		}
+			} catch (const std::ios_base::failure & e) {
+    				std::cout << ":: Warning Exception: " << e.what() << std::endl
+                  		  	  << ":: Error code: " << e.code() << std::endl;
+  			}
 		file.close();
     }
     
     long int DataFile::ReadAddress(long int position){
     	long int data;
    		std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out );
-		file.exceptions( std::fstream::badbit );
+		file.exceptions( file.failbit | file.badbit );
 			try {
 				file.seekp( position  );
 				file.read( reinterpret_cast<char*>(&data) , sizeof(long int) );
-			} catch (const std::fstream::failure & e) {
-	    		std::cout << ":: warning Exception:  reading file";
-	  		} 
+			} catch (const std::ios_base::failure & e) {
+    				std::cout << ":: Warning Exception: " << e.what() << std::endl
+                  		  	  << ":: Error code: " << e.code() << std::endl;
+  			}
 		file.close();
 		return data;
     }
@@ -86,13 +90,14 @@ namespace archive {
     void DataFile::UpdateAddress(long int position, long int new_address){
    		
    		std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
-		file.exceptions( std::fstream::badbit );
+		file.exceptions( file.failbit | file.badbit );
 			try {
 				file.seekp( position  );
 				file.write( reinterpret_cast<const char*>(&new_address), sizeof(long int) );
-			} catch (const std::fstream::failure & e) {
-	    		std::cout << ":: warning Exception:  writing file";
-	  		}
+			} catch (const std::ios_base::failure & e) {
+    				std::cout << ":: Warning Exception: " << e.what() << std::endl
+                  		  	  << ":: Error code: " << e.code() << std::endl;
+  			}
 		file.close();
    		//std::fstream file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
 		
@@ -117,34 +122,37 @@ namespace archive {
 	    char str[length_char_data];
 		for (int i = 0; i < length_char_data; i++)
 		    str[i] = char_data[i]; 
-		file.exceptions( std::fstream::badbit );
+		file.exceptions( file.failbit | file.badbit );
 			try {     
 				file.write( reinterpret_cast<const char*>(str), length_char_data );
-			} catch (const std::fstream::failure & e) {
-	    		std::cout << ":: warning Exception:  writing file";
-	  		}
+			} catch (const std::ios_base::failure & e) {
+    				std::cout << ":: Warning Exception: " << e.what() << std::endl
+                  		  	  << ":: Error code: " << e.code() << std::endl;
+  			}
 		file.close();
     }
 
     void DataFile::AppendIntData(int int_data){
     	std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::app);
-    	file.exceptions( std::fstream::badbit );
+    	file.exceptions( file.failbit | file.badbit );
 			try {
 				file.write( reinterpret_cast<const char*>(&int_data), sizeof(int) );
-			} catch (const std::fstream::failure & e) {
-	    		std::cout << ":: warning Exception:  writing file";
-	  		}
+			} catch (const std::ios_base::failure & e) {
+    				std::cout << ":: Warning Exception: " << e.what() << std::endl
+                  		  	  << ":: Error code: " << e.code() << std::endl;
+  			}
 		file.close();	
     }
 
     void DataFile::AppendAddress(long int new_address){
     	std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::app);
-		file.exceptions( std::fstream::badbit );
+		file.exceptions( file.failbit | file.badbit );
 			try {
 				file.write( reinterpret_cast<const char*>(&new_address), sizeof(long int) );
-			} catch (const std::fstream::failure & e) {
-	    		std::cout << ":: warning Exception:  writing file";
-	  		}
+			} catch (const std::ios_base::failure & e) {
+    				std::cout << ":: Warning Exception: " << e.what() << std::endl
+                  		  	  << ":: Error code: " << e.code() << std::endl;
+  			}
 		file.close();	
     }
 
@@ -152,7 +160,7 @@ namespace archive {
     	
     	std::list<dictionary::Attribute>::iterator it = list_attributes.begin();
     	std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::app);
-		file.exceptions( std::fstream::badbit );
+		file.exceptions( file.failbit | file.badbit );
 			try {
 		       	file.seekg(0, std::ios::end);
 		    	long int file_size = file.tellg();
@@ -173,9 +181,10 @@ namespace archive {
 			       	++it;
 			    }
 			    file.write( reinterpret_cast<const char*>(&end_address), sizeof(long int) );
-	        } catch (const std::fstream::failure & e) {
-	    		std::cout << ":: warning Exception:  writing file";
-	  		}
+	        } catch (const std::ios_base::failure & e) {
+    				std::cout << ":: Warning Exception: " << e.what() << std::endl
+                  		  	  << ":: Error code: " << e.code() << std::endl;
+  			}
 	    file.close();
     }
 
@@ -188,7 +197,7 @@ namespace archive {
         long int next = 0;
         while( next != -1 ){
 			//file.seekg( next );
-			file.exceptions( std::fstream::badbit );
+			file.exceptions( file.failbit | file.badbit );
 				try {
 					file.read( reinterpret_cast<char*>(&register_address) , sizeof(long int) );
 					std::cout << "\t" << register_address << "\t";
@@ -209,9 +218,10 @@ namespace archive {
 		            next = next_register_address;
 		            if ( next_register_address == -1 )
 		            	break; 
-            	} catch (const std::fstream::failure & e) {
-	    			std::cout << ":: warning Exception:  reading file";
-	  			}
+            	} catch (const std::ios_base::failure & e) {
+    				std::cout << ":: Warning Exception: " << e.what() << std::endl
+                  		  	  << ":: Error code: " << e.code() << std::endl;
+  				}
     	}
     	file.close();
     }

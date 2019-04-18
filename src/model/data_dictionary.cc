@@ -36,12 +36,13 @@ namespace dictionary {
     
     long int DataDictionary::GetFileSize(){
     	std::ifstream file ( dir_ + name_ + ext_, std::ios::binary | std::ios::in );
-    	file.exceptions( std::ifstream::badbit );
+    	file.exceptions( file.failbit | file.badbit );
 			try { 
     			file.seekg(0, std::ios::end);
 	    		file_size_ = file.tellg();
-	    	} catch (const std::ifstream::failure & e) {
-    			std::cout << ":: warning Exception:  reading file";
+	    	} catch (const std::ios_base::failure & e) {
+    			std::cout << ":: Warning Exception: " << e.what() << std::endl
+                  		  << ":: Error code: " << e.code() << std::endl;
   			}
 	    file.close();
 		return file_size_;
@@ -60,13 +61,15 @@ namespace dictionary {
 
 		        std::cout << ":: Successful: Directory created"; 
 		    	std::ofstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::out );
-				file.exceptions( std::ofstream::badbit );
+				file.exceptions( file.failbit | file.badbit );
 				try { 
 					file.seekp( 0 );
 					file.write( reinterpret_cast<const char*>(&file_header_), sizeof(long int) );
-				} catch (const std::ofstream::failure & e) {
-    				std::cout << ":: warning Exception:  creating file";
+				} catch (const std::ios_base::failure & e) {
+    				std::cout << ":: Warning Exception: " << e.what() << std::endl
+                  		  	  << ":: Error code: " << e.code() << std::endl;
   				}
+
 
 				file.close();
 		    }
@@ -76,24 +79,26 @@ namespace dictionary {
 
    void DataDictionary::UpdateHeader(){
    		std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
-   		file.exceptions( std::fstream::badbit );
+   		file.exceptions( file.failbit | file.badbit );
 			try { 
 				file.seekp(0);
 				file.write( reinterpret_cast<const char*>(&file_header_), sizeof(long int) );
-			} catch (const std::fstream::failure & e) {
-    			std::cout << ":: warning Exception:  writing file";
+			} catch (const std::ios_base::failure & e) {
+    				std::cout << ":: Warning Exception: " << e.what() << std::endl
+                  		  	  << ":: Error code: " << e.code() << std::endl;
   			}
 		file.close();
     }
 
     void DataDictionary::UpdateAddress(long int position, long int new_address){
    		std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
-		file.exceptions( std::fstream::badbit );
+		file.exceptions( file.failbit | file.badbit );
 			try {
 				file.seekp( position  );
 				file.write( reinterpret_cast<const char*>(&new_address), sizeof(long int) );
-			} catch (const std::fstream::failure & e) {
-    			std::cout << ":: warning Exception:  writing file";
+			} catch (const std::ios_base::failure & e) {
+    				std::cout << ":: Warning Exception: " << e.what() << std::endl
+                  		  	  << ":: Error code: " << e.code() << std::endl;
   			}
 		file.close();
     }
@@ -105,36 +110,39 @@ namespace dictionary {
         	name[i] = new_name[i];
 
    		std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
-		file.exceptions( std::fstream::badbit );
+		file.exceptions( file.failbit | file.badbit );
 			try {
 				file.seekp(position);
 				file.write( reinterpret_cast<const char*>(name), MAX_LENGTH_NAME_ENTTITY_ );
-			} catch (const std::fstream::failure & e) {
-    			std::cout << ":: warning Exception:  writing file";
+			} catch (const std::ios_base::failure & e) {
+    				std::cout << ":: Warning Exception: " << e.what() << std::endl
+                  		  	  << ":: Error code: " << e.code() << std::endl;
   			}
 		file.close();
     }
 
     void DataDictionary::UpdateChar(long int position, char new_char){
    		std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
-		file.exceptions( std::fstream::badbit );
+		file.exceptions( file.failbit | file.badbit );
 			try {
 				file.seekp(position);
 				file.write( reinterpret_cast<const char*>(&new_char), sizeof( char ) );
-			} catch (const std::fstream::failure & e) {
-    			std::cout << ":: warning Exception:  writing file";
+			} catch (const std::ios_base::failure & e) {
+    				std::cout << ":: Warning Exception: " << e.what() << std::endl
+                  		  	  << ":: Error code: " << e.code() << std::endl;
   			}
 		file.close();
     }
 
     void DataDictionary::UpdateInt(long int position, int new_int){
    		std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
-		file.exceptions( std::fstream::badbit );
+		file.exceptions( file.failbit | file.badbit );
 			try {
 				file.seekp(position);
 				file.write( reinterpret_cast<const char*>(&new_int), sizeof( int ) );
-			} catch (const std::fstream::failure & e) {
-    			std::cout << ":: warning Exception:  writing file";
+			} catch (const std::ios_base::failure & e) {
+    				std::cout << ":: Warning Exception: " << e.what() << std::endl
+                  		  	  << ":: Error code: " << e.code() << std::endl;
   			}
 		file.close();
     }
@@ -157,22 +165,23 @@ namespace dictionary {
 		attribute_address = entity.GetAttributeAddress();
 		data_address = entity.GetDataAddress();
 		next_entity_address = entity.GetNextEntityAddress();
-        file.exceptions( std::fstream::badbit );
+        file.exceptions( std::fstream::failbit | std::fstream::badbit );
 			try {
 				file.write( reinterpret_cast<const char*>(name), MAX_LENGTH_NAME_ENTTITY_ );
 				file.write( reinterpret_cast<const char*>(&entity_address) , sizeof(long int) );
 				file.write( reinterpret_cast<const char*>(&attribute_address), sizeof(long int) );
 				file.write( reinterpret_cast<const char*>(&data_address), sizeof(long int) );
 				file.write( reinterpret_cast<const char*>(&next_entity_address), sizeof(long int) );	
-			} catch (const std::fstream::failure & e) {
-    			std::cout << ":: warning Exception:  writing file";
-  			} 
+			} catch (const std::ios_base::failure & e) {
+    				std::cout << ":: Warning Exception: " << e.what() << std::endl
+                  		  	  << ":: Error code: " << e.code() << std::endl;
+  			}
 		file.close();
     }
 
     void DataDictionary::UpdateEntity(std::list<Entity> list_entities, Entity *entity){
        	std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
-       	file.exceptions( std::fstream::badbit );
+       	file.exceptions( file.failbit | file.badbit );
 			try {
 		       	file.seekg(0, std::ios::end);
 		    	file_size_ = file.tellg();
@@ -258,8 +267,9 @@ namespace dictionary {
 				file_header_ = list_entities.front().GetEntityAddress();
 				file.seekp( 0 );
 				file.write( reinterpret_cast<const char*>(&file_header_), sizeof(long int) );
-			} catch (const std::fstream::failure & e) {
-    			std::cout << ":: warning Exception:  writing file";
+			} catch (const std::ios_base::failure & e) {
+    				std::cout << ":: Warning Exception: " << e.what() << std::endl
+                  		  	  << ":: Error code: " << e.code() << std::endl;
   			}
 		file.close();
     }
@@ -268,7 +278,7 @@ namespace dictionary {
        	
        	long int end_address = -1;
        	std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
-        file.exceptions( std::fstream::badbit );
+        file.exceptions( file.failbit | file.badbit );
 			try {
 		        if ( !list_entities.empty() ){
 		        
@@ -302,8 +312,9 @@ namespace dictionary {
 						it_previus++;
 					}
 		        } 
-		    } catch (const std::fstream::failure & e) {
-    			std::cout << ":: warning Exception:  writing file";
+		    } catch (const std::ios_base::failure & e) {
+    				std::cout << ":: Warning Exception: " << e.what() << std::endl
+                  		  	  << ":: Error code: " << e.code() << std::endl;
   			}
 		file.close();											
     }
@@ -333,7 +344,7 @@ namespace dictionary {
     	
     	std::list<Entity> list_entities;
        	std::fstream file( dir_ + name_ + ext_, std::ios::in | std::ios::out | std::ios::binary );
-       	file.exceptions( std::fstream::badbit );
+       	file.exceptions( file.failbit | file.badbit );
 			try {
 		       	file.seekp(0);
 		       	long int file_header, next;
@@ -367,8 +378,9 @@ namespace dictionary {
 				    entity.SetNextEntityAddress(next_entity_address);
 					list_entities.push_back(entity);
 				}
-			} catch (const std::fstream::failure & e) {
-    			std::cout << ":: warning Exception:  readings file";
+			} catch (const std::ios_base::failure & e) {
+    				std::cout << ":: Warning Exception: " << e.what() << std::endl
+                  		  	  << ":: Error code: " << e.code() << std::endl;
   			}
 		
 		file.close();	
@@ -397,7 +409,7 @@ namespace dictionary {
 		type_index = attribute.GetTypeIndex();
 		index_address = attribute.GetIndexAddress();
 		next_attribute_address = attribute.GetNextAttributeAddress();
-		file.exceptions( std::fstream::badbit );
+		file.exceptions( file.failbit | file.badbit );
 			try {        
 				file.write( reinterpret_cast<const char*>(name), MAX_LENGTH_NAME_ATTRIBUTE_ );      // 35
 				file.write( reinterpret_cast<const char*>(&data_type) , sizeof(char) );             // 1
@@ -406,8 +418,9 @@ namespace dictionary {
 				file.write( reinterpret_cast<const char*>(&type_index), sizeof(int) );              // 4
 				file.write( reinterpret_cast<const char*>(&index_address), sizeof(long int) );      // 8
 				file.write( reinterpret_cast<const char*>(&next_attribute_address), sizeof(long int) );	 
-			} catch (const std::fstream::failure & e) {
-    			std::cout << ":: warning Exception:  writing file";
+			} catch (const std::ios_base::failure & e) {
+    				std::cout << ":: Warning Exception: " << e.what() << std::endl
+                  		  	  << ":: Error code: " << e.code() << std::endl;
   			}
 		file.close();
     }
@@ -420,12 +433,13 @@ namespace dictionary {
         long int attribute_address = attribute.GetAttributeAddress();
         
     	if ( !list_attributes.empty() ){
-    		file.exceptions( std::fstream::badbit );
+    		file.exceptions( file.failbit | file.badbit );
 				try { 
 		    	    file.seekp( list_attributes.back().GetAttributeAddress() + 35 + 1 + 4 + 8 + 4 + 8 );
 					file.write( reinterpret_cast<const char*>(&attribute_address), sizeof(long int) );
-				} catch (const std::fstream::failure & e) {
-    				std::cout << ":: warning Exception:  writing file";
+				} catch (const std::ios_base::failure & e) {
+    				std::cout << ":: Warning Exception: " << e.what() << std::endl
+                  		  	  << ":: Error code: " << e.code() << std::endl;
   				}
     	}
 	
@@ -447,7 +461,7 @@ namespace dictionary {
 		long int next_attribute_address;
 			
 		while( next != -1 ){
-			file.exceptions( std::fstream::badbit );
+			file.exceptions( file.failbit | file.badbit );
 				try {
 					file.seekg( next );
 					file.read( reinterpret_cast<char*>( name) , MAX_LENGTH_NAME_ENTTITY_ );
@@ -457,8 +471,9 @@ namespace dictionary {
 					file.read( reinterpret_cast<char*>(&type_index), sizeof(int) );
 					file.read( reinterpret_cast<char*>(&index_address), sizeof(long int) );
 					file.read( reinterpret_cast<char*>(&next_attribute_address), sizeof(long int) );
-				} catch (const std::fstream::failure & e) {
-    				std::cout << ":: warning Exception:  reading file";
+				} catch (const std::ios_base::failure & e) {
+    				std::cout << ":: Warning Exception: " << e.what() << std::endl
+                  		  	  << ":: Error code: " << e.code() << std::endl;
   				}
 			next = next_attribute_address;
 			
@@ -495,7 +510,7 @@ namespace dictionary {
 			while ( it_current != list_attributes.end() ){
 		
 				std::string it_current_attribute( it_current->GetName() );
-				file.exceptions( std::fstream::badbit );
+				file.exceptions( file.failbit | file.badbit );
 					try {
 				        if( remove_attribute.compare(first_attribute) ==  0 ){
 						    file.seekp( current_entity.GetEntityAddress() + 35 + 8 );
@@ -515,9 +530,10 @@ namespace dictionary {
 							break;
 						
 						}
-				    } catch (const std::fstream::failure & e) {
-	    				std::cout << ":: warning Exception:  writing file";
-	  				}
+				    } catch (const std::ios_base::failure & e) {
+    						std::cout << ":: Warning Exception: " << e.what() << std::endl
+                  		         	  << ":: Error code: " << e.code() << std::endl;
+  				    }
 				it_current++;
 				it_previus++;
 				it_next++;
@@ -550,4 +566,3 @@ namespace dictionary {
     }
 
 }  // end namespace dictionary
-
