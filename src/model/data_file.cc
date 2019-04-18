@@ -38,8 +38,9 @@ namespace archive {
 		    	file.seekg(0, std::ios::end);
 		    	file_size_ = file.tellg();
 		    } catch (const std::ios_base::failure & e) {
-    				std::cout << ":: Warning Exception: " << e.what() << std::endl
-                  		  	  << ":: Error code: " << e.code() << std::endl;
+    			std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                          << std::endl << ":: Error code: " << e.code() 
+                  		  << std::endl;
   			}
     	file.close();
 		return file_size_;
@@ -53,8 +54,9 @@ namespace archive {
 					file.seekp(0);
 					//file.write( reinterpret_cast<const char*>(&file_header_), sizeof(long int) );
 				} catch (const std::ios_base::failure & e) {
-    				std::cout << ":: Warning Exception: " << e.what() << std::endl
-                  		  	  << ":: Error code: " << e.code() << std::endl;
+    				std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                              << std::endl << ":: Error code: " << e.code() 
+                  		      << std::endl;
   				}
 		file.close();
    }
@@ -65,9 +67,15 @@ namespace archive {
 			try {
 				file.seekp(0);
 				file.write( reinterpret_cast<const char*>(&file_header_), sizeof(long int) );
+				 
 			} catch (const std::ios_base::failure & e) {
-    				std::cout << ":: Warning Exception: " << e.what() << std::endl
-                  		  	  << ":: Error code: " << e.code() << std::endl;
+    			std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                          << std::endl << ":: Error code: " << e.code() 
+                  		  << std::endl;
+                if ( file.fail() ){
+    				std::cout << " Error writing to file " << std::endl;
+    				file.clear();
+  				}
   			}
 		file.close();
     }
@@ -80,8 +88,10 @@ namespace archive {
 				file.seekp( position  );
 				file.read( reinterpret_cast<char*>(&data) , sizeof(long int) );
 			} catch (const std::ios_base::failure & e) {
-    				std::cout << ":: Warning Exception: " << e.what() << std::endl
-                  		  	  << ":: Error code: " << e.code() << std::endl;
+    			std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                          << std::endl << ":: Error code: " << e.code() 
+                  		  << std::endl;
+
   			}
 		file.close();
 		return data;
@@ -95,26 +105,15 @@ namespace archive {
 				file.seekp( position  );
 				file.write( reinterpret_cast<const char*>(&new_address), sizeof(long int) );
 			} catch (const std::ios_base::failure & e) {
-    				std::cout << ":: Warning Exception: " << e.what() << std::endl
-                  		  	  << ":: Error code: " << e.code() << std::endl;
+    			std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                          << std::endl << ":: Error code: " << e.code() 
+                  		  << std::endl;
+                if ( file.fail() ){
+    				std::cout << " Error writing to file " << std::endl;
+    				file.clear();
+  				}
   			}
 		file.close();
-   		//std::fstream file( name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
-		
-		//long int data;
-		
-		//file.seekp( position  );
-		//file.read( reinterpret_cast<char*>(&data) , sizeof(long int) );
-		//std::cout << std::endl << "data old " << data; 
-		/*
-		file.seekp( position  );
-		file.write( reinterpret_cast<const char*>(&new_address), sizeof(long int) );
-        
-        file.seekp( position  );
-		file.read( reinterpret_cast<char*>(&data) , sizeof(long int) );
-		std::cout << std::endl << "data new " << data;
-		*/
-		//file.close();
     }
 
     void DataFile::AppendCharData(char * char_data, int length_char_data){
@@ -126,8 +125,13 @@ namespace archive {
 			try {     
 				file.write( reinterpret_cast<const char*>(str), length_char_data );
 			} catch (const std::ios_base::failure & e) {
-    				std::cout << ":: Warning Exception: " << e.what() << std::endl
-                  		  	  << ":: Error code: " << e.code() << std::endl;
+    			std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                          << std::endl << ":: Error code: " << e.code() 
+                  		  << std::endl;
+                if ( file.fail() ){
+    				std::cout << " Error writing to file" << std::endl;
+    				file.clear();
+  				}
   			}
 		file.close();
     }
@@ -138,8 +142,13 @@ namespace archive {
 			try {
 				file.write( reinterpret_cast<const char*>(&int_data), sizeof(int) );
 			} catch (const std::ios_base::failure & e) {
-    				std::cout << ":: Warning Exception: " << e.what() << std::endl
-                  		  	  << ":: Error code: " << e.code() << std::endl;
+    			std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                          << std::endl << ":: Error code: " << e.code() 
+                  		  << std::endl;
+                if ( file.fail() ){
+    				std::cout << "Error writing to file" << std::endl;
+    				file.clear();
+  				}
   			}
 		file.close();	
     }
@@ -150,8 +159,13 @@ namespace archive {
 			try {
 				file.write( reinterpret_cast<const char*>(&new_address), sizeof(long int) );
 			} catch (const std::ios_base::failure & e) {
-    				std::cout << ":: Warning Exception: " << e.what() << std::endl
-                  		  	  << ":: Error code: " << e.code() << std::endl;
+    			std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                          << std::endl << ":: Error code: " << e.code() 
+                  		  << std::endl;
+                if ( file.fail() ){
+    				std::cout << "Error writing to file" << std::endl;
+    				file.clear();
+  				}
   			}
 		file.close();	
     }
@@ -168,7 +182,7 @@ namespace archive {
 
 				file.write( reinterpret_cast<const char*>(&file_size), sizeof(long int)  );
 				while ( it != list_attributes.end() ) {
-			        std::cout << std::endl << ":: " << it->GetName() << " : ";
+			        std::cout << ":: " << it->GetName() << " : ";
 			        if ( it->GetDataType() == 'c' ){
 						char str[ it->GetLengthDataType() ];
 						std::cin >> str; 
@@ -182,8 +196,13 @@ namespace archive {
 			    }
 			    file.write( reinterpret_cast<const char*>(&end_address), sizeof(long int) );
 	        } catch (const std::ios_base::failure & e) {
-    				std::cout << ":: Warning Exception: " << e.what() << std::endl
-                  		  	  << ":: Error code: " << e.code() << std::endl;
+    			std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                          << std::endl << ":: Error code: " << e.code() 
+                  		  << std::endl;
+                if ( file.fail() ){
+    				std::cout << "Error writing to file" << std::endl;
+    				file.clear();
+  				}
   			}
 	    file.close();
     }
@@ -192,15 +211,24 @@ namespace archive {
     void DataFile::ReadRegister(std::list<dictionary::Attribute> list_attributes){
     	long int register_address;
     	long int next_register_address;
-    	std::list<dictionary::Attribute>::iterator it = list_attributes.begin();
+    	
         std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out );
         long int next = 0;
-        while( next != -1 ){
-			//file.seekg( next );
+        std::cout << std::endl << " register address \t";
+        
+        for( std::list<dictionary::Attribute>::iterator i = list_attributes.begin();  i != list_attributes.end() ; i++ )
+        	std::cout << i->GetName() << "\t";		
+        
+        std::cout << " next address " << std::endl;
+
+        while ( next != -1 ) {
+			std::list<dictionary::Attribute>::iterator it = list_attributes.begin();
 			file.exceptions( file.failbit | file.badbit );
 				try {
+					file.seekg( next );
 					file.read( reinterpret_cast<char*>(&register_address) , sizeof(long int) );
-					std::cout << "\t" << register_address << "\t";
+					std::cout << "\t" << register_address << "\t\t";
+			        
 			        while ( it != list_attributes.end() ) {
 			        	if ( it->GetDataType() == 'c' ){
 							char str[ it->GetLengthDataType() ];
@@ -213,16 +241,20 @@ namespace archive {
 						}
 			        	it++;
 			        }
+
 			        file.read( reinterpret_cast<char*>(&next_register_address) , sizeof(long int) );
-		            std::cout << next_register_address << " \t ";
+		            std::cout << "\t" << next_register_address << " \t ";
 		            next = next_register_address;
+		            std::cout << std::endl;
 		            if ( next_register_address == -1 )
 		            	break; 
             	} catch (const std::ios_base::failure & e) {
-    				std::cout << ":: Warning Exception: " << e.what() << std::endl
-                  		  	  << ":: Error code: " << e.code() << std::endl;
+    				std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                          << std::endl << ":: Error code: " << e.code() 
+                  		  << std::endl;
   				}
     	}
+
     	file.close();
     }
 

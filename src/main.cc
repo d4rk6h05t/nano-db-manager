@@ -312,11 +312,8 @@ int main(){
 				    			long int previus_next_address = data_file.GetFileSize() - ( data_file.GetSizeRegister( data_dictionary.ReadListAttributes(current_entity) )  + sizeof(long int) ); 
 				    			long int current_next_address = data_file.GetFileSize() - data_file.GetSizeRegister( data_dictionary.ReadListAttributes(current_entity) );
 				    			
-				    			cout << "-> ( " << previus_next_address << " , "<< current_next_address <<" ) <-";
-				    		   	data_file.UpdateAddress( previus_next_address , current_next_address  );
-				    		   	cout << endl << " ==> " << data_file.ReadAddress(previus_next_address);
-				    		   	cout << endl << " ==> " << data_file.ReadAddress(current_next_address+previus_next_address );
-
+				    			data_file.UpdateAddress( previus_next_address , current_next_address  );
+				    		   	
 				    		}	
 				    		
 				    		break;
@@ -326,13 +323,11 @@ int main(){
 				    		cout << "->";
 				    		break;
 				    	case 3:/* ::::::::::: S h o w   d a t a    f i l e  ::::::::::  */
-				    		view.ShowMessage("===>Show data file");
+				    		view.ShowMessage("===> Show data file");
 				    		view.ShowStatusBar(data_file.GetName(), 0, data_file.GetFileSize() );
 							current_entity = data_dictionary.SearchEntity( data_dictionary.ReadListEntities(), current_entity_name);
-							cout << "-> " << current_entity.GetName() << " -> " << current_entity.GetAttributeAddress(); 
 							data_file.ReadRegister( data_dictionary.ReadListAttributes(current_entity) );
-							//view.ShowListAttributes( data_dictionary.ReadListAttributes(current_entity) );
-				    		break;
+							break;
 				    }
 	    		} while(option_file < 4);
 	    		if (option_file > 3 ) view.Clear();
