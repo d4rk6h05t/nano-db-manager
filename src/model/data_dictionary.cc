@@ -41,8 +41,9 @@ namespace dictionary {
     			file.seekg(0, std::ios::end);
 	    		file_size_ = file.tellg();
 	    	} catch (const std::ios_base::failure & e) {
-    			std::cout << ":: Warning Exception: " << e.what() << std::endl
-                  		  << ":: Error code: " << e.code() << std::endl;
+    			std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                  		  << std::endl << ":: Error code: " << e.code() 
+                  		  << std::endl;
   			}
 	    file.close();
 		return file_size_;
@@ -66,8 +67,9 @@ namespace dictionary {
 					file.seekp( 0 );
 					file.write( reinterpret_cast<const char*>(&file_header_), sizeof(long int) );
 				} catch (const std::ios_base::failure & e) {
-    				std::cout << ":: Warning Exception: " << e.what() << std::endl
-                  		  	  << ":: Error code: " << e.code() << std::endl;
+    				std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                  		      << std::endl << ":: Error code: " << e.code() 
+                  		      << std::endl;
   				}
 
 
@@ -84,8 +86,9 @@ namespace dictionary {
 				file.seekp(0);
 				file.write( reinterpret_cast<const char*>(&file_header_), sizeof(long int) );
 			} catch (const std::ios_base::failure & e) {
-    				std::cout << ":: Warning Exception: " << e.what() << std::endl
-                  		  	  << ":: Error code: " << e.code() << std::endl;
+    			std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                  		  << std::endl << ":: Error code: " << e.code() 
+                  		  << std::endl;
   			}
 		file.close();
     }
@@ -97,8 +100,9 @@ namespace dictionary {
 				file.seekp( position  );
 				file.write( reinterpret_cast<const char*>(&new_address), sizeof(long int) );
 			} catch (const std::ios_base::failure & e) {
-    				std::cout << ":: Warning Exception: " << e.what() << std::endl
-                  		  	  << ":: Error code: " << e.code() << std::endl;
+    			std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                  		  << std::endl << ":: Error code: " << e.code() 
+                  		  << std::endl;
   			}
 		file.close();
     }
@@ -115,8 +119,9 @@ namespace dictionary {
 				file.seekp(position);
 				file.write( reinterpret_cast<const char*>(name), MAX_LENGTH_NAME_ENTTITY_ );
 			} catch (const std::ios_base::failure & e) {
-    				std::cout << ":: Warning Exception: " << e.what() << std::endl
-                  		  	  << ":: Error code: " << e.code() << std::endl;
+    			std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                  		  << std::endl << ":: Error code: " << e.code() 
+                  		  << std::endl;
   			}
 		file.close();
     }
@@ -128,8 +133,9 @@ namespace dictionary {
 				file.seekp(position);
 				file.write( reinterpret_cast<const char*>(&new_char), sizeof( char ) );
 			} catch (const std::ios_base::failure & e) {
-    				std::cout << ":: Warning Exception: " << e.what() << std::endl
-                  		  	  << ":: Error code: " << e.code() << std::endl;
+    			std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                  		  << std::endl << ":: Error code: " << e.code() 
+                  		  << std::endl;
   			}
 		file.close();
     }
@@ -141,8 +147,9 @@ namespace dictionary {
 				file.seekp(position);
 				file.write( reinterpret_cast<const char*>(&new_int), sizeof( int ) );
 			} catch (const std::ios_base::failure & e) {
-    				std::cout << ":: Warning Exception: " << e.what() << std::endl
-                  		  	  << ":: Error code: " << e.code() << std::endl;
+    			std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                  		  << std::endl << ":: Error code: " << e.code() 
+                  		  << std::endl;
   			}
 		file.close();
     }
@@ -173,8 +180,9 @@ namespace dictionary {
 				file.write( reinterpret_cast<const char*>(&data_address), sizeof(long int) );
 				file.write( reinterpret_cast<const char*>(&next_entity_address), sizeof(long int) );	
 			} catch (const std::ios_base::failure & e) {
-    				std::cout << ":: Warning Exception: " << e.what() << std::endl
-                  		  	  << ":: Error code: " << e.code() << std::endl;
+    			std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                  		  << std::endl << ":: Error code: " << e.code() 
+                  		  << std::endl;
   			}
 		file.close();
     }
@@ -268,8 +276,9 @@ namespace dictionary {
 				file.seekp( 0 );
 				file.write( reinterpret_cast<const char*>(&file_header_), sizeof(long int) );
 			} catch (const std::ios_base::failure & e) {
-    				std::cout << ":: Warning Exception: " << e.what() << std::endl
-                  		  	  << ":: Error code: " << e.code() << std::endl;
+    			std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                  		  << std::endl << ":: Error code: " << e.code() 
+                  		  << std::endl;
   			}
 		file.close();
     }
@@ -313,8 +322,9 @@ namespace dictionary {
 					}
 		        } 
 		    } catch (const std::ios_base::failure & e) {
-    				std::cout << ":: Warning Exception: " << e.what() << std::endl
-                  		  	  << ":: Error code: " << e.code() << std::endl;
+    			std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                          << std::endl << ":: Error code: " << e.code() 
+                  		  << std::endl;
   			}
 		file.close();											
     }
@@ -379,8 +389,9 @@ namespace dictionary {
 					list_entities.push_back(entity);
 				}
 			} catch (const std::ios_base::failure & e) {
-    				std::cout << ":: Warning Exception: " << e.what() << std::endl
-                  		  	  << ":: Error code: " << e.code() << std::endl;
+    			std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                          << std::endl << ":: Error code: " << e.code() 
+                  		  << std::endl;
   			}
 		
 		file.close();	
@@ -419,8 +430,9 @@ namespace dictionary {
 				file.write( reinterpret_cast<const char*>(&index_address), sizeof(long int) );      // 8
 				file.write( reinterpret_cast<const char*>(&next_attribute_address), sizeof(long int) );	 
 			} catch (const std::ios_base::failure & e) {
-    				std::cout << ":: Warning Exception: " << e.what() << std::endl
-                  		  	  << ":: Error code: " << e.code() << std::endl;
+    			std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                          << std::endl << ":: Error code: " << e.code() 
+                  		  << std::endl;
   			}
 		file.close();
     }
@@ -438,8 +450,9 @@ namespace dictionary {
 		    	    file.seekp( list_attributes.back().GetAttributeAddress() + 35 + 1 + 4 + 8 + 4 + 8 );
 					file.write( reinterpret_cast<const char*>(&attribute_address), sizeof(long int) );
 				} catch (const std::ios_base::failure & e) {
-    				std::cout << ":: Warning Exception: " << e.what() << std::endl
-                  		  	  << ":: Error code: " << e.code() << std::endl;
+    				std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                              << std::endl << ":: Error code: " << e.code() 
+                  		      << std::endl;
   				}
     	}
 	
@@ -472,8 +485,9 @@ namespace dictionary {
 					file.read( reinterpret_cast<char*>(&index_address), sizeof(long int) );
 					file.read( reinterpret_cast<char*>(&next_attribute_address), sizeof(long int) );
 				} catch (const std::ios_base::failure & e) {
-    				std::cout << ":: Warning Exception: " << e.what() << std::endl
-                  		  	  << ":: Error code: " << e.code() << std::endl;
+    				std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                              << std::endl << ":: Error code: " << e.code() 
+                  		      << std::endl;
   				}
 			next = next_attribute_address;
 			
@@ -531,8 +545,9 @@ namespace dictionary {
 						
 						}
 				    } catch (const std::ios_base::failure & e) {
-    						std::cout << ":: Warning Exception: " << e.what() << std::endl
-                  		         	  << ":: Error code: " << e.code() << std::endl;
+    					std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                                  << std::endl << ":: Error code: " << e.code() 
+                  		          << std::endl;
   				    }
 				it_current++;
 				it_previus++;
