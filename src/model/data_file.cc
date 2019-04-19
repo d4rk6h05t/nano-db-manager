@@ -48,17 +48,15 @@ namespace archive {
     
    // Methods of file 
    void DataFile::CreateFile(){
-   		std::ofstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::out );
-			file.exceptions( file.failbit | file.badbit );
-				try {
-					file.seekp(0);
-					//file.write( reinterpret_cast<const char*>(&file_header_), sizeof(long int) );
-				} catch (const std::ios_base::failure & e) {
-    				std::cout << std::endl << ":: Warning Exception: " << e.what() 
-                              << std::endl << ":: Error code: " << e.code() 
-                  		      << std::endl;
-  				}
-		file.close();
+   		std::ifstream in_file( dir_ + name_ + ext_, std::ios::binary | std::ios::in );
+        if ( !in_file.good() ){
+   			std::ofstream out_file( dir_ + name_ + ext_, std::ios::binary | std::ios::out );
+			out_file.seekp(0);
+			out_file.close();
+		} else {
+			in_file.seekg(0);
+			in_file.close();
+		}
    }
 
    void DataFile::UpdateHeader(){
@@ -173,28 +171,51 @@ namespace archive {
     void DataFile::AppendData(std::list<dictionary::Attribute> list_attributes){
     	
     	std::list<dictionary::Attribute>::iterator it = list_attributes.begin();
-    	std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::app);
+    	std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
 		file.exceptions( file.failbit | file.badbit );
 			try {
+		       	
 		       	file.seekg(0, std::ios::end);
 		    	long int file_size = file.tellg();
 		    	long int end_address = -1;
+                long int length_struct_register = sizeof(long int) * 2;
+				bool disable_index = true;
 
 				file.write( reinterpret_cast<const char*>(&file_size), sizeof(long int)  );
 				while ( it != list_attributes.end() ) {
 			        std::cout << ":: " << it->GetName() << " : ";
+                    if ( it->GetTypeIndex() > 0  )
+                    	disable_index = false;
+			        
 			        if ( it->GetDataType() == 'c' ){
+			        	length_struct_register = length_struct_register + it->GetLengthDataType();
 						char str[ it->GetLengthDataType() ];
 						std::cin >> str; 
 						file.write( reinterpret_cast<const char*>(&str),  it->GetLengthDataType() );
 					} else if ( it->GetDataType() == 'i' ){
+						length_struct_register = length_struct_register + sizeof(int);
 						int  x;
 						std::cin >> x;
 						file.write( reinterpret_cast<const char*>(&x), sizeof(int) );
 					}
 			       	++it;
 			    }
+			    
 			    file.write( reinterpret_cast<const char*>(&end_address), sizeof(long int) );
+                 
+                file.seekg(0, std::ios::end);
+		    	file_size = file.tellg(); 
+	        	if ( disable_index && (file_size >  length_struct_register) ) {
+                               
+				    long int previus_next_address = file_size - ( length_struct_register  + sizeof(long int) ); 
+				    long int next_address = file_size - length_struct_register;
+				    std::cout << std::endl << ":: previus_next_address: " << previus_next_address << "/ next_address: " << next_address;     
+				    
+				    file.seekp(previus_next_address);
+				    file.write( reinterpret_cast<const char*>(&next_address), sizeof(long int) );
+				    		   	
+				}	
+
 	        } catch (const std::ios_base::failure & e) {
     			std::cout << std::endl << ":: Warning Exception: " << e.what() 
                           << std::endl << ":: Error code: " << e.code() 
