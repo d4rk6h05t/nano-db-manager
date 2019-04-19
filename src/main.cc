@@ -73,17 +73,16 @@ int main(){
 				    		}
 				    		break;
 				    	case 2: /* ::::::::::: O p e n  f i l e  ::::::::::  */
-				    		view.ShowStatusBar(data_dictionary.GetName(), data_dictionary.GetFileHeader(), data_dictionary.GetFileSize() );
 				    		view.ShowMessage("\n\t\tfile name: ");
 				    		cin >> file_name;
-				    			if ( file_name !="" ){
+				    			if ( file_name !="" )
 				    				data_dictionary.SetName( file_name );
-				    			}
 				    		break;
 				    	case 3:/* ::::::::::: R e m o ve   f i l e  ::::::::::  */
 				    		view.ShowMessage("\n\t\tfile name: ");
 				    		cin >> file_name;
-				    		view.ShowMessage("Deleted file with name ==> " + file_name);
+				    			if ( file_name !="" )
+				    				view.ShowMessage("Deleted file with name ==> " + file_name);
 				    		break;
 				    }
 	    		} while(option_file < 4);
@@ -307,14 +306,6 @@ int main(){
 				    		data_file.AppendData(list_attributes);
 				    		
                             
-				    		if (data_file.GetFileSize() > ( data_file.GetSizeRegister( data_dictionary.ReadListAttributes(current_entity) )  + sizeof(long int) ) ){
-                               
-				    			long int previus_next_address = data_file.GetFileSize() - ( data_file.GetSizeRegister( data_dictionary.ReadListAttributes(current_entity) )  + sizeof(long int) ); 
-				    			long int current_next_address = data_file.GetFileSize() - data_file.GetSizeRegister( data_dictionary.ReadListAttributes(current_entity) );
-				    			
-				    			data_file.UpdateAddress( previus_next_address , current_next_address  );
-				    		   	
-				    		}	
 				    		
 				    		break;
 				    	} 
