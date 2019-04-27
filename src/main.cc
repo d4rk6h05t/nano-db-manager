@@ -300,7 +300,7 @@ int main(){
 				    	case 1: {
 				    		
 				    		
-				    		view.ShowStatusBar(data_file.GetName(), 0 , data_file.GetFileSize() );
+				    		view.ShowStatusBar(data_file.GetName(),  data_file.GetFileHeader() , data_file.GetFileSize() );
 				    		
 				    		if ( current_entity.GetDataAddress() == -1 )
 				    			data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , 0 );
@@ -316,7 +316,7 @@ int main(){
 				    		break;
 				    	case 3:/* ::::::::::: S h o w   d a t a    f i l e  ::::::::::  */
 				    		view.ShowMessage("===> Show data file");
-				    		view.ShowStatusBar(data_file.GetName(), 0, data_file.GetFileSize() );
+				    		view.ShowStatusBar(data_file.GetName(), data_file.GetFileHeader(), data_file.GetFileSize() );
 							current_entity = data_dictionary.SearchEntity( data_dictionary.ReadListEntities(), current_entity_name);
 							data_file.ReadRegister( data_dictionary.ReadListAttributes(current_entity) );
 							break;
