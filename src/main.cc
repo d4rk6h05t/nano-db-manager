@@ -287,6 +287,7 @@ int main(){
 				    if ( current_entity.GetEntityAddress() != -1 ){
 				    	data_file.SetName( current_entity_name );
 				    	data_file.CreateFile();
+				    	list<string> list_data;
 
 
 	    		do {
@@ -303,7 +304,7 @@ int main(){
 				    		
 				    		if ( current_entity.GetDataAddress() == -1 )
 				    			data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , 0 );
-				    		data_file.AppendData(list_attributes);
+				    		data_file.AppendData(list_attributes,list_data);
 				    		
                             
 				    		
