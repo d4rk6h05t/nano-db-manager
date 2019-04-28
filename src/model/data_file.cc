@@ -200,17 +200,25 @@ namespace archive {
 			        	length_struct_register = length_struct_register + it->GetLengthDataType();
 						char str[ it->GetLengthDataType() ];
 						std::cin >> str;
-
-						std::string data(str);
-						current_data_key = data;
-						list_data.push_back(data); 
-						
+                    
+	                    if( it->GetTypeIndex() == 3 ){
+							std::string data(str);
+							current_data_key = data;
+							list_data.push_back(data); 
+						}
 
 						file.write( reinterpret_cast<const char*>(&str),  it->GetLengthDataType() );
 					} else if ( it->GetDataType() == 'i' ){
 						length_struct_register = length_struct_register + sizeof(int);
 						int  x;
 						std::cin >> x;
+                        
+                        if( it->GetTypeIndex() == 3 ){
+							std::string data_int = std::to_string(x);
+							current_data_key = data_int;
+							list_data.push_back(data_int); 
+						}
+
 						file.write( reinterpret_cast<const char*>(&x), sizeof(int) );
 					}
 			       	it++;
@@ -343,10 +351,13 @@ while ( next_row != -1 ) {
 			    if ( itr_prev->GetDataType() == 'c' ){
 					char str[ itr_prev->GetLengthDataType() ];
 					file.read( reinterpret_cast<char*>(str) , itr_prev->GetLengthDataType() );
-					string_read = str;		
+					if( itr_prev->GetTypeIndex() == 3 )
+						string_read = str;		
 				} else if ( itr_prev->GetDataType() == 'i' ){
 					int  x;
 					file.read( reinterpret_cast<char*>(&x), sizeof( int ) );
+					if( itr_prev->GetTypeIndex() == 3 )
+						string_read = std::to_string(x);
 				}
 				
 			    itr_prev++;
@@ -393,10 +404,13 @@ while ( next_row != -1 ) {
 			    if ( itr_next->GetDataType() == 'c' ){
 					char str2[ itr_next->GetLengthDataType() ];
 					file.read( reinterpret_cast<char*>(str2) , itr_next->GetLengthDataType() );
-					string_read = str2;		
+					if( itr_next->GetTypeIndex() == 3 )
+						string_read = str2;		
 				} else if ( itr_next->GetDataType() == 'i' ){
 					int  x2;
 					file.read( reinterpret_cast<char*>(&x2), sizeof( int ) );
+					if( itr_next->GetTypeIndex() == 3 )
+						string_read = std::to_string(x2);
 				}	
 			    itr_next++;
 			}
