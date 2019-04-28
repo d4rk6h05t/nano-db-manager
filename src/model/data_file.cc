@@ -337,7 +337,6 @@ namespace archive {
     	long int next_row;
     	std::string string_read;          
                     	
-/************************************************** S T A R T   P R E V I U S ******************************************************/
 if ( prev != "" ){ 
 std::cout << ":::: ===== > > > Previus: " << prev << " / file_header : " << file_header_;
 next_row = file_header_;
@@ -379,8 +378,7 @@ prev_addr = register_address;
 prev_addr_next = next_register_address;
 prev_position_update = register_address + (length_struct_register - sizeof(long int));
 }
-/************************************************** E N  D      P R E V I U S ******************************************************/                   		                    
-/************************************************** S T A R T   C U R R E N T ******************************************************/
+
 if ( current != "" ){            
 
 curr_addr = file_size - length_struct_register;
@@ -388,8 +386,7 @@ curr_addr_next = -1;
 std::cout << "->current register_address: " << curr_addr << " / next_register_address : " << curr_addr_next;
 
 } // end if current
-/************************************************** E N D   C U R R E N T ******************************************************/
-/************************************************** S T A R T    N E X T  ******************************************************/
+
 if ( next != "" ){
 std::cout << ":::: ===== > > > Next : " << next << " / file_header : " << file_header_; 
 next_row = file_header_;
@@ -433,12 +430,10 @@ while ( next_row != -1 ) {
 std::cout << ":: Next register_address -> " << next_addr << " <- " ;
 
 } // end if next
-/************************************************** E N D    N E X T  ******************************************************/
-
 
 	            	// EXIST PREV &&  NEXT (MIDDLE) 
 	            	if ( prev != "" && next != "" ){
-	            		
+	            		 
 	            		std::cout << std::endl << ":: Flag 000 -> Middle " << prev_addr << " / " << next_addr;
 	            		file.seekp( curr_addr + (length_struct_register - sizeof(long int)) );
 	            		file.write( reinterpret_cast<const char*>(&next_addr), sizeof(long int) );
@@ -460,12 +455,6 @@ std::cout << ":: Next register_address -> " << next_addr << " <- " ;
 	            	    file.write( reinterpret_cast<const char*>(&next_addr), sizeof(long int) );
 	            	}
 
-	            	
-	            	
-	            
-
-                	
-                
             } // end else if case 3
                     
 				} // end else if index 3
