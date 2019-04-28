@@ -287,6 +287,10 @@ int main(){
 				    if ( current_entity.GetEntityAddress() != -1 ){
 				    	data_file.SetName( current_entity_name );
 				    	data_file.CreateFile();
+				    } else {
+				    	data_file.SetName( current_entity_name );
+				    	//data_file.SetFileHeader(  );
+				    } 
 				    	list<string> list_data;
 
 
@@ -325,7 +329,7 @@ int main(){
 	    		if (option_file > 3 ) view.Clear();
 	    			break;
 
-	    		}
+	    		//}
 	    	}
 
 
