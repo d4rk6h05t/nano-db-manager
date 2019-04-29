@@ -9,8 +9,10 @@
 // personal includes
 #include "entity.h"
 #include "attribute.h"
+#include "index.h"
 #include "data_dictionary.h"
 #include "data_file.h"
+#include "index_file.h"
 #include "view.h"
 
 // namespaces to use
@@ -176,10 +178,8 @@ int main(){
 								    		view.ShowMessage("\nSelect an option >_");
 								    		cin >> option_attribute;
 							    			switch (option_attribute){
-										    	case 1: /*  :::::::::::  N e w   A t t r i b u t e  ::::::::::  */
-										    		//view.ShowMessage("===> Add Attribute");
+										    	case 1:{ /*  :::::::::::  N e w   A t t r i b u t e  ::::::::::  */
 										    		
-
 										    		view.ShowMessage("\n\t\t===> Add Attribute ");
 										    		view.ShowMessage("\n\t\t:: Name: ");
 										    		cin >> attr_name;
@@ -209,7 +209,10 @@ int main(){
 											    		}
 													    
 													}
+													
+
 										    		break;
+										    	}
 
 										    	case 2: { /*  :::::::::::  U p d a t e   A t t r i b u t e  ::::::::::  */
 										    		view.ShowMessage("===> Update Attribute");
@@ -287,6 +290,21 @@ int main(){
 				    if ( current_entity.GetEntityAddress() != -1 ){
 				    	data_file.SetName( current_entity_name );
 				    	data_file.CreateFile();
+
+				    	list<Attribute> list_attributes = data_dictionary.ReadListAttributes( current_entity );
+						for( list<Attribute>::iterator i = list_attributes.begin(); i != list_attributes.end(); i++ ){
+							
+							string attr_name( i->GetName() );
+							if ( i->GetTypeIndex() == 1 || i->GetTypeIndex() == 2 ){
+								IndexFile index_file( attr_name , i->GetTypeIndex()  );
+								index_file.CreateFile();
+								index_file.CreateBlock( 0 );
+								list< pair< int, long int> > block_int = IndexFile::ReadBlock(attr_name, 0 );
+							} 
+ 								
+							//cout << ":: Name attr : " << attr_name << " :: type index attr : " << i->GetTypeIndex();
+							//data_file.UpdateAddress( i->GetAttributeAddress() + 35 + 1 + 4 + 8 + 4 , 0 );
+						}
 				    } else {
 				    	data_file.SetName( current_entity_name );
 				    	//data_file.SetFileHeader(  );
@@ -306,8 +324,8 @@ int main(){
 				    		
 				    		view.ShowStatusBar(data_file.GetName(),  data_file.GetFileHeader() , data_file.GetFileSize() );
 				    		
-				    		if ( current_entity.GetDataAddress() == -1 )
-				    			data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , 0 );
+				    		//if ( current_entity.GetDataAddress() == -1 )
+				    		data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , data_file.GetFileHeader() );
 				    		data_file.AppendData(list_attributes,list_data);
 				    		
                             
@@ -315,8 +333,17 @@ int main(){
 				    		break;
 				    	} 
 				    		
-				    	case 2: /* ::::::::::: O p e n  f i l e  ::::::::::  */
-				    		cout << "->";
+				    	case 2: /* :::::::::::  S h o w   P r i m a r y    I n d e x  ::::::::::  */
+				    		cout << "::::: Show Primary Index ::::";
+				    		for( list<Attribute>::iterator j = list_attributes.begin(); j != list_attributes.end(); j++ ){
+								if ( j->GetTypeIndex() == 1 || j->GetTypeIndex() == 2 ){
+									string attr_name_show( j->GetName() );
+									list< pair< int, long int> > block = IndexFile::ReadBlock(attr_name_show, 0 );
+									for( list< pair< int, long int> >::iterator k = block.begin(); k != block.end(); k++ ){
+										cout << endl << k->first << " \t " << k->second;
+									}
+								} 
+							}
 				    		break;
 				    	case 3:/* ::::::::::: S h o w   d a t a    f i l e  ::::::::::  */
 				    		view.ShowMessage("===> Show data file");

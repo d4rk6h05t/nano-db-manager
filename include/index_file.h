@@ -4,6 +4,14 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <list>
+#include "index.h"
+
+const int READ_HEADER_FILE_ = 1048;
+const int LENGTH_ADDRESS_ = sizeof(long int);
+const int SIZE_BLOCK_ = READ_HEADER_FILE_ - LENGTH_ADDRESS_;
+const int SIZE_ROW_INT = sizeof(int) + sizeof(long int);
+const int ROW_CAPACITY = SIZE_BLOCK_ / SIZE_ROW_INT;
 
 namespace dictionary {
 
@@ -36,6 +44,10 @@ namespace dictionary {
             long int ReadAddress(long int position);
             void UpdateAddress(long int position, long int new_address);
             void UpdateName(long int position, std::string new_name);
+
+            void CreateBlock(int position);
+            static std::list< std::pair< int, long int> > ReadBlock(const std::string& name,int position);
+            static void AddLineToBlock(const std::string& name,int position, std::list< std::pair<int, long int> > list_data_pair, int data, long int data_address);
 
         private:
 

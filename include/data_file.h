@@ -9,6 +9,7 @@
 
 #include "entity.h"
 #include "attribute.h"
+#include "index_file.h"
 
 
 const int MAX_LENGTH_NAME_DATA_FILE_ = 35;

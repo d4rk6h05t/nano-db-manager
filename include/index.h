@@ -50,6 +50,12 @@ namespace dictionary {
             PrimaryIndex();
             ~PrimaryIndex();
 
+        private:
+            std::string data_name_;
+            int data_int_;
+            //char[] data_char_;
+            long int data_address_;
+
     };
 
     class SecondaryIndex : public Index {
