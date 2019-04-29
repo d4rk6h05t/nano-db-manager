@@ -13,7 +13,7 @@ namespace dictionary {
     SearchKey::SearchKey() : Index(3){ }
     SearchKey::~SearchKey(){}
 
-    PrimaryIndex::PrimaryIndex() : Index(1){ }
+    PrimaryIndex::PrimaryIndex() : Index(1){ std::cout << std::endl << ":: Start PrimaryIndex :: "; }
     PrimaryIndex::~PrimaryIndex(){}
 
     SecondaryIndex::SecondaryIndex() : Index(2){ }

@@ -180,7 +180,7 @@ namespace ui {
 		void View::ShowDataFileMenu(){
 				std::cout << std::endl << " \t\t::::::::::::: \t Data File Menu \t ::::::::::::" << std::endl;
     			std::cout << std::endl << " \t\t [ 1 ]: Add a register ";
-    			std::cout << std::endl << " \t\t [ 2 ]: Remove a register ";	
+    			std::cout << std::endl << " \t\t [ 2 ]: Show Primary Index ";	
     			std::cout << std::endl << " \t\t [ 3 ]: Show Data File ";	
     			std::cout << std::endl << " \t\t [ 4 ]: Back to main menu ";	
 		}
