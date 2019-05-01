@@ -52,6 +52,7 @@ namespace archive {
             
             void ReadRegister(std::list<dictionary::Attribute> list_attributes);
             int GetSizeRegister(std::list<dictionary::Attribute> list_attributes);
+            static std::list<long int> GetAddressBySearchKey(const std::string & name,const std::string & search_key, long int file_header, std::list<dictionary::Attribute> list_attributes);
 
         private:
 

@@ -22,7 +22,6 @@ namespace dictionary {
     IndexFile::~IndexFile(){}
     
     // Setters
-
     void IndexFile::SetName(const std::string& name){ name_ = name; }
     void IndexFile::SetDir(const std::string& dir){ dir_ = dir; }
     void IndexFile::SetExt(const std::string& ext){ ext_ = ext; }
@@ -143,8 +142,6 @@ namespace dictionary {
                 }
                 // overflow chain
                 file.write( reinterpret_cast<const char*>(&overflow_chain), sizeof(long int) );
-                
-            
             } catch (const std::ios_base::failure & e) {
                 std::cout << std::endl << ":: Warning Exception: " << e.what() 
                           << std::endl << ":: Error code: " << e.code() 
@@ -172,7 +169,6 @@ namespace dictionary {
         file.exceptions( file.failbit | file.badbit );
             try {
                 file.seekp( position );
-                //std::cout << "data \t data address";
                 for ( int i = 0; i < ROW_CAPACITY; i++ ) { 
                     file.read( reinterpret_cast<char*>(&data) , sizeof(int) );
                     file.read( reinterpret_cast<char*>(&data_address), sizeof(long int) );
@@ -181,7 +177,6 @@ namespace dictionary {
                         data_pair.first = data;
                         data_pair.second = data_address;
                         block_data_int.push_back(data_pair);
-                        //std::cout << std::endl  << data_pair.first << " " << data_pair.second;
                     } else {
                         break;
                     }

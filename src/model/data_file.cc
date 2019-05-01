@@ -237,40 +237,38 @@ namespace archive {
 
 			    // : : : : :   R e w ri t e      f o r     u p d a t e    f i l e  : : : : : 
                  
-                file.seekg(0, std::ios::end);
+          file.seekg(0, std::ios::end);
 		    	file_size = file.tellg(); 
-	        	if ( disable_index && (file_size >  length_struct_register) ) {
-                    file_header_ = 0;   
-                    //std::cout << std::endl << " :: File header :: ==> " << file_header_;
+	        
+          if ( disable_index && (file_size >  length_struct_register) ) {
+              
+            file_header_ = 0;   
 				    long int previus_next_address = file_size - ( length_struct_register  + sizeof(long int) ); 
 				    long int next_address = file_size - length_struct_register;	    
 				    file.seekp(previus_next_address);
 				    file.write( reinterpret_cast<const char*>(&next_address), sizeof(long int) );
 				    		   	
 				} else if ( disable_index == false && (file_size >  length_struct_register) ) {
-                    
-                    std::cout << ":: Size list_data: " << list_data.size() << std::endl;
                    
-                    std::list<std::string>::iterator current_data = list_data.begin();
-                   
+            std::list<std::string>::iterator current_data = list_data.begin();       
                     
-                    std::string prev;
-                    std::string current;  
-                    std::string next;
+            std::string prev;
+            std::string current;  
+            std::string next;
                     
-                    long int position_update = 0;
+            long int position_update = 0;
 
-                    long int prev_addr;
-                    long int curr_addr;
-                    long int next_addr;
+            long int prev_addr;
+            long int curr_addr;
+            long int next_addr;
 
-                    long int prev_addr_next;
-                    long int curr_addr_next;
-                    long int next_addr_next;
+            long int prev_addr_next;
+            long int curr_addr_next;
+            long int next_addr_next;
                     
-                    long int prev_position_update = -1;
-                    long int curr_position_update = -1;
-                    long int next_position_update = -1;
+            long int prev_position_update = -1;
+            long int curr_position_update = -1;
+            long int next_position_update = -1;
 
                     if ( list_data.size() == 2 ){
                         
@@ -279,75 +277,52 @@ namespace archive {
                         next = *current_data;
 
                         if ( current.compare(next) > 0 ){
-                        	
-                        	std::string tmp(current);
-                        	current = next;
-                        	next = tmp;
-                            
-                            file_header_ = file_size - length_struct_register;
-                            //std::cout <<  std::endl << " :: File header :: ==> " << file_header_;
+                        
+                          file_header_ = file_size - length_struct_register;
                         	position_update = file_size -  sizeof(long int) ;
                         	next_addr = 0;
                         	file.seekp(position_update);
-				        	file.write( reinterpret_cast<const char*>(&next_addr), sizeof(long int) );
+				        	        file.write( reinterpret_cast<const char*>(&next_addr), sizeof(long int) );
 
-                           
-
-                        } else if ( current.compare(next) < 0 ) {
+                        } else if ( current.compare(next) <= 0 ) {
                         	
                         	file_header_ = 0;
-                        	//std::cout << std::endl << " :: File header :: ==> " << file_header_;
                         	position_update = file_size - ( length_struct_register  + sizeof(long int) ); 
-				        	next_addr = file_size - length_struct_register;	    
-				        	file.seekp(position_update);
-				        	file.write( reinterpret_cast<const char*>(&next_addr), sizeof(long int) );
+				        	        next_addr = file_size - length_struct_register;	    
+				        	        file.seekp(position_update);
+				        	        file.write( reinterpret_cast<const char*>(&next_addr), sizeof(long int) );
 	
                         } 
-
                         
                     } else if ( list_data.size() > 2 ){
                         
-                        
-                    	list_data.sort();
-                        
-                        std::list<std::string>::iterator i_ = list_data.begin();
-                        std::list<std::string>::iterator i_prev = std::prev( i_ , 1 );
+                    	list_data.sort();  
+                      
+                      std::list<std::string>::iterator i_ = list_data.begin();
+                      std::list<std::string>::iterator i_prev = std::prev( i_ , 1 );
                     	std::list<std::string>::iterator i_next = std::next( i_ , 1 );
-
                         
-                        while( i_ != list_data.end() ){
-                        	
+                      while( i_ != list_data.end() ){
                         		
-                        	if ( current_data_key == *i_ ){
+                        if ( current_data_key == *i_ ){
                     	        current = *i_;
-                        
-                                if ( i_ == list_data.begin() ) 
-                                	prev = "";
-                                else
-                                	prev = *i_prev; 
-                                	
-
-                                if ( i_next != list_data.end() ) 
-                                	next = *i_next;
-                                else 
-                                	next = "";
-
-                                break;
+                              i_  !=  list_data.begin() ? prev = *i_prev : prev = ""; 
+                              i_next != list_data.end() ? next = *i_next : next = "";
                     		}
 
-                        	i_++;
-                        	i_prev++;
-                        	i_next++;
-                        }
+                        i_++;
+                        i_prev++;
+                        i_next++;
+                      }
 
                         
-        long int register_address;
+      long int register_address;
     	long int next_register_address;  
     	long int next_row;
     	std::string string_read;          
                     	
 if ( prev != "" ){ 
-//std::cout << ":::: ===== > > > Previus: " << prev << " / file_header : " << file_header_;
+long int save_addr_prev, save_next_addr_prev;
 next_row = file_header_;
 while ( next_row != -1 ) {
 	std::list<dictionary::Attribute>::iterator itr_prev = list_attributes.begin();
@@ -367,13 +342,17 @@ while ( next_row != -1 ) {
 					if( itr_prev->GetTypeIndex() == 3 )
 						string_read = std::to_string(x);
 				}
-				
 			    itr_prev++;
 			}
 			file.read( reinterpret_cast<char*>(&next_register_address) , sizeof(long int) );
 		    next_row = next_register_address; 
-		    if( prev.compare(string_read) == 0 ) break;      
-		    if ( next_register_address == -1 ) break; 
+		    if( prev.compare(string_read) == 0 ){
+            save_addr_prev = register_address;
+            save_next_addr_prev = next_register_address;
+        }       
+		    if ( next_register_address == -1 ) 
+          break;
+
         } catch (const std::ios_base::failure & e) {
     		std::cout << std::endl << "::FLAG Y :: Warning Exception: " << e.what() << std::endl << ":: Error code: " << e.code() << std::endl;
     		std::cout << std::endl << ":: Fail file in:" 
@@ -382,22 +361,19 @@ while ( next_row != -1 ) {
             		  << std::endl << ":: badbit: " << file.bad();
   		}
 }
-//std::cout << "->prev register_address: " << register_address << " / next_register_address : " << next_register_address;
-prev_addr = register_address;
-prev_addr_next = next_register_address;
-prev_position_update = register_address + (length_struct_register - sizeof(long int));
-}
+
+prev_addr = save_addr_prev;
+prev_addr_next = save_next_addr_prev;
+prev_position_update = prev_addr + (length_struct_register - sizeof(long int));
+
+} // end if prev !=""
 
 if ( current != "" ){            
-
-curr_addr = file_size - length_struct_register;
-curr_addr_next = -1;
-//std::cout << "->current register_address: " << curr_addr << " / next_register_address : " << curr_addr_next;
-
+    curr_addr = file_size - length_struct_register;
+    curr_addr_next = -1;
 } // end if current
 
 if ( next != "" ){
-//std::cout << ":::: ===== > > > Next : " << next << " / file_header : " << file_header_; 
 next_row = file_header_;
 while ( next_row != -1 ) {
 	std::list<dictionary::Attribute>::iterator itr_next = list_attributes.begin();
@@ -420,11 +396,10 @@ while ( next_row != -1 ) {
 				}	
 			    itr_next++;
 			}
-			
 			file.read( reinterpret_cast<char*>(&next_register_address) , sizeof(long int) );
 		    next_row = next_register_address;       
-		    if( next.compare(string_read) == 0 ) 
-				break;
+		    if( next.compare(string_read) == 0 )
+          break;
 		    if ( next_register_address == -1 ) 
 		    	break; 
         } catch (const std::ios_base::failure & e) {
@@ -434,16 +409,13 @@ while ( next_row != -1 ) {
             		  << std::endl << ":: eofbit: " << file.eof()
             		  << std::endl << ":: badbit: " << file.bad();
   		}
-}
-
-//std::cout << ":: Next register_address -> " << next_addr << " <- " ;
+} // end while next_row != -1
 
 } // end if next
 
 	            	// EXIST PREV &&  NEXT (MIDDLE) 
 	            	if ( prev != "" && next != "" ){
 	            		 
-	            		//std::cout << std::endl << ":: Flag 000 -> Middle " << prev_addr << " / " << next_addr;
 	            		file.seekp( curr_addr + (length_struct_register - sizeof(long int)) );
 	            		file.write( reinterpret_cast<const char*>(&next_addr), sizeof(long int) );
 	            		file.seekp( prev_addr + (length_struct_register - sizeof(long int)) );
@@ -452,17 +424,17 @@ while ( next_row != -1 ) {
 	            	// EXIST PREV &&  DONT EXIST NEXT (LAST)
 	            	} else if (prev != "" && next == ""){
 	            	
-	            		//std::cout << std::endl << ":: Flag 001 -> Last " << prev_position_update << " / " << curr_addr;
 	            		file.seekp( prev_position_update );
 	            		file.write( reinterpret_cast<const char*>(&curr_addr), sizeof(long int) );
 	            	
 	            	// DONT EXIST PREV && EXIST NEXT (FIRST)
 	            	} else if ( prev == "" && next != "" ) {
+
 	            	    file_header_ = curr_addr;
-	            	    //std::cout << std::endl << ":: Flag 002 -> First: " << curr_addr + (length_struct_register - sizeof(long int)) << " / " << next_addr;
 	            	    file.seekp(curr_addr + (length_struct_register - sizeof(long int)) );
 	            	    file.write( reinterpret_cast<const char*>(&next_addr), sizeof(long int) );
-	            	}
+	            	
+                }
 
             } // end else if case 3
                     
@@ -525,7 +497,6 @@ while ( next_row != -1 ) {
     	file.close();
     }
 
-
     int DataFile::GetSizeRegister(std::list<dictionary::Attribute> list_attributes){
     	int length = sizeof(long int)*2; // because start address & end addres
     	std::list<dictionary::Attribute>::iterator it = list_attributes.begin();
@@ -538,4 +509,58 @@ while ( next_row != -1 ) {
 	        }
 	    return length; 
     }
+
+    std::list<long int> DataFile::GetAddressBySearchKey(const std::string & name,const std::string & search_key, long int file_header, std::list<dictionary::Attribute> list_attributes){
+        std::list<long int> list_address;
+        long int register_address;
+        long int next_register_address;
+        long int next = file_header;
+        std::string current_data;
+        std::string dir = "tmp/";
+        std::string ext = ".dat";
+        std::fstream file( dir + name + ext, std::ios::binary | std::ios::in | std::ios::out );
+        
+        while ( next != -1 ) {
+        
+            std::list<dictionary::Attribute>::iterator it = list_attributes.begin();
+            file.exceptions( file.failbit | file.badbit );
+            
+            try {
+            
+              file.seekg( next );
+              file.read( reinterpret_cast<char*>(&register_address) , sizeof(long int) );
+                  
+                  while ( it != list_attributes.end() ) {
+                    if ( it->GetTypeIndex() == 3 ) {
+
+                      if ( it->GetDataType() == 'c' ){
+                        char str[ it->GetLengthDataType() ];
+                        file.read( reinterpret_cast<char*>(str) , it->GetLengthDataType() );
+                        current_data = str; 
+                      } else if ( it->GetDataType() == 'i' ){
+                        int  x;
+                        file.read( reinterpret_cast<char*>(&x), sizeof( int ) );
+                        current_data = std::to_string(x);
+                      } // end else if  
+                      if ( search_key.compare( current_data ) == 0)
+                        list_address.push_back(register_address);
+                    } // end if type index
+                    it++;
+                  } // end while
+                  file.read( reinterpret_cast<char*>(&next_register_address) , sizeof(long int) );
+                    next = next_register_address;
+                    std::cout << std::endl;
+                    if ( next_register_address == -1 )
+                      break; 
+                  } catch (const std::ios_base::failure & e) {
+                std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                              << std::endl << ":: Error code: " << e.code() 
+                            << std::endl;
+              }
+      }
+      file.close();
+      return list_address;
+    }
+
+
 }  // end namespace archive
