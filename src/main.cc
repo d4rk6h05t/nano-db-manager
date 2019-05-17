@@ -21,7 +21,7 @@ using namespace dictionary;
 using namespace ui;
 using namespace archive;
 
-int main(){ 
+int main( int argc, char* argv[] ){ 
 	
 	View view;
     long int file_header = -1;
