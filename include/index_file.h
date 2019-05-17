@@ -13,6 +13,11 @@ const int SIZE_BLOCK_ = READ_HEADER_FILE_ - LENGTH_ADDRESS_;
 const int SIZE_ROW_INT = sizeof(int) + sizeof(long int);
 const int ROW_CAPACITY = SIZE_BLOCK_ / SIZE_ROW_INT;
 
+const int WITHOUT_INDEX = 0;
+const int SEARCH_KEY = 1;
+const int PRIMARY_INDEX = 2;
+const int SECONDARY_INDEX = 3;
+
 namespace dictionary {
 
     class IndexFile {
@@ -36,7 +41,6 @@ namespace dictionary {
             int GetTypeIndex();
             long int GetFileHeader();
             long int GetFileSize();
-
             
             // Methods of File
             void CreateFile();
