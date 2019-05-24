@@ -194,7 +194,7 @@ namespace dictionary {
         return block_data_int;
     }
 
-    void IndexFile::AddLineToBlock(const std::string& name,int position, std::list< std::pair<int, long int> > list_data_pair, int data, long int data_address){
+    void IndexFile::AddLineToBlock(const std::string& name,int position, std::list< std::pair<int, long int>> list_data_pair, int data, long int data_address){
         
         std::pair<int, long int> new_pair;
         new_pair.first = data;
@@ -204,7 +204,7 @@ namespace dictionary {
         std::string ext = ".idx";
         std::fstream file( dir + name + ext, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );  
         
-        std::list< std::pair<int, long int> >::iterator i_ = list_data_pair.begin();
+        std::list<std::pair<int, long int>>::iterator i_ = list_data_pair.begin();
         std::pair<int, long int> current_pair, next_pair, previus_pair;
 
         int read_data = -1;
@@ -282,11 +282,22 @@ namespace dictionary {
                     
                     // insert first
                     if ( previus_pair.first == -1 && next_pair.first != -1 ){
-                       
+                        
+                        i_ = list_data_pair.begin();
+
+                        while ( i_ != list_data_pair.end() ) {
+                            current_pair.first = i_->first;
+                            current_pair.second = i_->second;                            
+                            file.write( reinterpret_cast<const char*>(&current_pair.first), sizeof(int) );
+                            file.write( reinterpret_cast<const char*>(&current_pair.second), sizeof(long int) );
+                            i_++;
+                        }
+                        /*
                         file.write( reinterpret_cast<const char*>(&current_pair.first), sizeof(int) );
                         file.write( reinterpret_cast<const char*>(&current_pair.second), sizeof(long int) );
                         file.write( reinterpret_cast<const char*>(&next_pair.first), sizeof(int) );
                         file.write( reinterpret_cast<const char*>(&next_pair.second), sizeof(long int) );
+                        */
                     // insert midle
                     } else if ( previus_pair.first != -1 && next_pair.first != -1 ){
                         
