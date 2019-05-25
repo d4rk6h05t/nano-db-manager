@@ -1,43 +1,43 @@
-#include "index_file.h"
+#include "secondary_index_file.h"
 
 namespace dictionary {
 
     // Constructors & destructosr
-    IndexFile::IndexFile(){ 
+    SecondaryIndexFile::SecondaryIndexFile(){ 
         dir_ = "tmp/";
         name_ = "unamed"; 
         ext_ = ".idx";
         file_header_ = -1;
-        type_ = 0;
+        //type_ = 0;
     }
 
-    IndexFile::IndexFile(const std::string& name, int type){ 
+    SecondaryIndexFile::SecondaryIndexFile(const std::string& name, int type){ 
         dir_ = "tmp/";
         name_ = name; 
         ext_ = ".idx";
         file_header_ = -1;
-        type_ = type;
+        //type_ = type;
     }
 
-    IndexFile::~IndexFile(){}
+    SecondaryIndexFile::~SecondaryIndexFile(){}
     
     // Setters
-    void IndexFile::SetName(const std::string& name){ name_ = name; }
-    void IndexFile::SetDir(const std::string& dir){ dir_ = dir; }
-    void IndexFile::SetExt(const std::string& ext){ ext_ = ext; }
+    void SecondaryIndexFile::SetName(const std::string& name){ name_ = name; }
+    void SecondaryIndexFile::SetDir(const std::string& dir){ dir_ = dir; }
+    void SecondaryIndexFile::SetExt(const std::string& ext){ ext_ = ext; }
     
-    void IndexFile::SetTypeIndex(int type){ type_ = type; }
-    void IndexFile::SetFileHeader(long int file_header){ file_header_ = file_header; }
+    //void SecondaryIndexFile::SetTypeIndex(int type){ type_ = type; }
+    void SecondaryIndexFile::SetFileHeader(long int file_header){ file_header_ = file_header; }
     
     // Getters
-    std::string IndexFile::GetName(){ return name_;}
-    std::string IndexFile::GetDir(){ return dir_;}
-    std::string IndexFile::GetExt(){ return ext_;}
+    std::string SecondaryIndexFile::GetName(){ return name_;}
+    std::string SecondaryIndexFile::GetDir(){ return dir_;}
+    std::string SecondaryIndexFile::GetExt(){ return ext_;}
 
-    int IndexFile::GetTypeIndex(){ return type_; }
-    long int IndexFile::GetFileHeader(){return file_header_;}
+    //int SecondaryIndexFile::GetTypeIndex(){ return type_; }
+    long int SecondaryIndexFile::GetFileHeader(){return file_header_;}
     
-    long int IndexFile::GetFileSize(){
+    long int SecondaryIndexFile::GetFileSize(){
         std::ifstream file ( dir_ + name_ + ext_, std::ios::binary | std::ios::in );
         file.exceptions( file.failbit | file.badbit );
             try { 
@@ -53,7 +53,7 @@ namespace dictionary {
     }
 
     // Methods of file 
-   void IndexFile::CreateFile(){
+   void SecondaryIndexFile::CreateFile(){
         std::ifstream in_file( dir_ + name_ + ext_, std::ios::binary | std::ios::in );
         if ( !in_file.good() ){
             std::ofstream out_file( dir_ + name_ + ext_, std::ios::binary | std::ios::out );
@@ -65,7 +65,7 @@ namespace dictionary {
         }
    }
 
-   void IndexFile::UpdateHeader(){
+   void SecondaryIndexFile::UpdateHeader(){
         std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
         file.exceptions( file.failbit | file.badbit );
             try {
@@ -84,7 +84,7 @@ namespace dictionary {
         file.close();
     }
     
-    long int IndexFile::ReadAddress(long int position){
+    long int SecondaryIndexFile::ReadAddress(long int position){
         long int data;
         std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out );
         file.exceptions( file.failbit | file.badbit );
@@ -101,7 +101,7 @@ namespace dictionary {
         return data;
     }
 
-    void IndexFile::UpdateAddress(long int position, long int new_address){
+    void SecondaryIndexFile::UpdateAddress(long int position, long int new_address){
         
         std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
         file.exceptions( file.failbit | file.badbit );
@@ -120,7 +120,7 @@ namespace dictionary {
         file.close();
     }
 
-    void IndexFile::CreateBlock(int position){
+    void SecondaryIndexFile::CreateBlock(int position){
         
         std::cout << std::endl << ":: header: " << READ_HEADER_FILE_;
         std::cout << std::endl << ":: addr: " << LENGTH_ADDRESS_;
@@ -155,7 +155,7 @@ namespace dictionary {
         
     }
 
-    std::list< std::pair< int, long int> > IndexFile::ReadBlock(const std::string& name,int position){
+    std::list< std::pair< int, long int> > SecondaryIndexFile::ReadBlock(const std::string& name,int position){
         
         std::list< std::pair< int, long int> > block_data_int;
             
@@ -194,7 +194,7 @@ namespace dictionary {
         return block_data_int;
     }
 
-    void IndexFile::AddLineToBlock(const std::string& name,int position, std::list< std::pair<int, long int>> list_data_pair, int data, long int data_address){
+    void SecondaryIndexFile::AddLineToBlock(const std::string& name,int position, std::list< std::pair<int, long int>> list_data_pair, int data, long int data_address){
         
         std::pair<int, long int> new_pair;
         new_pair.first = data;
