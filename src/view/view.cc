@@ -182,7 +182,8 @@ namespace ui {
     			std::cout << std::endl << " \t\t [ 1 ]: Add a register ";
     			std::cout << std::endl << " \t\t [ 2 ]: Show Primary Index ";	
     			std::cout << std::endl << " \t\t [ 3 ]: Show Data File ";	
-    			std::cout << std::endl << " \t\t [ 4 ]: Back to main menu ";	
+    			std::cout << std::endl << " \t\t [ 4 ]: Update a register ";
+    			std::cout << std::endl << " \t\t [ 5 ]: Back to main menu ";	
 		}
 
 

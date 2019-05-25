@@ -12,7 +12,7 @@
 #include "index.h"
 #include "data_dictionary.h"
 #include "data_file.h"
-#include "index_file.h"
+#include "primary_index_file.h"
 #include "view.h"
 
 // namespaces to use
@@ -256,10 +256,10 @@ int main( int argc, char* argv[] ){
 							
 							string attr_name( i->GetName() );
 							if ( i->GetTypeIndex() == 1 || i->GetTypeIndex() == 2 ){
-								IndexFile index_file( attr_name , i->GetTypeIndex()  );
+								PrimaryIndexFile index_file( attr_name , i->GetTypeIndex()  );
 								index_file.CreateFile();
 								index_file.CreateBlock( 0 );
-								list< pair< int, long int> > block_int = IndexFile::ReadBlock(attr_name, 0 );
+								list< pair< int, long int> > block_int = PrimaryIndexFile::ReadBlock(attr_name, 0 );
 							} 		
 							//cout << ":: Name attr : " << attr_name << " :: type index attr : " << i->GetTypeIndex();
 							//data_file.UpdateAddress( i->GetAttributeAddress() + 35 + 1 + 4 + 8 + 4 , 0 );
@@ -290,7 +290,7 @@ int main( int argc, char* argv[] ){
 				    		for( list<Attribute>::iterator j = list_attributes.begin(); j != list_attributes.end(); j++ ){
 								if ( j->GetTypeIndex() == 1 || j->GetTypeIndex() == 2 ){
 									string attr_name_show( j->GetName() );
-									list< pair< int, long int> > block = IndexFile::ReadBlock(attr_name_show, 0 );
+									list< pair< int, long int> > block = PrimaryIndexFile::ReadBlock(attr_name_show, 0 );
 									for( list< pair< int, long int> >::iterator k = block.begin(); k != block.end(); k++ ){
 										cout << endl << k->first << " \t " << k->second;
 									}
@@ -305,9 +305,14 @@ int main( int argc, char* argv[] ){
 							data_file.ReadRegister( data_dictionary.ReadListAttributes(current_entity) );
 							break;
 						}
+						case 4 : { // Update a register
+				    		view.ShowMessage("===> Update a register");
+				    		view.ShowStatusBar(data_file.GetName(), data_file.GetFileHeader(), data_file.GetFileSize() );
+							break;
+						}
 				    }
-	    		} while(option_file < 4);
-	    		if (option_file > 3 ) view.Clear();
+	    		} while(option_file < 5);
+	    		if (option_file > 4 ) view.Clear();
 	    			break;
 	    		//}
 	    	} //  end if current_entity

@@ -1,5 +1,5 @@
-#ifndef DICTIONARY_CC_INDEX_FILE_H_
-#define DICTIONARY_CC_INDEX_FILE_H_
+#ifndef DICTIONARY_CC_PRIMARY_INDEX_FILE_H_
+#define DICTIONARY_CC_PRIMARY_INDEX_FILE_H_
 
 #include <iostream>
 #include <string>
@@ -20,13 +20,13 @@ const int SECONDARY_INDEX = 3;
 
 namespace dictionary {
 
-    class IndexFile {
+    class PrimaryIndexFile {
     
         public:
              
-            IndexFile();
-            IndexFile(const std::string& name, int type);
-            ~IndexFile();
+            PrimaryIndexFile();
+            PrimaryIndexFile(const std::string& name, int type);
+            ~PrimaryIndexFile();
 
             // Setters
             void SetName(const std::string& name);
@@ -70,9 +70,9 @@ namespace dictionary {
             // 5: Hash Static
             // 6: Hash Dinamic
             // 7: Multilist
-            int type_;
+            //int type_;
     }; 
 
 }  // end namespace dictionary
 
-#endif  // DICTIONARY_CC_INDEX_FILE_H_
+#endif  // DICTIONARY_CC_PRIMARY_INDEX_FILE_H_

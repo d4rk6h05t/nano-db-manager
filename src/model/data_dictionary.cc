@@ -293,38 +293,47 @@ namespace dictionary {
 		        
 		        	std::string first_entity( list_entities.front().GetName() );
 				
+				    // update Header when is remove first  
 					if( remove_entity.compare(first_entity) ==  0 ){
 						file_header_ = list_entities.front().GetNextEntityAddress();
 						file.seekp( 0 );
 						file.write( reinterpret_cast<const char*>(&file_header_), sizeof(long int) );
-					}
-				
-					std::list<Entity>::iterator it_current = list_entities.begin();
-					std::list<Entity>::iterator it_previus = std::prev( it_current , 1 );
-				
-					while ( it_current != list_entities.end() ){
-				
-						std::string it_current_entity( it_current->GetName() );
-				
-						if ( remove_entity.compare(it_current_entity) == 0 ){
+						file.seekp( list_entities.front().GetEntityAddress() + 59 );
+						file.write( reinterpret_cast<const char*>(&end_address), sizeof(long int) );
+					} else {
+						std::list<Entity>::iterator it_current = list_entities.begin();
+						std::list<Entity>::iterator it_previus = std::prev( it_current , 1 );
+					    
+						while ( it_current != list_entities.end() ){
+					
+							std::string it_current_entity( it_current->GetName() );
+
+							if ( remove_entity.compare(it_current_entity) == 0 ){
+
+								file.seekp( it_previus->GetEntityAddress() + 59 );
+								long int new_next_entity_address = it_current->GetNextEntityAddress();
+								file.write( reinterpret_cast<const char*>(&new_next_entity_address), sizeof(long int) );
+								file.seekp( it_current->GetEntityAddress() + 59 );
+								file.write( reinterpret_cast<const char*>(&end_address), sizeof(long int) );		 
+								break;
 							
-							file.seekp( it_previus->GetEntityAddress() + 59 );
-							long int new_next_entity_address = it_current->GetNextEntityAddress();
-							file.write( reinterpret_cast<const char*>(&new_next_entity_address), sizeof(long int) );
-							file.seekp( it_current->GetEntityAddress() + 59 );
-							file.write( reinterpret_cast<const char*>(&end_address), sizeof(long int) );		 
-							break;
-						
-						}
-				
-						it_current++;
-						it_previus++;
+							}
+					        
+							it_current++;
+							it_previus++;
+						} // end while	
 					}
+				
+					 
 		        } 
 		    } catch (const std::ios_base::failure & e) {
     			std::cout << std::endl << ":: Warning Exception: " << e.what() 
                           << std::endl << ":: Error code: " << e.code() 
                   		  << std::endl;
+                std::cout << std::endl << ":: Fail file in:" 
+    				  	  << std::endl << ":: failbit: " << file.fail() 
+            		      << std::endl << ":: eofbit: " << file.eof()
+            		      << std::endl << ":: badbit: " << file.bad();
   			}
 		file.close();											
     }
@@ -515,7 +524,9 @@ namespace dictionary {
        	std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
         
         if ( !list_attributes.empty() ){
-        
+            
+            
+
         	std::string first_attribute( list_attributes.front().GetName() );
 			std::list<Attribute>::iterator it_current = list_attributes.begin();
 			std::list<Attribute>::iterator it_previus = std::prev( it_current , 1 );
@@ -526,13 +537,16 @@ namespace dictionary {
 				std::string it_current_attribute( it_current->GetName() );
 				file.exceptions( file.failbit | file.badbit );
 					try {
-				        if( remove_attribute.compare(first_attribute) ==  0 ){
-						    file.seekp( current_entity.GetEntityAddress() + 35 + 8 );
-						    long int next_attr = it_next->GetAttributeAddress();
-						    file.write( reinterpret_cast<const char*>(&next_attr), sizeof(long int) );
 
-						}
-
+						if( remove_attribute.compare(first_attribute) ==  0 ){
+							file.seekp( current_entity.GetEntityAddress() + 35 + 8 );
+							long int next_attr = it_next->GetAttributeAddress();
+							file.write( reinterpret_cast<const char*>(&next_attr), sizeof(long int) );
+							file.seekp( it_current->GetAttributeAddress() + 35 + 1 + 4 + 8 + 4 + 8 );
+							file.write( reinterpret_cast<const char*>(&end_address), sizeof(long int) );
+							break;		
+						}	        
+						
 						if ( remove_attribute.compare(it_current_attribute) == 0 ){
 							
 							file.seekp( it_previus->GetAttributeAddress() + 35 + 1 + 4 + 8 + 4 + 8  );
@@ -544,10 +558,15 @@ namespace dictionary {
 							break;
 						
 						}
+
 				    } catch (const std::ios_base::failure & e) {
     					std::cout << std::endl << ":: Warning Exception: " << e.what() 
                                   << std::endl << ":: Error code: " << e.code() 
                   		          << std::endl;
+                  		std::cout << std::endl << ":: Fail file in:" 
+    				  	  		  << std::endl << ":: failbit: " << file.fail() 
+            		      		  << std::endl << ":: eofbit: " << file.eof()
+            		              << std::endl << ":: badbit: " << file.bad();
   				    }
 				it_current++;
 				it_previus++;
