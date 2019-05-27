@@ -280,52 +280,18 @@ namespace dictionary {
                         prev++;
                     } // emd while i_ != list_data_pair
                     
-                    // insert first
-                    if ( previus_pair.first == -1 && next_pair.first != -1 ){
-                        
-                        i_ = list_data_pair.begin();
-
-                        while ( i_ != list_data_pair.end() ) {
+                    i_ = list_data_pair.begin();
+                    int k = 0;
+                        while ( i_ != list_data_pair.end() && k < ROW_CAPACITY) {
                             current_pair.first = i_->first;
                             current_pair.second = i_->second;                            
                             file.write( reinterpret_cast<const char*>(&current_pair.first), sizeof(int) );
                             file.write( reinterpret_cast<const char*>(&current_pair.second), sizeof(long int) );
                             i_++;
+                            k++;
                         }
-                        /*
-                        file.write( reinterpret_cast<const char*>(&current_pair.first), sizeof(int) );
-                        file.write( reinterpret_cast<const char*>(&current_pair.second), sizeof(long int) );
-                        file.write( reinterpret_cast<const char*>(&next_pair.first), sizeof(int) );
-                        file.write( reinterpret_cast<const char*>(&next_pair.second), sizeof(long int) );
-                        */
-                    // insert midle
-                    } else if ( previus_pair.first != -1 && next_pair.first != -1 ){
-                        
-                        for ( int i = 0; i < ROW_CAPACITY; i++ ) { 
-                            
-                            file.read( reinterpret_cast<char*>(&read_data) , sizeof(int) );
-                            file.read( reinterpret_cast<char*>(&read_data_address), sizeof(long int) );
-                            
-                            if ( read_data == previus_pair.first ) {
-                                file.write( reinterpret_cast<const char*>(&current_pair.first), sizeof(int) );
-                                file.write( reinterpret_cast<const char*>(&current_pair.second), sizeof(long int) );
-                                file.write( reinterpret_cast<const char*>(&next_pair.first), sizeof(int) );
-                                file.write( reinterpret_cast<const char*>(&next_pair.second), sizeof(long int) );
-                                break;
-                            }
-                        } // end else if inser midle
-                    // insert last
-                    } else if ( previus_pair.first != -1 && next_pair.first == -1 ){
-                        for ( int i = 0; i < ROW_CAPACITY; i++ ) { 
-                            file.read( reinterpret_cast<char*>(&read_data) , sizeof(int) );
-                            file.read( reinterpret_cast<char*>(&read_data_address), sizeof(long int) );
-                            if ( read_data == previus_pair.first ) {
-                                file.write( reinterpret_cast<const char*>(&current_pair.first), sizeof(int) );
-                                file.write( reinterpret_cast<const char*>(&current_pair.second), sizeof(long int) );
-                                break;
-                            }
-                        } // end for
-                    } // else if inser last
+
+
                 } // end else if list_data_pair.size() > 2
             } catch (const std::ios_base::failure & e) {
                 std::cout << std::endl << ":: Warning Exception: " << e.what() 
