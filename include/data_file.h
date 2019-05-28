@@ -48,7 +48,7 @@ namespace archive {
             void AppendIntData(int int_data);
             void AppendAddress(long int new_address);
 
-            void AppendData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data);
+            void AppendData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data,const std::string& entity_active);
 
             void SetData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data);
             void GetData(std::list<dictionary::Attribute> list_attributes);

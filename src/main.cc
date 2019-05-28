@@ -9,7 +9,6 @@
 // personal includes
 #include "entity.h"
 #include "attribute.h"
-#include "index.h"
 #include "data_dictionary.h"
 #include "data_file.h"
 #include "primary_index_file.h"
@@ -255,11 +254,13 @@ int main( int argc, char* argv[] ){
 						for( list<Attribute>::iterator i = list_attributes.begin(); i != list_attributes.end(); i++ ){
 							
 							string attr_name( i->GetName() );
-							if ( i->GetTypeIndex() == 1 || i->GetTypeIndex() == 2 ){
-								PrimaryIndexFile index_file( attr_name , i->GetTypeIndex()  );
-								index_file.CreateFile();
-								index_file.CreateBlock( 0 );
-								list< pair< int, long int> > block_int = PrimaryIndexFile::ReadBlock(attr_name, 0 );
+
+							if ( i->GetTypeIndex() == 1  ){
+								string name_primary_index = current_entity_name + "_" + attr_name;
+								PrimaryIndexFile primary_index_file( name_primary_index );
+								primary_index_file.CreateFile();
+								primary_index_file.CreateBlock( 0 );
+								list< pair< int, long int> > block_int = PrimaryIndexFile::ReadBlock(name_primary_index, 0 );
 							} 		
 							//cout << ":: Name attr : " << attr_name << " :: type index attr : " << i->GetTypeIndex();
 							//data_file.UpdateAddress( i->GetAttributeAddress() + 35 + 1 + 4 + 8 + 4 , 0 );
@@ -278,8 +279,9 @@ int main( int argc, char* argv[] ){
 				    	case 1: { // Add new Register
 				    		view.ShowStatusBar(data_file.GetName(),  data_file.GetFileHeader() , data_file.GetFileSize() );
 				    		//if ( current_entity.GetDataAddress() == -1 )
+				    		string current_entity_name( current_entity.GetName() );
 				    		data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , data_file.GetFileHeader() );
-				    		data_file.AppendData(list_attributes,list_data);
+				    		data_file.AppendData(list_attributes,list_data,current_entity_name);
 				    		//data_dictionary.UpdateAddress(   , data_file.GetFileHeader() );
 				    		//  UPDATE DATA ADDRESS FOR ENTITY && FOR ATTR INDEX ADDRESS
 				    		break;
@@ -288,9 +290,10 @@ int main( int argc, char* argv[] ){
 				    		cout << "\t\t::::: Show Primary Index ::::";
 				    		cout << endl << "data \t data address";
 				    		for( list<Attribute>::iterator j = list_attributes.begin(); j != list_attributes.end(); j++ ){
-								if ( j->GetTypeIndex() == 1 || j->GetTypeIndex() == 2 ){
+								if ( j->GetTypeIndex() == 1  ){
 									string attr_name_show( j->GetName() );
-									list< pair< int, long int> > block = PrimaryIndexFile::ReadBlock(attr_name_show, 0 );
+									string name_primary_index_i = current_entity_name + "_" + attr_name_show;
+									list< pair< int, long int> > block = PrimaryIndexFile::ReadBlock(name_primary_index_i, 0 );
 									for( list< pair< int, long int> >::iterator k = block.begin(); k != block.end(); k++ ){
 										cout << endl << k->first << " \t " << k->second;
 									}

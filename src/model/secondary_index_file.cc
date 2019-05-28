@@ -8,15 +8,15 @@ namespace dictionary {
         name_ = "unamed"; 
         ext_ = ".idx";
         file_header_ = -1;
-        //type_ = 0;
+    
     }
 
-    SecondaryIndexFile::SecondaryIndexFile(const std::string& name, int type){ 
+    SecondaryIndexFile::SecondaryIndexFile(const std::string& name){ 
         dir_ = "tmp/";
         name_ = name; 
         ext_ = ".idx";
         file_header_ = -1;
-        //type_ = type;
+        
     }
 
     SecondaryIndexFile::~SecondaryIndexFile(){}
@@ -26,7 +26,6 @@ namespace dictionary {
     void SecondaryIndexFile::SetDir(const std::string& dir){ dir_ = dir; }
     void SecondaryIndexFile::SetExt(const std::string& ext){ ext_ = ext; }
     
-    //void SecondaryIndexFile::SetTypeIndex(int type){ type_ = type; }
     void SecondaryIndexFile::SetFileHeader(long int file_header){ file_header_ = file_header; }
     
     // Getters
@@ -34,7 +33,6 @@ namespace dictionary {
     std::string SecondaryIndexFile::GetDir(){ return dir_;}
     std::string SecondaryIndexFile::GetExt(){ return ext_;}
 
-    //int SecondaryIndexFile::GetTypeIndex(){ return type_; }
     long int SecondaryIndexFile::GetFileHeader(){return file_header_;}
     
     long int SecondaryIndexFile::GetFileSize(){
@@ -279,53 +277,16 @@ namespace dictionary {
                         next++;
                         prev++;
                     } // emd while i_ != list_data_pair
-                    
-                    // insert first
-                    if ( previus_pair.first == -1 && next_pair.first != -1 ){
-                        
-                        i_ = list_data_pair.begin();
-
-                        while ( i_ != list_data_pair.end() ) {
+                    i_ = list_data_pair.begin();
+                    int k = 0;
+                        while ( i_ != list_data_pair.end() && k < ROW_CAPACITY) {
                             current_pair.first = i_->first;
                             current_pair.second = i_->second;                            
                             file.write( reinterpret_cast<const char*>(&current_pair.first), sizeof(int) );
                             file.write( reinterpret_cast<const char*>(&current_pair.second), sizeof(long int) );
                             i_++;
-                        }
-                        /*
-                        file.write( reinterpret_cast<const char*>(&current_pair.first), sizeof(int) );
-                        file.write( reinterpret_cast<const char*>(&current_pair.second), sizeof(long int) );
-                        file.write( reinterpret_cast<const char*>(&next_pair.first), sizeof(int) );
-                        file.write( reinterpret_cast<const char*>(&next_pair.second), sizeof(long int) );
-                        */
-                    // insert midle
-                    } else if ( previus_pair.first != -1 && next_pair.first != -1 ){
-                        
-                        for ( int i = 0; i < ROW_CAPACITY; i++ ) { 
-                            
-                            file.read( reinterpret_cast<char*>(&read_data) , sizeof(int) );
-                            file.read( reinterpret_cast<char*>(&read_data_address), sizeof(long int) );
-                            
-                            if ( read_data == previus_pair.first ) {
-                                file.write( reinterpret_cast<const char*>(&current_pair.first), sizeof(int) );
-                                file.write( reinterpret_cast<const char*>(&current_pair.second), sizeof(long int) );
-                                file.write( reinterpret_cast<const char*>(&next_pair.first), sizeof(int) );
-                                file.write( reinterpret_cast<const char*>(&next_pair.second), sizeof(long int) );
-                                break;
-                            }
-                        } // end else if inser midle
-                    // insert last
-                    } else if ( previus_pair.first != -1 && next_pair.first == -1 ){
-                        for ( int i = 0; i < ROW_CAPACITY; i++ ) { 
-                            file.read( reinterpret_cast<char*>(&read_data) , sizeof(int) );
-                            file.read( reinterpret_cast<char*>(&read_data_address), sizeof(long int) );
-                            if ( read_data == previus_pair.first ) {
-                                file.write( reinterpret_cast<const char*>(&current_pair.first), sizeof(int) );
-                                file.write( reinterpret_cast<const char*>(&current_pair.second), sizeof(long int) );
-                                break;
-                            }
-                        } // end for
-                    } // else if inser last
+                            k++;
+                        }    
                 } // end else if list_data_pair.size() > 2
             } catch (const std::ios_base::failure & e) {
                 std::cout << std::endl << ":: Warning Exception: " << e.what() 
