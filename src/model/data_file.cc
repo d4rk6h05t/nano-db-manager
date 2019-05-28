@@ -168,7 +168,7 @@ namespace archive {
 		file.close();	
     }
 
-    void DataFile::AppendData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data){
+    void DataFile::AppendData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data, const std::string& entity_active){
     	
     	std::list<dictionary::Attribute>::iterator it = list_attributes.begin();
     	std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
@@ -222,7 +222,8 @@ namespace archive {
 						
             } else if ( it->GetTypeIndex() == 1 ){
             
-              std::string attr_active( it->GetName() );
+              std::string attr_active( entity_active + "_" + it->GetName() );
+
               std::list< std::pair< int, long int> > block = dictionary::PrimaryIndexFile::ReadBlock( attr_active, 0 );
               dictionary::PrimaryIndexFile::AddLineToBlock(attr_active, 0, block, x, file_size);
             

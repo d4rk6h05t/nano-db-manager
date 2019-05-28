@@ -8,15 +8,13 @@ namespace dictionary {
         name_ = "unamed"; 
         ext_ = ".idx";
         file_header_ = -1;
-        //type_ = 0;
     }
 
-    PrimaryIndexFile::PrimaryIndexFile(const std::string& name, int type){ 
+    PrimaryIndexFile::PrimaryIndexFile(const std::string& name){ 
         dir_ = "tmp/";
         name_ = name; 
         ext_ = ".idx";
         file_header_ = -1;
-        //type_ = type;
     }
 
     PrimaryIndexFile::~PrimaryIndexFile(){}
@@ -26,7 +24,6 @@ namespace dictionary {
     void PrimaryIndexFile::SetDir(const std::string& dir){ dir_ = dir; }
     void PrimaryIndexFile::SetExt(const std::string& ext){ ext_ = ext; }
     
-    //void PrimaryIndexFile::SetTypeIndex(int type){ type_ = type; }
     void PrimaryIndexFile::SetFileHeader(long int file_header){ file_header_ = file_header; }
     
     // Getters
@@ -34,7 +31,6 @@ namespace dictionary {
     std::string PrimaryIndexFile::GetDir(){ return dir_;}
     std::string PrimaryIndexFile::GetExt(){ return ext_;}
 
-    //int PrimaryIndexFile::GetTypeIndex(){ return type_; }
     long int PrimaryIndexFile::GetFileHeader(){return file_header_;}
     
     long int PrimaryIndexFile::GetFileSize(){

@@ -5,7 +5,8 @@
 #include <string>
 #include <fstream>
 #include <list>
-#include "index.h"
+
+#include "secondary_block.h"
 
 const int READ_HEADER_FILE_ = 1048;
 const int LENGTH_ADDRESS_ = sizeof(long int);
@@ -25,7 +26,7 @@ namespace dictionary {
         public:
              
             SecondaryIndexFile();
-            SecondaryIndexFile(const std::string& name, int type);
+            SecondaryIndexFile(const std::string& name);
             ~SecondaryIndexFile();
 
             // Setters
@@ -62,15 +63,6 @@ namespace dictionary {
             long int file_header_; 
             long int file_size_;
 
-            // 0: Without Type Index
-            // 1: Primary Index
-            // 2: Secondary Index
-            // 3: Search Key
-            // 4: TreeB+
-            // 5: Hash Static
-            // 6: Hash Dinamic
-            // 7: Multilist
-            //int type_;
     }; 
 
 }  // end namespace dictionary
