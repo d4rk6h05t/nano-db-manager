@@ -168,8 +168,8 @@ namespace archive {
 		file.close();	
     }
 
-    void DataFile::AppendData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data, const std::string& entity_active){
-    	
+    long int DataFile::AppendData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data, const std::string& entity_active){
+    	long int address_header = -1;
     	std::list<dictionary::Attribute>::iterator it = list_attributes.begin();
     	std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
 		  file.exceptions( file.failbit | file.badbit );
@@ -223,9 +223,10 @@ namespace archive {
             } else if ( it->GetTypeIndex() == 1 ){
             
               std::string attr_active( entity_active + "_" + it->GetName() );
-
               std::list< std::pair< int, long int> > block = dictionary::PrimaryIndexFile::ReadBlock( attr_active, 0 );
               dictionary::PrimaryIndexFile::AddLineToBlock(attr_active, 0, block, x, file_size);
+            
+            } else if ( it->GetTypeIndex() == 2 ){
             
             }
 
@@ -432,9 +433,10 @@ while ( next_row != -1 ) {
 	            	} else if ( prev == "" && next != "" ) {
 
 	            	    file_header_ = curr_addr;
+                    address_header = file_header_; 
 	            	    file.seekp(curr_addr + (length_struct_register - sizeof(long int)) );
 	            	    file.write( reinterpret_cast<const char*>(&next_addr), sizeof(long int) );
-	            	
+	            	    
                 }
 
             } // end else if case 3
@@ -451,9 +453,10 @@ while ( next_row != -1 ) {
   				}
   			}
 	    file.close();
+      return address_header;
     }
 
-    void DataFile::SetData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data){
+    void DataFile::SetData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data, const std::string& entity_active){
         std::list<dictionary::Attribute>::iterator it = list_attributes.begin();
       std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
       file.exceptions( file.failbit | file.badbit );
@@ -506,9 +509,15 @@ while ( next_row != -1 ) {
             
             } else if ( it->GetTypeIndex() == 1 ){
             
-              std::string attr_active( it->GetName() );
+              std::string attr_active( entity_active + "_" + it->GetName() );
               std::list< std::pair< int, long int> > block = dictionary::PrimaryIndexFile::ReadBlock( attr_active, 0 );
               dictionary::PrimaryIndexFile::AddLineToBlock(attr_active, 0, block, x, file_size);
+            
+            } else if ( it->GetTypeIndex() == 2 ){
+            
+              //std::string attr_active( entity_active + "_" + it->GetName() );
+              //std::list< std::pair< int, long int> > block = dictionary::PrimaryIndexFile::ReadBlock( attr_active, 0 );
+              //dictionary::PrimaryIndexFile::AddLineToBlock(attr_active, 0, block, x, file_size);
             
             }
 

@@ -120,12 +120,6 @@ namespace dictionary {
 
     void SecondaryIndexFile::CreateBlock(int position){
         
-        std::cout << std::endl << ":: header: " << READ_HEADER_FILE_;
-        std::cout << std::endl << ":: addr: " << LENGTH_ADDRESS_;
-        std::cout << std::endl << ":: block: " << SIZE_BLOCK_;
-        std::cout << std::endl << ":: line: " << SIZE_ROW_INT;
-        std::cout << std::endl << ":: capacity: " << ROW_CAPACITY;
-        
         int x = -1;
         long int y = -1;
         long int overflow_chain = -1;
@@ -134,7 +128,7 @@ namespace dictionary {
         file.exceptions( file.failbit | file.badbit );
             try {
                 file.seekp( position );
-                for ( int i = 0; i < ROW_CAPACITY; i++ ) { 
+                for ( int i = 0; i < ROW_CAPACITY_I_; i++ ) { 
                     file.write( reinterpret_cast<const char*>(&x), sizeof(int) );
                     file.write( reinterpret_cast<const char*>(&y), sizeof(long int) );
                 }
@@ -167,7 +161,7 @@ namespace dictionary {
         file.exceptions( file.failbit | file.badbit );
             try {
                 file.seekp( position );
-                for ( int i = 0; i < ROW_CAPACITY; i++ ) { 
+                for ( int i = 0; i < ROW_CAPACITY_I_; i++ ) { 
                     file.read( reinterpret_cast<char*>(&data) , sizeof(int) );
                     file.read( reinterpret_cast<char*>(&data_address), sizeof(long int) );
                     if ( data != -1 && data_address != -1){
@@ -279,7 +273,7 @@ namespace dictionary {
                     } // emd while i_ != list_data_pair
                     i_ = list_data_pair.begin();
                     int k = 0;
-                        while ( i_ != list_data_pair.end() && k < ROW_CAPACITY) {
+                        while ( i_ != list_data_pair.end() && k < ROW_CAPACITY_I_) {
                             current_pair.first = i_->first;
                             current_pair.second = i_->second;                            
                             file.write( reinterpret_cast<const char*>(&current_pair.first), sizeof(int) );

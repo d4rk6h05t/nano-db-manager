@@ -12,6 +12,7 @@
 #include "data_dictionary.h"
 #include "data_file.h"
 #include "primary_index_file.h"
+#include "secondary_index_file.h"
 #include "view.h"
 
 // namespaces to use
@@ -246,10 +247,13 @@ int main( int argc, char* argv[] ){
 				if ( current_entity_name !="" ){
 					current_entity = data_dictionary.SearchEntity( data_dictionary.ReadListEntities(), current_entity_name);
 					list_attributes = data_dictionary.ReadListAttributes(current_entity);
-				    if ( current_entity.GetEntityAddress() != -1 ){
-				    	data_file.SetName( current_entity_name );
+				    data_file.SetName( current_entity_name );
+				    data_file.SetFileHeader( current_entity.GetDataAddress() );
+				    
+				    //if ( current_entity.GetEntityAddress() != -1 ){
+                    //if ( data_file.GetFileSize() == 0 ){
+				    if ( current_entity.GetDataAddress() == -1 ){ 	
 				    	data_file.CreateFile();
-
 				    	list<Attribute> list_attributes = data_dictionary.ReadListAttributes( current_entity );
 						for( list<Attribute>::iterator i = list_attributes.begin(); i != list_attributes.end(); i++ ){
 							
@@ -261,29 +265,33 @@ int main( int argc, char* argv[] ){
 								primary_index_file.CreateFile();
 								primary_index_file.CreateBlock( 0 );
 								list< pair< int, long int> > block_int = PrimaryIndexFile::ReadBlock(name_primary_index, 0 );
-							} 		
-							//cout << ":: Name attr : " << attr_name << " :: type index attr : " << i->GetTypeIndex();
-							//data_file.UpdateAddress( i->GetAttributeAddress() + 35 + 1 + 4 + 8 + 4 , 0 );
+							} 	else if ( i->GetTypeIndex() == 2 ) {
+								string name_secondary_index = current_entity_name + "_" + attr_name;
+								SecondaryIndexFile secondary_index_file( name_secondary_index );
+								secondary_index_file.CreateFile();
+								secondary_index_file.CreateBlock( 0 );
+								list< pair< int, long int> > block_int = SecondaryIndexFile::ReadBlock(name_secondary_index, 0 );
+							}	
 						}
-				    } else {
-				    	data_file.SetName( current_entity_name );
-				    	//data_file.SetFileHeader(  );
 				    } 
-				    	list<string> list_data;
+
+				list<string> list_data;
 	    		do {
 	    			view.Clear();
+	    			view.ShowStatusBar(data_file.GetName(),  data_file.GetFileHeader() , data_file.GetFileSize() );
 		    		view.ShowDataFileMenu();
 		    		view.ShowMessage("\n\t\t Select a option >_");
 		    		cin >> option_file;
 	    			switch (option_file){
 				    	case 1: { // Add new Register
 				    		view.ShowStatusBar(data_file.GetName(),  data_file.GetFileHeader() , data_file.GetFileSize() );
-				    		//if ( current_entity.GetDataAddress() == -1 )
+				    	
 				    		string current_entity_name( current_entity.GetName() );
 				    		data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , data_file.GetFileHeader() );
-				    		data_file.AppendData(list_attributes,list_data,current_entity_name);
-				    		//data_dictionary.UpdateAddress(   , data_file.GetFileHeader() );
-				    		//  UPDATE DATA ADDRESS FOR ENTITY && FOR ATTR INDEX ADDRESS
+				    		long int header_data_file = data_file.AppendData(list_attributes,list_data,current_entity_name);
+				    	
+				    		if ( header_data_file != -1)
+				    			data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , header_data_file);
 				    		break;
 				    	} 
 				    	case 2: {// Show primary Index
@@ -293,11 +301,14 @@ int main( int argc, char* argv[] ){
 								if ( j->GetTypeIndex() == 1  ){
 									string attr_name_show( j->GetName() );
 									string name_primary_index_i = current_entity_name + "_" + attr_name_show;
+									
 									list< pair< int, long int> > block = PrimaryIndexFile::ReadBlock(name_primary_index_i, 0 );
-									for( list< pair< int, long int> >::iterator k = block.begin(); k != block.end(); k++ ){
-										cout << endl << k->first << " \t " << k->second;
-									}
-								} 
+                                    if ( !block.empty() )
+										for( list< pair< int, long int> >::iterator k = block.begin(); k != block.end(); k++ )
+											cout << endl << k->first << " \t " << k->second;
+									else
+										cout << endl << " ::  block empty ";;
+								}  
 							}
 				    		break;
 				    	}
