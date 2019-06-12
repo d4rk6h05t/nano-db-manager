@@ -119,15 +119,21 @@ namespace ui {
     			int length_type_index = 21 - ( type_index.length() + 1);
     			int length_index_address = 21 - ( index_address.length() + 1);
     			int length_next_attribute_address = 21 - ( next_attribute_address.length() + 1);
+                
+                int no_equilibrium;
+    			if ( it->GetDataType()  == 'i')
+    				no_equilibrium = length_dt - 3;
+    			else if ( it->GetDataType()  == 'c' )
+    				no_equilibrium = length_dt - 4;
 
     			std::cout << std::setfill(' ') << '|' 
     				<< " " << it->GetName() << std::setw(length_name) << " " <<  '|' // name
-    				<< " " << it->GetDataType() << std::setw(length_dt-3) << " " <<  '|' // entity address
-    				<< " " << it->GetLengthDataType() << std::setw(length_lgth_dt-9) << " " <<  '|' // attribute address
-    				<< " " << it->GetAttributeAddress() << std::setw(length_attribute_address+5) << " " <<  '|' // data  address
-    				<< " " << it->GetTypeIndex() << std::setw(length_type_index) << " " <<  '|' //  type index
-    				<< " " << it->GetIndexAddress() << std::setw(length_index_address) << " " <<  '|' // index address
-    				<< " " << it->GetNextAttributeAddress() << std::setw(length_next_attribute_address) << " " <<  '|' // next entity address
+    				<< " " << it->GetDataType() << std::setw(no_equilibrium) << " " <<  '|' // entity address
+    				<< " " << it->GetLengthDataType() << std::setw(length_lgth_dt-10) << " " <<  '|' // attribute address
+    				<< " " << it->GetAttributeAddress() << std::setw(length_attribute_address+6) << " " <<  '|' // data  address
+    				<< " " << it->GetTypeIndex() << std::setw(length_type_index-9) << " " <<  '|' //  type index
+    				<< " " << it->GetIndexAddress() << std::setw(length_index_address-6) << " " <<  '|' // index address
+    				<< " " << it->GetNextAttributeAddress() << std::setw(length_next_attribute_address+3) << " " <<  '|' // next entity address
 					<< std::endl;
 			}
 			
@@ -180,10 +186,11 @@ namespace ui {
 		void View::ShowDataFileMenu(){
 				std::cout << std::endl << " \t\t::::::::::::: \t Data File Menu \t ::::::::::::" << std::endl;
     			std::cout << std::endl << " \t\t [ 1 ]: Add a register ";
-    			std::cout << std::endl << " \t\t [ 2 ]: Show Primary Index ";	
-    			std::cout << std::endl << " \t\t [ 3 ]: Show Data File ";	
-    			std::cout << std::endl << " \t\t [ 4 ]: Update a register ";
-    			std::cout << std::endl << " \t\t [ 5 ]: Back to main menu ";	
+    			std::cout << std::endl << " \t\t [ 2 ]: Show Primary Index ";
+    			std::cout << std::endl << " \t\t [ 3 ]: Show Secondary Index";	
+    			std::cout << std::endl << " \t\t [ 4 ]: Show Data File ";	
+    			std::cout << std::endl << " \t\t [ 5 ]: Update a register ";
+    			std::cout << std::endl << " \t\t [ 6 ]: Back to main menu ";	
 		}
 
 

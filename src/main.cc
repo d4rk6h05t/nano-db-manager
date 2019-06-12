@@ -225,7 +225,6 @@ int main( int argc, char* argv[] ){
 										    	}
 										    	case 4: view.ShowMessage("===>Select Attribute"); break;
 										    	case 5: { // Show entities
-										    		view.ShowMessage("===>Show list entities");
 										    		current_entity = data_dictionary.SearchEntity( data_dictionary.ReadListEntities(), current_entity_name);
 										    		view.ShowListAttributes( data_dictionary.ReadListAttributes(current_entity) );
 										    		break;
@@ -250,8 +249,6 @@ int main( int argc, char* argv[] ){
 				    data_file.SetName( current_entity_name );
 				    data_file.SetFileHeader( current_entity.GetDataAddress() );
 				    
-				    //if ( current_entity.GetEntityAddress() != -1 ){
-                    //if ( data_file.GetFileSize() == 0 ){
 				    if ( current_entity.GetDataAddress() == -1 ){ 	
 				    	data_file.CreateFile();
 				    	list<Attribute> list_attributes = data_dictionary.ReadListAttributes( current_entity );
@@ -270,7 +267,7 @@ int main( int argc, char* argv[] ){
 								SecondaryIndexFile secondary_index_file( name_secondary_index );
 								secondary_index_file.CreateFile();
 								secondary_index_file.CreateBlock( 0 );
-								list< pair< int, long int> > block_int = SecondaryIndexFile::ReadBlock(name_secondary_index, 0 );
+								
 							}	
 						}
 				    } 
@@ -296,7 +293,7 @@ int main( int argc, char* argv[] ){
 				    	} 
 				    	case 2: {// Show primary Index
 				    		cout << "\t\t::::: Show Primary Index ::::";
-				    		cout << endl << "data \t data address";
+				    		cout << endl << "Data \t Data Address";
 				    		for( list<Attribute>::iterator j = list_attributes.begin(); j != list_attributes.end(); j++ ){
 								if ( j->GetTypeIndex() == 1  ){
 									string attr_name_show( j->GetName() );
@@ -313,20 +310,42 @@ int main( int argc, char* argv[] ){
 				    		break;
 				    	}
 				    	case 3 : { // Show Data File
+				    	cout << "\t\t::::: Show Secondary Index ::::";
+				    		cout << endl << "Data \t Data Address";
+				    		for( list<Attribute>::iterator j = list_attributes.begin(); j != list_attributes.end(); j++ ){
+								if ( j->GetTypeIndex() == 2  ){
+									string attr_name_show( j->GetName() );
+									string name_secondary_index_i = current_entity_name + "_" + attr_name_show;
+									
+									list< pair< int, vector<long int>> > block_x = SecondaryIndexFile::ReadBlock(name_secondary_index_i, 0 );
+                                    
+                                    if ( !block_x.empty() )
+										for( list< pair< int, vector<long int>> >::iterator m = block_x.begin(); m != block_x.end(); m++ ){
+											cout << endl << m->first;
+											for( vector<long int>::iterator n = m->second.begin(); n != m->second.end(); n++ )
+												cout << " \t " << *n;
+										}
+									else
+										cout << endl << " ::  block empty ";;
+								}  
+							}
+				    		break;	
+						}
+						case 4 : { // Update a register
 				    		view.ShowMessage("===> Show data file");
 				    		view.ShowStatusBar(data_file.GetName(), data_file.GetFileHeader(), data_file.GetFileSize() );
 							current_entity = data_dictionary.SearchEntity( data_dictionary.ReadListEntities(), current_entity_name);
 							data_file.ReadRegister( data_dictionary.ReadListAttributes(current_entity) );
 							break;
 						}
-						case 4 : { // Update a register
+						case 5 : { // Update a register
 				    		view.ShowMessage("===> Update a register");
 				    		view.ShowStatusBar(data_file.GetName(), data_file.GetFileHeader(), data_file.GetFileSize() );
 							break;
 						}
 				    }
-	    		} while(option_file < 5);
-	    		if (option_file > 4 ) view.Clear();
+	    		} while(option_file < 6);
+	    		if (option_file > 5 ) view.Clear();
 	    			break;
 	    		//}
 	    	} //  end if current_entity

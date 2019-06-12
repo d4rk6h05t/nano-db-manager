@@ -118,12 +118,6 @@ namespace dictionary {
 
     void PrimaryIndexFile::CreateBlock(int position){
         
-        std::cout << std::endl << ":: header: " << READ_HEADER_FILE_;
-        std::cout << std::endl << ":: addr: " << LENGTH_ADDRESS_;
-        std::cout << std::endl << ":: block: " << SIZE_BLOCK_;
-        std::cout << std::endl << ":: line: " << SIZE_ROW_INT;
-        std::cout << std::endl << ":: capacity: " << ROW_CAPACITY;
-        
         int x = -1;
         long int y = -1;
         long int overflow_chain = -1;
@@ -202,9 +196,6 @@ namespace dictionary {
         
         std::list<std::pair<int, long int>>::iterator i_ = list_data_pair.begin();
         std::pair<int, long int> current_pair, next_pair, previus_pair;
-
-        int read_data = -1;
-        long read_data_address = -1;
 
         file.exceptions( file.failbit | file.badbit );
             try {
