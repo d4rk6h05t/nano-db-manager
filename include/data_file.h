@@ -6,10 +6,12 @@
 #include <fstream>
 #include <list>
 #include <iterator>
+#include <vector>
 
 #include "entity.h"
 #include "attribute.h"
 #include "primary_index_file.h"
+#include "secondary_index_file.h"
 
 
 const int MAX_LENGTH_NAME_DATA_FILE_ = 35;
@@ -50,8 +52,6 @@ namespace archive {
 
             long int AppendData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data, const std::string& entity_active);
 
-            void SetData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data, const std::string& entity_active);
-            void GetData(std::list<dictionary::Attribute> list_attributes);
             
             void ReadRegister(std::list<dictionary::Attribute> list_attributes);
             int GetSizeRegister(std::list<dictionary::Attribute> list_attributes);

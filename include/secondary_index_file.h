@@ -5,14 +5,16 @@
 #include <string>
 #include <fstream>
 #include <list>
+#include <vector>
 
-#include "secondary_block.h"
+//#include "secondary_block.h"
 
 const int READ_HEADER_FILE_I_ = 1048;
-const int LENGTH_ADDRESS_I_ = sizeof(long int);
-const int SIZE_BLOCK_I_ = READ_HEADER_FILE_I_ - LENGTH_ADDRESS_I_;
-const int SIZE_ROW_INT_I_ = sizeof(int) + sizeof(long int);
-const int ROW_CAPACITY_I_ = SIZE_BLOCK_I_ / SIZE_ROW_INT_I_;
+const int SIZE_DATA_BLOCK_ = 5; // last data is next address 
+const int LENGTH_ADDRESS_I_ = sizeof(long int); // 8
+const int SIZE_BLOCK_I_ = READ_HEADER_FILE_I_ - LENGTH_ADDRESS_I_; // 1040
+const int SIZE_ROW_INT_I_ = sizeof(int) + (SIZE_DATA_BLOCK_ * sizeof(long int)); // 44
+const int ROW_CAPACITY_I_ = SIZE_BLOCK_I_ / SIZE_ROW_INT_I_;  // 23
 
 namespace dictionary {
 
@@ -46,8 +48,9 @@ namespace dictionary {
             void UpdateName(long int position, std::string new_name);
 
             void CreateBlock(int position);
-            static std::list< std::pair< int, long int> > ReadBlock(const std::string& name,int position);
-            static void AddLineToBlock(const std::string& name,int position, std::list< std::pair<int, long int> > list_data_pair, int data, long int data_address);
+            static std::list< std::pair< int, std::vector<long int>> > ReadBlock(const std::string& name,int position);
+            static void AddLineToBlock(const std::string& name,int position, std::list< std::pair<int, std::vector<long int>> > list_data_pair, int data, std::vector<long int> block_address);
+            static void UpdateLineToBlock(const std::string& name,int position, int data, std::vector<long int> block_address);
 
         private:
 

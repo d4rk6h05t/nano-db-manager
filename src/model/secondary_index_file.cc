@@ -55,10 +55,8 @@ namespace dictionary {
         std::ifstream in_file( dir_ + name_ + ext_, std::ios::binary | std::ios::in );
         if ( !in_file.good() ){
             std::ofstream out_file( dir_ + name_ + ext_, std::ios::binary | std::ios::out );
-            out_file.seekp(0);
             out_file.close();
         } else {
-            in_file.seekg(0);
             in_file.close();
         }
    }
@@ -130,7 +128,8 @@ namespace dictionary {
                 file.seekp( position );
                 for ( int i = 0; i < ROW_CAPACITY_I_; i++ ) { 
                     file.write( reinterpret_cast<const char*>(&x), sizeof(int) );
-                    file.write( reinterpret_cast<const char*>(&y), sizeof(long int) );
+                    for ( int j = 0; j < SIZE_DATA_BLOCK_; j++ )
+                       file.write( reinterpret_cast<const char*>(&y), sizeof(long int) );
                 }
                 // overflow chain
                 file.write( reinterpret_cast<const char*>(&overflow_chain), sizeof(long int) );
@@ -144,15 +143,11 @@ namespace dictionary {
                 }
             }
         file.close();
-        
     }
 
-    std::list< std::pair< int, long int> > SecondaryIndexFile::ReadBlock(const std::string& name,int position){
+    std::list< std::pair< int, std::vector<long int>> > SecondaryIndexFile::ReadBlock(const std::string& name,int position){
         
-        std::list< std::pair< int, long int> > block_data_int;
-            
-        int data;
-        long int data_address;
+        std::list< std::pair< int, std::vector<long int>> > block;
         
         std::string dir = "tmp/";
         std::string ext = ".idx";
@@ -162,16 +157,23 @@ namespace dictionary {
             try {
                 file.seekp( position );
                 for ( int i = 0; i < ROW_CAPACITY_I_; i++ ) { 
+                    int data = -1;
+                    std::vector<long int> datablock;
                     file.read( reinterpret_cast<char*>(&data) , sizeof(int) );
-                    file.read( reinterpret_cast<char*>(&data_address), sizeof(long int) );
-                    if ( data != -1 && data_address != -1){
-                        std::pair< int, long int> data_pair;
+                    if ( data != -1 ) {
+                        for ( int j = 0; j < SIZE_DATA_BLOCK_; j++ ){
+                            long int data_address = -1;
+                            file.read( reinterpret_cast<char*>(&data_address), sizeof(long int) );
+                            datablock.push_back(data_address);
+                        }
+                        std::pair< int, std::vector<long int>> data_pair;
                         data_pair.first = data;
-                        data_pair.second = data_address;
-                        block_data_int.push_back(data_pair);
+                        data_pair.second = datablock;
+                        block.push_back(data_pair);    
                     } else {
                         break;
                     }
+                    
                 }
             } catch (const std::ios_base::failure & e) {
                 std::cout << std::endl << ":: Warning Exception: " << e.what() 
@@ -183,24 +185,22 @@ namespace dictionary {
                 }
             }
         file.close();
-        return block_data_int;
+        return block;
     }
 
-    void SecondaryIndexFile::AddLineToBlock(const std::string& name,int position, std::list< std::pair<int, long int>> list_data_pair, int data, long int data_address){
+    void SecondaryIndexFile::AddLineToBlock(const std::string& name,int position, std::list< std::pair<int, std::vector<long int>>> list_data_pair, int data, std::vector<long int> block_address){
         
-        std::pair<int, long int> new_pair;
+        std::pair<int, std::vector<long int>> new_pair;
         new_pair.first = data;
-        new_pair.second = data_address;
+        new_pair.second = block_address;
         list_data_pair.push_back(new_pair);
+        
         std::string dir = "tmp/";
         std::string ext = ".idx";
         std::fstream file( dir + name + ext, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );  
         
-        std::list<std::pair<int, long int>>::iterator i_ = list_data_pair.begin();
-        std::pair<int, long int> current_pair, next_pair, previus_pair;
-
-        int read_data = -1;
-        long read_data_address = -1;
+        std::list<std::pair<int, std::vector<long int>>>::iterator i_ = list_data_pair.begin();
+        std::pair<int, std::vector<long int>> current_pair, next_pair, previus_pair;
 
         file.exceptions( file.failbit | file.badbit );
             try {
@@ -208,9 +208,14 @@ namespace dictionary {
                 file.seekp( position );
                 
                 if ( list_data_pair.size() == 1 ) {
-                    
+
                     file.write( reinterpret_cast<const char*>(&data), sizeof(int) );
-                    file.write( reinterpret_cast<const char*>(&data_address), sizeof(long int) );
+                    file.write( reinterpret_cast<const char*>(&block_address[0]), sizeof(long int) );
+                    file.write( reinterpret_cast<const char*>(&block_address[1]), sizeof(long int) );
+                    file.write( reinterpret_cast<const char*>(&block_address[2]), sizeof(long int) );
+                    file.write( reinterpret_cast<const char*>(&block_address[3]), sizeof(long int) );
+                    file.write( reinterpret_cast<const char*>(&block_address[4]), sizeof(long int) );
+                    file.close();
 
                 } else if ( list_data_pair.size() == 2 ) {
 
@@ -222,25 +227,40 @@ namespace dictionary {
                     
                     if ( current_pair.first < next_pair.first ) {
                         // curent first    
+                        
                         file.write( reinterpret_cast<const char*>(&current_pair.first), sizeof(int) );
-                        file.write( reinterpret_cast<const char*>(&current_pair.second), sizeof(long int) );
+                        for ( int j = 0; j < SIZE_DATA_BLOCK_; j++ ){
+                            long int data_addr_j = current_pair.second[j];
+                            file.write( reinterpret_cast<const char*>(&data_addr_j), sizeof(long int) );
+                        }
+                    
                         file.write( reinterpret_cast<const char*>(&next_pair.first), sizeof(int) );
-                        file.write( reinterpret_cast<const char*>(&next_pair.second), sizeof(long int) );
+                        for ( int k = 0; k < SIZE_DATA_BLOCK_; k++ ){
+                            long int data_addr_k = next_pair.second[k];
+                            file.write( reinterpret_cast<const char*>(&data_addr_k), sizeof(long int) );
+                        }
                     } else {
                         // current last
+                        
                         file.write( reinterpret_cast<const char*>(&next_pair.first), sizeof(int) );
-                        file.write( reinterpret_cast<const char*>(&next_pair.second), sizeof(long int) );
+                        for ( int l = 0; l < SIZE_DATA_BLOCK_; l++ ){
+                            long int data_addr_l = next_pair.second[l];
+                            file.write( reinterpret_cast<const char*>(&data_addr_l), sizeof(long int) );
+                        }
+                        
                         file.write( reinterpret_cast<const char*>(&current_pair.first), sizeof(int) );
-                        file.write( reinterpret_cast<const char*>(&current_pair.second), sizeof(long int) );
-                       
+                        for ( int m = 0; m < SIZE_DATA_BLOCK_; m++ ){
+                            long int data_addr_m = current_pair.second[m];
+                            file.write( reinterpret_cast<const char*>(&data_addr_m), sizeof(long int) );
+                        }
                     }
-
+                    file.close();
                 } else if ( list_data_pair.size() > 2 ) {
 
-                    list_data_pair.sort([](const std::pair<int, long int> & a, const std::pair<int, long int> & b) { return a.first < b.first; });
+                    list_data_pair.sort([](const std::pair<int, std::vector<long int>> & a, const std::pair<int, std::vector<long int>> & b) { return a.first < b.first; });
                     i_ = list_data_pair.begin();
-                    std::list<std::pair<int, long int>>::iterator prev = std::prev( i_ , 1 );
-                    std::list<std::pair<int, long int>>::iterator next = std::next( i_ , 1 );
+                    std::list<std::pair<int, std::vector<long int>>>::iterator prev = std::prev( i_ , 1 );
+                    std::list<std::pair<int, std::vector<long int>>>::iterator next = std::next( i_ , 1 );
                     
                     while ( i_ != list_data_pair.end() ) {
 
@@ -254,7 +274,7 @@ namespace dictionary {
                                 previus_pair.second = prev->second;
                             } else {
                                 previus_pair.first = -1;
-                                previus_pair.second = -1;
+                                previus_pair.second = {-1,-1,-1,-1,-1};
                             }
 
                             if ( next != list_data_pair.end() ){
@@ -262,7 +282,7 @@ namespace dictionary {
                                 next_pair.second = next->second;  
                             } else {
                                 next_pair.first = -1;
-                                next_pair.second = -1; 
+                                next_pair.second = {-1,-1,-1,-1,-1}; 
                             }    
                             break;
                         } // end if data == i->first
@@ -272,16 +292,52 @@ namespace dictionary {
                         prev++;
                     } // emd while i_ != list_data_pair
                     i_ = list_data_pair.begin();
-                    int k = 0;
-                        while ( i_ != list_data_pair.end() && k < ROW_CAPACITY_I_) {
+                    int x = 0;
+                        while ( i_ != list_data_pair.end() && x < ROW_CAPACITY_I_) {
                             current_pair.first = i_->first;
                             current_pair.second = i_->second;                            
                             file.write( reinterpret_cast<const char*>(&current_pair.first), sizeof(int) );
-                            file.write( reinterpret_cast<const char*>(&current_pair.second), sizeof(long int) );
+                            for ( int n = 0; n < SIZE_DATA_BLOCK_; n++ ){
+                                long int data_addr_n = current_pair.second[n];
+                                file.write( reinterpret_cast<const char*>(&data_addr_n), sizeof(long int) );
+                            }
                             i_++;
-                            k++;
+                            x++;
                         }    
+                        file.close();
                 } // end else if list_data_pair.size() > 2
+            } catch (const std::ios_base::failure & e) {
+                std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                          << std::endl << ":: Error code: " << e.code() 
+                          << std::endl;
+            }
+        //file.close();  
+    }
+
+    void SecondaryIndexFile::UpdateLineToBlock(const std::string& name,int position, int data, std::vector<long int> block_address){
+        
+        if ( block_address.size() < SIZE_DATA_BLOCK_ ){
+            for (int i = block_address.size(); i < SIZE_DATA_BLOCK_; i++){
+                block_address.push_back(-1);
+            }
+        }
+
+        std::string dir = "tmp/";
+        std::string ext = ".idx";
+        std::fstream file( dir + name + ext, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );  
+
+        file.exceptions( file.failbit | file.badbit );
+            try {
+                
+                file.seekp( position );
+                
+                file.write( reinterpret_cast<const char*>(&data), sizeof(int) );
+                file.write( reinterpret_cast<const char*>(&block_address[0]), sizeof(long int) );
+                file.write( reinterpret_cast<const char*>(&block_address[1]), sizeof(long int) );
+                file.write( reinterpret_cast<const char*>(&block_address[2]), sizeof(long int) );
+                file.write( reinterpret_cast<const char*>(&block_address[3]), sizeof(long int) );
+                file.write( reinterpret_cast<const char*>(&block_address[4]), sizeof(long int) );
+                    
             } catch (const std::ios_base::failure & e) {
                 std::cout << std::endl << ":: Warning Exception: " << e.what() 
                           << std::endl << ":: Error code: " << e.code() 
