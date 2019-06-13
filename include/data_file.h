@@ -12,7 +12,7 @@
 #include "attribute.h"
 #include "primary_index_file.h"
 #include "secondary_index_file.h"
-
+#include "static_hashing_file.h"
 
 const int MAX_LENGTH_NAME_DATA_FILE_ = 35;
 const long int NULL_DATA_FILE_ = -1;

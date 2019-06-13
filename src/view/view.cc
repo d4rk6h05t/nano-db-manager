@@ -187,10 +187,11 @@ namespace ui {
 				std::cout << std::endl << " \t\t::::::::::::: \t Data File Menu \t ::::::::::::" << std::endl;
     			std::cout << std::endl << " \t\t [ 1 ]: Add a register ";
     			std::cout << std::endl << " \t\t [ 2 ]: Show Primary Index ";
-    			std::cout << std::endl << " \t\t [ 3 ]: Show Secondary Index";	
-    			std::cout << std::endl << " \t\t [ 4 ]: Show Data File ";	
-    			std::cout << std::endl << " \t\t [ 5 ]: Update a register ";
-    			std::cout << std::endl << " \t\t [ 6 ]: Back to main menu ";	
+    			std::cout << std::endl << " \t\t [ 3 ]: Show Secondary Index";
+          std::cout << std::endl << " \t\t [ 4 ]: Show Static Hashing";	
+    			std::cout << std::endl << " \t\t [ 5 ]: Show Data File ";	
+    			std::cout << std::endl << " \t\t [ 6 ]: Update a register ";
+    			std::cout << std::endl << " \t\t [ 7 ]: Back to main menu ";	
 		}
 
 

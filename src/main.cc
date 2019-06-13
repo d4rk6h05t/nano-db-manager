@@ -13,6 +13,7 @@
 #include "data_file.h"
 #include "primary_index_file.h"
 #include "secondary_index_file.h"
+#include "static_hashing_file.h"
 #include "view.h"
 
 // namespaces to use
@@ -229,7 +230,7 @@ int main( int argc, char* argv[] ){
 										    		view.ShowListAttributes( data_dictionary.ReadListAttributes(current_entity) );
 										    		break;
 										    	}
-										    	case 6: view.ShowMessage("===> Return back"); break;
+										    	case 6: break;
 										    } // end switch 
 										} while(option_attribute < 6);
 					    					if (option_attribute > 5 ) view.Clear();
@@ -262,12 +263,22 @@ int main( int argc, char* argv[] ){
 								primary_index_file.CreateFile();
 								primary_index_file.CreateBlock( 0 );
 								list< pair< int, long int> > block_int = PrimaryIndexFile::ReadBlock(name_primary_index, 0 );
+								if ( i->GetIndexAddress() == -1 )
+									data_dictionary.UpdateAddress( i->GetAttributeAddress() + 52, 0 );
 							} 	else if ( i->GetTypeIndex() == 2 ) {
 								string name_secondary_index = current_entity_name + "_" + attr_name;
 								SecondaryIndexFile secondary_index_file( name_secondary_index );
 								secondary_index_file.CreateFile();
 								secondary_index_file.CreateBlock( 0 );
-								
+								if ( i->GetIndexAddress() == -1 )
+									data_dictionary.UpdateAddress( i->GetAttributeAddress() + 52, 0 );
+							}   else if ( i->GetTypeIndex() == 4 ) {
+								string name_static_hashing = current_entity_name + "_" + attr_name;
+								StaticHashingFile static_hashing_file( name_static_hashing );
+								static_hashing_file.CreateFile();
+								static_hashing_file.CreateBlock( ( sizeof(int) * ( NO_BUCKETS_SH_ + 1 ) ) );
+								if ( i->GetIndexAddress() == -1 )
+									data_dictionary.UpdateAddress( i->GetAttributeAddress() + 52, ( sizeof(int) * ( NO_BUCKETS_SH_ + 1 ) ) );
 							}	
 						}
 				    } 
@@ -292,8 +303,8 @@ int main( int argc, char* argv[] ){
 				    		break;
 				    	} 
 				    	case 2: {// Show primary Index
-				    		cout << "\t\t::::: Show Primary Index ::::";
-				    		cout << endl << "Data \t Data Address";
+				    		view.ShowStatusBar(data_file.GetName(), data_file.GetFileHeader(), data_file.GetFileSize() );
+				    		cout << endl << "\t\t Data \t Data Address";
 				    		for( list<Attribute>::iterator j = list_attributes.begin(); j != list_attributes.end(); j++ ){
 								if ( j->GetTypeIndex() == 1  ){
 									string attr_name_show( j->GetName() );
@@ -302,16 +313,17 @@ int main( int argc, char* argv[] ){
 									list< pair< int, long int> > block = PrimaryIndexFile::ReadBlock(name_primary_index_i, 0 );
                                     if ( !block.empty() )
 										for( list< pair< int, long int> >::iterator k = block.begin(); k != block.end(); k++ )
-											cout << endl << k->first << " \t " << k->second;
+											cout << endl << "\t\t "<< k->first << " \t " << k->second;
 									else
 										cout << endl << " ::  block empty ";;
 								}  
 							}
+							cout << endl;
 				    		break;
 				    	}
-				    	case 3 : { // Show Data File
-				    	cout << "\t\t::::: Show Secondary Index ::::";
-				    		cout << endl << "Data \t Data Address";
+				    	case 3 : { // Show Secondary Index
+                            view.ShowStatusBar(data_file.GetName(), data_file.GetFileHeader(), data_file.GetFileSize() );
+				    		cout << endl << "\t\tData \t Data Address \t\t\t Next Block Secondary";
 				    		for( list<Attribute>::iterator j = list_attributes.begin(); j != list_attributes.end(); j++ ){
 								if ( j->GetTypeIndex() == 2  ){
 									string attr_name_show( j->GetName() );
@@ -321,7 +333,7 @@ int main( int argc, char* argv[] ){
                                     
                                     if ( !block_x.empty() )
 										for( list< pair< int, vector<long int>> >::iterator m = block_x.begin(); m != block_x.end(); m++ ){
-											cout << endl << m->first;
+											cout << endl << "\t\t " << m->first;
 											for( vector<long int>::iterator n = m->second.begin(); n != m->second.end(); n++ )
 												cout << " \t " << *n;
 										}
@@ -329,28 +341,48 @@ int main( int argc, char* argv[] ){
 										cout << endl << " ::  block empty ";;
 								}  
 							}
+							cout << endl;
 				    		break;	
 						}
-						case 4 : { // Update a register
-				    		view.ShowMessage("===> Show data file");
+						case 4 : { // Show Static Hashing
+				    		view.ShowStatusBar(data_file.GetName(), data_file.GetFileHeader(), data_file.GetFileSize() );
+				    		cout << endl << "\t\tBucket \t Data Address \t\t\t Next DataBlock";
+				    		for( list<Attribute>::iterator k = list_attributes.begin(); k != list_attributes.end(); k++ ){
+								if ( k->GetTypeIndex() == 4  ){
+									string attr_name_sh( k->GetName() );
+									string name_static_hashing = current_entity_name + "_" + attr_name_sh;
+									list< pair< int, vector<long int>> > block_k = StaticHashingFile::ReadBlock(name_static_hashing, ( sizeof(int) * ( NO_BUCKETS_SH_ + 1 ) ) );
+                                    if ( !block_k.empty() )
+										for( list< pair< int, vector<long int>> >::iterator m = block_k.begin(); m != block_k.end(); m++ ){
+											cout << endl << "\t\t " << m->first;
+											for( vector<long int>::iterator n = m->second.begin(); n != m->second.end(); n++ )
+												cout << " \t " << *n;
+										}
+									else
+										cout << endl << " ::  block empty ";;
+								}  
+							}
+							cout << endl;
+				    		break;	
+						}
+						case 5 : { // Show Data File
 				    		view.ShowStatusBar(data_file.GetName(), data_file.GetFileHeader(), data_file.GetFileSize() );
 							current_entity = data_dictionary.SearchEntity( data_dictionary.ReadListEntities(), current_entity_name);
 							data_file.ReadRegister( data_dictionary.ReadListAttributes(current_entity) );
 							break;
 						}
-						case 5 : { // Update a register
+						case 6 : { // Update a register
 				    		view.ShowMessage("===> Update a register");
 				    		view.ShowStatusBar(data_file.GetName(), data_file.GetFileHeader(), data_file.GetFileSize() );
 							break;
 						}
 				    }
-	    		} while(option_file < 6);
-	    		if (option_file > 5 ) view.Clear();
+	    		} while(option_file < 7);
+	    		if (option_file > 6 ) view.Clear();
 	    			break;
 	    		//}
 	    	} //  end if current_entity
 	    		case 4:  // Exit 
-	    			view.ShowMessage("::: ===> Good bye! :'v \n ");
 	    			return 0;
 	    			break;
 	    }
