@@ -31,13 +31,11 @@ namespace dictionary {
             void SetName(const std::string& name);
             void SetDir(const std::string& dir); 
             void SetExt(const std::string& ext);
-            void SetTypeIndex(int type);
             void SetFileHeader(long int file_header);
             // Getters
             std::string GetName();
             std::string GetDir();
-            std::string GetExt();                        
-            int GetTypeIndex();
+            std::string GetExt();
             long int GetFileHeader();
             long int GetFileSize();
             

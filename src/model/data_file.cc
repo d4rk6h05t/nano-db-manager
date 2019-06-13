@@ -229,22 +229,17 @@ namespace archive {
             } else if ( it->GetTypeIndex() == 2 ){
 
               std::string attr_active_x( entity_active + "_" + it->GetName() );
-              
               std::list< std::pair< int, std::vector<long int>> > block_x = dictionary::SecondaryIndexFile::ReadBlock( attr_active_x, 0 );
-              std::cout << std::endl <<  ":: ==> block.size() : " << block_x.size();
               if ( block_x.empty() ){
                     std::vector<long int> block_addr = {file_size,-1,-1,-1,-1};
                     dictionary::SecondaryIndexFile::AddLineToBlock(attr_active_x, 0, block_x, x, block_addr);
               } else if ( !block_x.empty() ) {
-                
                 std::list< std::pair< int, std::vector<long int>>>::iterator itr = block_x.begin();
                 int z = 0;
                 int update = 0;
                 while ( itr != block_x.end() ){
-                
                   z++;
                   if ( itr->first == x ) {
-                      
                       update = 1;
                       std::vector<long int> block_addr_v;
                       for ( std::vector<long int>::iterator itr_v = itr->second.begin(); itr_v != itr->second.end(); itr_v++ ){
@@ -256,7 +251,6 @@ namespace archive {
                           }
                       }
                       int row_addr = (z * SIZE_ROW_INT_I_) - SIZE_ROW_INT_I_;
-                      std::cout << std::endl << ":: ==> Eureka I found same data " << row_addr << " / :: ==> data : " << itr->first;
                       dictionary::SecondaryIndexFile::UpdateLineToBlock(attr_active_x, row_addr, x, block_addr_v);
                       break;
                   }
@@ -268,15 +262,44 @@ namespace archive {
                         std::vector<long int> new_block_addr = {file_size,-1,-1,-1,-1};
                         dictionary::SecondaryIndexFile::AddLineToBlock(attr_active_x, 0, block_x, x, new_block_addr);
                         break;
-                    }
-                  }  
-                }
-                  
+                    } //end if
+                  } // end for  
+                } // end if update
               } // end else if 
-              
 
+            } // end else if ( it->GetTypeIndex() == 2 )
+
+            else if ( it->GetTypeIndex() == 4 ){
+              
+              std::string attr_active_sh( entity_active + "_" + it->GetName() );
+              std::list< std::pair< int, std::vector<long int>>> block_sh = dictionary::StaticHashingFile::ReadBlock( attr_active_sh,  sizeof(int)*(NO_BUCKETS_SH_+1) );
+              
+              std::list< std::pair< int, std::vector<long int>>>::iterator itr_sh = block_sh.begin();
+              int sh = 0;
+              int hash = dictionary::StaticHashingFile::GetHash(x);
+              
+              while ( itr_sh != block_sh.end() ){
+                
+                sh++;
+                  if ( itr_sh->first == hash ) {
+                      std::vector<long int> bucket;
+                      for ( std::vector<long int>::iterator itr_vsh = itr_sh->second.begin(); itr_vsh != itr_sh->second.end(); itr_vsh++ ){
+                          if ( *itr_vsh != -1 ){
+                            bucket.push_back(*itr_vsh);
+                          } else if ( *itr_vsh == -1 ) {
+                            bucket.push_back(file_size);
+                            break;
+                          }
+                      } 
+                      int hash_position = ( ( sizeof(int) * ( NO_BUCKETS_SH_ + 1 ) ) + ( ( sh * SIZE_ROW_INT_SH_ ) - SIZE_ROW_INT_SH_ ) ) + sizeof(int); 
+                      dictionary::StaticHashingFile::UpdateLineToBlock(attr_active_sh, hash_position, bucket);
+                      break;
+                  }
+                  itr_sh++;
+              } // end while
             
-            }
+              
+            } // end else if ( it->GetTypeIndex() == 2 )
 
 						file.write( reinterpret_cast<const char*>(&x), sizeof(int) );
 					}

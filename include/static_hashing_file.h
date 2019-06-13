@@ -1,5 +1,5 @@
-#ifndef DICTIONARY_CC_SECONDARY_INDEX_FILE_H_
-#define DICTIONARY_CC_SECONDARY_INDEX_FILE_H_
+#ifndef DICTIONARY_CC_STATIC_HASHING_FILE_H_
+#define DICTIONARY_CC_STATIC_HASHING_FILE_H_
 
 #include <iostream>
 #include <string>
@@ -8,35 +8,34 @@
 #include <vector>
 
 //#include "secondary_block.h"
-
-const int READ_HEADER_FILE_I_ = 1048;
-const int SIZE_DATA_BLOCK_ = 5; // last data is next address 
-const int LENGTH_ADDRESS_I_ = sizeof(long int); // 8
-const int SIZE_BLOCK_I_ = READ_HEADER_FILE_I_ - LENGTH_ADDRESS_I_; // 1040
-const int SIZE_ROW_INT_I_ = sizeof(int) + (SIZE_DATA_BLOCK_ * sizeof(long int)); // 44
-const int ROW_CAPACITY_I_ = SIZE_BLOCK_I_ / SIZE_ROW_INT_I_;  // 23
+const int NO_BUCKETS_SH_ = 9;
+const int READ_HEADER_FILE_SH_ = 1048;
+const int SIZE_DATA_BLOCK_SH_ = 5; // last data is next address
+const int LENGTH_ADDRESS_SH_ = sizeof(long int); // 8
+const int SIZE_BLOCK_SH_ = READ_HEADER_FILE_SH_ - LENGTH_ADDRESS_SH_; // 1040
+const int SIZE_ROW_INT_SH_ = sizeof(int) + (SIZE_DATA_BLOCK_SH_ * sizeof(long int)); // 44
+const int ROW_CAPACITY_SH_ = SIZE_BLOCK_SH_ / SIZE_ROW_INT_SH_;  // 23
 
 namespace dictionary {
 
-    class SecondaryIndexFile {
+    class StaticHashingFile {
     
         public:
              
-            SecondaryIndexFile();
-            SecondaryIndexFile(const std::string& name);
-            ~SecondaryIndexFile();
+            StaticHashingFile();
+            StaticHashingFile(const std::string& name);
+            ~StaticHashingFile();
 
             // Setters
             void SetName(const std::string& name);
             void SetDir(const std::string& dir); 
             void SetExt(const std::string& ext);
-            
             void SetFileHeader(long int file_header);
             // Getters
             std::string GetName();
             std::string GetDir();
             std::string GetExt();                        
-            
+
             long int GetFileHeader();
             long int GetFileSize();
             
@@ -48,9 +47,9 @@ namespace dictionary {
             void UpdateName(long int position, std::string new_name);
 
             void CreateBlock(int position);
-            static std::list< std::pair< int, std::vector<long int>> > ReadBlock(const std::string& name,int position);
-            static void AddLineToBlock(const std::string& name,int position, std::list< std::pair<int, std::vector<long int>> > list_data_pair, int data, std::vector<long int> block_address);
-            static void UpdateLineToBlock(const std::string& name,int position, int data, std::vector<long int> block_address);
+            static int GetHash(int key);
+            static std::list< std::pair< int, std::vector<long int>>> ReadBlock(const std::string& name,int position);
+            static void UpdateLineToBlock(const std::string& name, int hash_position, std::vector<long int> block_address);
 
         private:
 
@@ -65,4 +64,4 @@ namespace dictionary {
 
 }  // end namespace dictionary
 
-#endif  // DICTIONARY_CC_SECONDARY_INDEX_FILE_H_
+#endif  // DICTIONARY_CC_STATIC_HASHING_FILE_H_
