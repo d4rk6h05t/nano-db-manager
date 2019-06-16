@@ -1,74 +1,73 @@
-#include "static_hashing_file.h"
+#include "multilist_file.h"
 
 namespace dictionary {
 
     // Constructors & destructosr
-    StaticHashingFile::StaticHashingFile(){ 
+    MultilistFile::MultilistFile(){ 
         dir_ = "tmp/";
         name_ = "unamed"; 
         ext_ = ".idx";
         file_header_ = -1;
     }
 
-    StaticHashingFile::StaticHashingFile(const std::string& name){ 
+    MultilistFile::MultilistFile(const std::string& name){ 
         dir_ = "tmp/";
         name_ = name; 
         ext_ = ".idx";
         file_header_ = -1;
     }
 
-    StaticHashingFile::~StaticHashingFile(){}
+    MultilistFile::~MultilistFile(){}
     
     // Setters
-    void StaticHashingFile::SetName(const std::string& name){ name_ = name; }
-    void StaticHashingFile::SetDir(const std::string& dir){ dir_ = dir; }
-    void StaticHashingFile::SetExt(const std::string& ext){ ext_ = ext; }
-    void StaticHashingFile::SetFileHeader(long int file_header){ file_header_ = file_header; }
+    void MultilistFile::SetName(const std::string& name){ name_ = name; }
+    void MultilistFile::SetDir(const std::string& dir){ dir_ = dir; }
+    void MultilistFile::SetExt(const std::string& ext){ ext_ = ext; }
+    
+    void MultilistFile::SetFileHeader(long int file_header){ file_header_ = file_header; }
     
     // Getters
-    std::string StaticHashingFile::GetName(){ return name_;}
-    std::string StaticHashingFile::GetDir(){ return dir_;}
-    std::string StaticHashingFile::GetExt(){ return ext_;}
-    long int StaticHashingFile::GetFileHeader(){return file_header_;}
+    std::string MultilistFile::GetName(){ return name_;}
+    std::string MultilistFile::GetDir(){ return dir_;}
+    std::string MultilistFile::GetExt(){ return ext_;}
+
+    long int MultilistFile::GetFileHeader(){return file_header_;}
     
-    long int StaticHashingFile::GetFileSize(const std::string& name){
-        long int file_size = 0;
-        std::string dir = "tmp/";
-        std::string ext = ".idx";
-        std::ifstream file ( dir + name + ext, std::ios::binary | std::ios::in );
+    long int MultilistFile::GetFileSize(){
+        std::ifstream file ( dir_ + name_ + ext_, std::ios::binary | std::ios::in );
         file.exceptions( file.failbit | file.badbit );
             try { 
                 file.seekg(0, std::ios::end);
-                file_size = file.tellg();
+                file_size_ = file.tellg();
             } catch (const std::ios_base::failure & e) {
                 std::cout << std::endl << ":: Warning Exception: " << e.what() 
                           << std::endl << ":: Error code: " << e.code() 
                           << std::endl;
             }
         file.close();
-        return file_size;
+        return file_size_;
     }
 
     // Methods of file 
-   void StaticHashingFile::CreateFile(){
-        long int data_null = -1;
+   void MultilistFile::CreateFile(){
         std::ifstream in_file( dir_ + name_ + ext_, std::ios::binary | std::ios::in );
         if ( !in_file.good() ){
             std::ofstream out_file( dir_ + name_ + ext_, std::ios::binary | std::ios::out );
-            for (int i = 0; i <= NO_BUCKETS_SH_; i++)
-                out_file.write( reinterpret_cast<const char*>(&data_null), sizeof(long int) );
+            out_file.seekp(0);
             out_file.close();
         } else {
+            in_file.seekg(0);
             in_file.close();
         }
    }
 
-   void StaticHashingFile::UpdateHeader(){
+   void MultilistFile::UpdateHeader(){
         std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
         file.exceptions( file.failbit | file.badbit );
             try {
                 file.seekp(0);
                 file.write( reinterpret_cast<const char*>(&file_header_), sizeof(long int) );
+                 
             } catch (const std::ios_base::failure & e) {
                 std::cout << std::endl << ":: Warning Exception: " << e.what() 
                           << std::endl << ":: Error code: " << e.code() 
@@ -81,30 +80,9 @@ namespace dictionary {
         file.close();
     }
     
-    int StaticHashingFile::ReadInt(const std::string& name,long int position){
-        int data;
-        std::string dir = "tmp/";
-        std::string ext = ".idx";
-        std::fstream file( dir + name + ext, std::ios::binary | std::ios::in | std::ios::out );
-        file.exceptions( file.failbit | file.badbit );
-            try {
-                file.seekp( position  );
-                file.read( reinterpret_cast<char*>(&data) , sizeof(int) );
-            } catch (const std::ios_base::failure & e) {
-                std::cout << std::endl << ":: Warning Exception: " << e.what() 
-                          << std::endl << ":: Error code: " << e.code() 
-                          << std::endl;
-
-            }
-        file.close();
-        return data;
-    }
-
-    long int StaticHashingFile::ReadAddress(const std::string& name,long int position){
+    long int MultilistFile::ReadAddress(long int position){
         long int data;
-        std::string dir = "tmp/";
-        std::string ext = ".idx";
-        std::fstream file( dir + name + ext, std::ios::binary | std::ios::in | std::ios::out );
+        std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out );
         file.exceptions( file.failbit | file.badbit );
             try {
                 file.seekp( position  );
@@ -119,30 +97,9 @@ namespace dictionary {
         return data;
     }
 
-    void StaticHashingFile::UpdateInt(const std::string& name,long int position, int new_address){
-        std::string dir = "tmp/";
-        std::string ext = ".idx";
-        std::fstream file( dir + name + ext, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
-        file.exceptions( file.failbit | file.badbit );
-            try {
-                file.seekp( position  );
-                file.write( reinterpret_cast<const char*>(&new_address), sizeof(int) );
-            } catch (const std::ios_base::failure & e) {
-                std::cout << std::endl << ":: Warning Exception: " << e.what() 
-                          << std::endl << ":: Error code: " << e.code() 
-                          << std::endl;
-                if ( file.fail() ){
-                    std::cout << " Error writing to file " << std::endl;
-                    file.clear();
-                }
-            }
-        file.close();
-    }
-
-    void StaticHashingFile::UpdateAddress(const std::string& name,long int position, long int new_address){
-        std::string dir = "tmp/";
-        std::string ext = ".idx";
-        std::fstream file( dir + name + ext, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
+    void MultilistFile::UpdateAddress(long int position, long int new_address){
+        
+        std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
         file.exceptions( file.failbit | file.badbit );
             try {
                 file.seekp( position  );
@@ -159,42 +116,17 @@ namespace dictionary {
         file.close();
     }
 
-    std::vector<long int> StaticHashingFile::GetBucketsAddress(const std::string& name){
-        std::vector<long int> address;
-        long int bucket_addr;
-        std::string dir = "tmp/";
-        std::string ext = ".idx";
-        std::fstream file( dir + name + ext, std::ios::binary | std::ios::in | std::ios::out );
-        file.exceptions( file.failbit | file.badbit );
-            try {
-                file.seekp( 0 );
-                for ( int i = 0; i <= NO_BUCKETS_SH_; i++ ){
-                    file.read( reinterpret_cast<char*>(&bucket_addr) , sizeof(long int) );
-                    address.push_back(bucket_addr);
-                }
-            } catch (const std::ios_base::failure & e) {
-                std::cout << std::endl << ":: Warning Exception: " << e.what() 
-                          << std::endl << ":: Error code: " << e.code() 
-                          << std::endl;
-
-            }
-        file.close();
-        return address;
-    }   
-
-    void StaticHashingFile::CreateBlock(const std::string& name,int position){
+    void MultilistFile::CreateBlock(int position){
         
         int x = -1;
         long int y = -1;
         long int overflow_chain = -1;
-         std::string dir = "tmp/";
-        std::string ext = ".idx";
 
-        std::fstream file( dir + name + ext, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
+        std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
         file.exceptions( file.failbit | file.badbit );
             try {
                 file.seekp( position );
-                for ( int i = 0; i < ROW_CAPACITY_SH_; i++ ) { 
+                for ( int i = 0; i < ROW_CAPACITY_M_; i++ ) { 
                     file.write( reinterpret_cast<const char*>(&x), sizeof(int) );
                     file.write( reinterpret_cast<const char*>(&y), sizeof(long int) );
                 }
@@ -213,13 +145,7 @@ namespace dictionary {
         
     }
 
-    int StaticHashingFile::GetHash(int key){
-       int hash;
-       hash = key % NO_BUCKETS_SH_;
-       return hash; 
-    }
-
-    std::list< std::pair< int, long int> > StaticHashingFile::ReadBlock(const std::string& name,int position){
+    std::list< std::pair< int, long int> > MultilistFile::ReadBlock(const std::string& name,int position){
         
         std::list< std::pair< int, long int> > block_data_int;
             
@@ -233,7 +159,7 @@ namespace dictionary {
         file.exceptions( file.failbit | file.badbit );
             try {
                 file.seekp( position );
-                for ( int i = 0; i < ROW_CAPACITY_SH_; i++ ) { 
+                for ( int i = 0; i < ROW_CAPACITY_M_; i++ ) { 
                     file.read( reinterpret_cast<char*>(&data) , sizeof(int) );
                     file.read( reinterpret_cast<char*>(&data_address), sizeof(long int) );
                     if ( data != -1 && data_address != -1){
@@ -258,7 +184,7 @@ namespace dictionary {
         return block_data_int;
     }
 
-    void StaticHashingFile::AddLineToBlock(const std::string& name,int position, std::list< std::pair<int, long int>> list_data_pair, int data, long int data_address){
+    void MultilistFile::AddLineToBlock(const std::string& name,int position, std::list< std::pair<int, long int>> list_data_pair, int data, long int data_address){
         
         std::pair<int, long int> new_pair;
         new_pair.first = data;
@@ -343,7 +269,7 @@ namespace dictionary {
                     
                     i_ = list_data_pair.begin();
                     int k = 0;
-                        while ( i_ != list_data_pair.end() && k < ROW_CAPACITY_SH_) {
+                        while ( i_ != list_data_pair.end() && k < ROW_CAPACITY_M_) {
                             current_pair.first = i_->first;
                             current_pair.second = i_->second;                            
                             file.write( reinterpret_cast<const char*>(&current_pair.first), sizeof(int) );

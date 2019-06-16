@@ -14,6 +14,7 @@
 #include "primary_index_file.h"
 #include "secondary_index_file.h"
 #include "static_hashing_file.h"
+#include "multilist_file.h"
 #include "view.h"
 
 // namespaces to use
@@ -276,9 +277,15 @@ int main( int argc, char* argv[] ){
 								string name_static_hashing = current_entity_name + "_" + attr_name;
 								StaticHashingFile static_hashing_file( name_static_hashing );
 								static_hashing_file.CreateFile();
-								static_hashing_file.CreateBlock( ( sizeof(int) * ( NO_BUCKETS_SH_ + 1 ) ) );
 								if ( i->GetIndexAddress() == -1 )
-									data_dictionary.UpdateAddress( i->GetAttributeAddress() + 52, ( sizeof(int) * ( NO_BUCKETS_SH_ + 1 ) ) );
+									data_dictionary.UpdateAddress( i->GetAttributeAddress() + 52, ( sizeof(long int) * ( NO_BUCKETS_SH_ + 1 ) ) );
+							} else if ( i->GetTypeIndex() == 5 ) {
+								string name_multilist = current_entity_name + "_" + attr_name;
+								MultilistFile multilist_file( name_multilist );
+								multilist_file.CreateFile();
+								multilist_file.CreateBlock( 0 );
+								if ( i->GetIndexAddress() == -1 )
+									data_dictionary.UpdateAddress( i->GetAttributeAddress() + 52, 0 );
 							}	
 						}
 				    } 
@@ -296,8 +303,14 @@ int main( int argc, char* argv[] ){
 				    	
 				    		string current_entity_name( current_entity.GetName() );
 				    		data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , data_file.GetFileHeader() );
-				    		long int header_data_file = data_file.AppendData(list_attributes,list_data,current_entity_name);
-				    	
+				    		list<pair<int,long int>> list_data_multilist;
+				    		for( list<Attribute>::iterator j = list_attributes.begin(); j != list_attributes.end(); j++ ){
+								if ( j->GetTypeIndex() == 5  ){
+									list_data_multilist = data_file.GetListDataMultilist( list_attributes, *j );
+								}
+							}	
+				    		long int header_data_file = data_file.AppendData(list_attributes,list_data,current_entity_name, list_data_multilist);
+				    		
 				    		if ( header_data_file != -1)
 				    			data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , header_data_file);
 				    		break;
@@ -344,34 +357,69 @@ int main( int argc, char* argv[] ){
 							cout << endl;
 				    		break;	
 						}
-						case 4 : { // Show Static Hashing
+						case 4 : {// Show Static Hashing
 				    		view.ShowStatusBar(data_file.GetName(), data_file.GetFileHeader(), data_file.GetFileSize() );
-				    		cout << endl << "\t\tBucket \t Data Address \t\t\t Next DataBlock";
-				    		for( list<Attribute>::iterator k = list_attributes.begin(); k != list_attributes.end(); k++ ){
-								if ( k->GetTypeIndex() == 4  ){
-									string attr_name_sh( k->GetName() );
-									string name_static_hashing = current_entity_name + "_" + attr_name_sh;
-									list< pair< int, vector<long int>> > block_k = StaticHashingFile::ReadBlock(name_static_hashing, ( sizeof(int) * ( NO_BUCKETS_SH_ + 1 ) ) );
-                                    if ( !block_k.empty() )
-										for( list< pair< int, vector<long int>> >::iterator m = block_k.begin(); m != block_k.end(); m++ ){
-											cout << endl << "\t\t " << m->first;
-											for( vector<long int>::iterator n = m->second.begin(); n != m->second.end(); n++ )
-												cout << " \t " << *n;
+				    		 
+				    		for( list<Attribute>::iterator j = list_attributes.begin(); j != list_attributes.end(); j++ ){
+								if ( j->GetTypeIndex() == 4  ){
+									
+									string attr_name_sh( j->GetName() );
+									string name_sh = current_entity_name + "_" + attr_name_sh;
+									vector<long int> bucket_addrs = StaticHashingFile::GetBucketsAddress(name_sh);
+                            		vector<long int>::iterator itr_bck = bucket_addrs.begin();
+                            		int count_hash = 0;
+                            		while ( itr_bck != bucket_addrs.end() ) {
+									
+										if ( *itr_bck != -1 ){ 
+											cout << endl << "\t\t :: Hash [ " << count_hash << " ]";
+											cout << endl << "\t\t Data \t Data Address";
+											list< pair< int, long int> > bucket = StaticHashingFile::ReadBlock(name_sh, *itr_bck );
+											if ( !bucket.empty() )
+												for( list< pair< int, long int> >::iterator k = bucket.begin(); k != bucket.end(); k++ )
+													cout << endl << "\t\t "<< k->first << " \t " << k->second;
+											else
+												cout << endl << " ::  block empty ";			
+										
 										}
-									else
-										cout << endl << " ::  block empty ";;
+										cout << endl;
+									itr_bck++;
+									count_hash++;
+									}
+
 								}  
 							}
 							cout << endl;
-				    		break;	
+				    		break;
+				    	}
+						case 5 : { // Show Multilist
+							view.ShowStatusBar(data_file.GetName(), data_file.GetFileHeader(), data_file.GetFileSize() );
+				    		
+				    		for( list<Attribute>::iterator l = list_attributes.begin(); l != list_attributes.end(); l++ ){
+								if ( l->GetTypeIndex() == 5  ){
+									cout << "\t\t:: [ " << l->GetName() << " ] ";
+									cout << endl << "\t\t Data \t Data Address";
+									string attr_name_m( l->GetName() );
+									string name_multilist = current_entity_name + "_" + attr_name_m;
+									list< pair< int, long int> > block_l = MultilistFile::ReadBlock(name_multilist, 0 );
+                                    if ( !block_l.empty() )
+										for( list< pair< int, long int> >::iterator m = block_l.begin(); m != block_l.end(); m++ )
+											cout << endl << "\t\t "<< m->first << " \t " << m->second;
+									else
+										cout << endl << " ::  block empty ";;
+								}  
+							cout << endl;
+							}
+							cout << endl;
+				    		break;
+				    		break;
 						}
-						case 5 : { // Show Data File
+						case 6 : { // Show Data File
 				    		view.ShowStatusBar(data_file.GetName(), data_file.GetFileHeader(), data_file.GetFileSize() );
 							current_entity = data_dictionary.SearchEntity( data_dictionary.ReadListEntities(), current_entity_name);
 							data_file.ReadRegister( data_dictionary.ReadListAttributes(current_entity) );
 							break;
 						}
-						case 6 : { // Update a register
+						case 7 : { // Update a register
 				    		view.ShowMessage("===> Update a register");
 				    		view.ShowStatusBar(data_file.GetName(), data_file.GetFileHeader(), data_file.GetFileSize() );
 							break;
