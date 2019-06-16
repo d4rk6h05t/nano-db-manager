@@ -8,13 +8,12 @@
 #include <vector>
 
 //#include "secondary_block.h"
-const int NO_BUCKETS_SH_ = 9;
+const int NO_BUCKETS_SH_ = 7;
 const int READ_HEADER_FILE_SH_ = 1048;
-const int SIZE_DATA_BLOCK_SH_ = 5; // last data is next address
-const int LENGTH_ADDRESS_SH_ = sizeof(long int); // 8
-const int SIZE_BLOCK_SH_ = READ_HEADER_FILE_SH_ - LENGTH_ADDRESS_SH_; // 1040
-const int SIZE_ROW_INT_SH_ = sizeof(int) + (SIZE_DATA_BLOCK_SH_ * sizeof(long int)); // 44
-const int ROW_CAPACITY_SH_ = SIZE_BLOCK_SH_ / SIZE_ROW_INT_SH_;  // 23
+const int LENGTH_ADDRESS_SH_ = sizeof(long int);
+const int SIZE_BLOCK_SH_ = READ_HEADER_FILE_SH_ - LENGTH_ADDRESS_SH_;
+const int SIZE_ROW_INT_SH_ = sizeof(int) + sizeof(long int);
+const int ROW_CAPACITY_SH_ = SIZE_BLOCK_SH_ / SIZE_ROW_INT_SH_;
 
 namespace dictionary {
 
@@ -37,19 +36,22 @@ namespace dictionary {
             std::string GetExt();                        
 
             long int GetFileHeader();
-            long int GetFileSize();
+            static long int GetFileSize(const std::string& name);
             
             // Methods of File
             void CreateFile();
             void UpdateHeader();
-            long int ReadAddress(long int position);
-            void UpdateAddress(long int position, long int new_address);
+            static int ReadInt(const std::string& name, long int position);
+            static long int ReadAddress(const std::string& name, long int position);
+            static void UpdateInt(const std::string& name, long int position, int new_address);
+            static void UpdateAddress(const std::string& name, long int position, long int new_address);
             void UpdateName(long int position, std::string new_name);
-
-            void CreateBlock(int position);
+            
+            static std::vector<long int> GetBucketsAddress(const std::string& name); 
+            static void CreateBlock(const std::string& name, int position);
             static int GetHash(int key);
-            static std::list< std::pair< int, std::vector<long int>>> ReadBlock(const std::string& name,int position);
-            static void UpdateLineToBlock(const std::string& name, int hash_position, std::vector<long int> block_address);
+            static std::list< std::pair< int, long int> > ReadBlock(const std::string& name,int position);
+            static void AddLineToBlock(const std::string& name,int position, std::list< std::pair<int, long int> > list_data_pair, int data, long int data_address);
 
         private:
 

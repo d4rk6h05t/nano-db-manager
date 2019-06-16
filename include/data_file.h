@@ -13,6 +13,7 @@
 #include "primary_index_file.h"
 #include "secondary_index_file.h"
 #include "static_hashing_file.h"
+#include "multilist_file.h"
 
 const int MAX_LENGTH_NAME_DATA_FILE_ = 35;
 const long int NULL_DATA_FILE_ = -1;
@@ -50,12 +51,16 @@ namespace archive {
             void AppendIntData(int int_data);
             void AppendAddress(long int new_address);
 
-            long int AppendData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data, const std::string& entity_active);
+            long int AppendData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data, const std::string& entity_active, std::list<std::pair<int,long int>> list_multilist);
 
             
             void ReadRegister(std::list<dictionary::Attribute> list_attributes);
+            std::list<std::pair<int,long int>> GetListDataMultilist(std::list<dictionary::Attribute> list_attributes, dictionary::Attribute attribute);
+
             int GetSizeRegister(std::list<dictionary::Attribute> list_attributes);
             static std::list<long int> GetAddressBySearchKey(const std::string & name,const std::string & search_key, long int file_header, std::list<dictionary::Attribute> list_attributes);
+            
+
 
         private:
 
