@@ -45,6 +45,9 @@ namespace dictionary {
             void CreateBlock(int position);
             static std::list< std::pair< int, long int> > ReadBlock(const std::string& name,int position);
             static void AddLineToBlock(const std::string& name,int position, std::list< std::pair<int, long int> > list_data_pair, int data, long int data_address);
+            
+            static long int SearchDataInt(const std::string& name, int position, int data);
+            static void RemoveDataInt(const std::string& name, int position, int data, std::list< std::pair<int, long int> > list_data_pair);
 
         private:
 

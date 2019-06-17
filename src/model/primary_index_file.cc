@@ -172,8 +172,8 @@ namespace dictionary {
                     }
                 }
             } catch (const std::ios_base::failure & e) {
-                std::cout << std::endl << ":: Warning Exception: " << e.what() 
-                          << std::endl << ":: Error code: " << e.code() 
+                std::cout << std::endl << "=> :: Warning Exception: " << e.what() 
+                          << std::endl << "=> :: Error code: " << e.code() 
                           << std::endl;
                 if ( file.fail() ){
                     std::cout << " Error writing to file " << std::endl;
@@ -286,6 +286,70 @@ namespace dictionary {
                           << std::endl;
             }
         file.close();  
+    }
+
+    long int PrimaryIndexFile::SearchDataInt(const std::string& name, int position, int data){
+        int data_saved;
+        long int data_address_saved;
+        std::string dir = "tmp/";
+        std::string ext = ".idx";
+        std::fstream file( dir + name + ext, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
+        file.exceptions( file.failbit | file.badbit );
+            try {
+                file.seekp( position );
+                for ( int i = 0; i < ROW_CAPACITY; i++ ) { 
+                    file.read( reinterpret_cast<char*>(&data_saved) , sizeof(int) );
+                    file.read( reinterpret_cast<char*>(&data_address_saved), sizeof(long int) );
+                    if ( data_saved != -1 && data_address_saved != -1){
+                        if( data == data_saved ){
+                            break;       
+                        }
+                    } else {
+                        break;
+                    }
+                }
+            } catch (const std::ios_base::failure & e) {
+                std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                          << std::endl << ":: Error code: " << e.code() 
+                          << std::endl;
+                if ( file.fail() ){
+                    std::cout << " Error writing to file " << std::endl;
+                    file.clear();
+                }
+            }
+        file.close();
+        return data_address_saved;
+    }
+
+    void PrimaryIndexFile::RemoveDataInt(const std::string& name, int position, int data, std::list< std::pair<int, long int>> list_data_pair){
+        int x = -1;
+        long int y = -1;
+        std::string dir = "tmp/";
+        std::string ext = ".idx";
+        std::fstream file( dir + name + ext , std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
+        file.exceptions( file.failbit | file.badbit );
+            try {
+                file.seekp( position );
+                std::list<std::pair<int,long int>>::iterator i_ = list_data_pair.begin();
+                while ( i_ != list_data_pair.end() ) { 
+                    if ( i_->first != data ){
+                        file.write( reinterpret_cast<const char*>(&(i_->first)), sizeof(int) );
+                        file.write( reinterpret_cast<const char*>(&(i_->second)), sizeof(long int) );    
+                    }
+                    i_++;
+                }
+                file.write( reinterpret_cast<const char*>(&x), sizeof(int) );
+                file.write( reinterpret_cast<const char*>(&y), sizeof(long int) );
+            } catch (const std::ios_base::failure & e) {
+                std::cout << std::endl << "-> :: Warning Exception: " << e.what() 
+                          << std::endl << "-> :: Error code: " << e.code() 
+                          << std::endl;
+                if ( file.fail() ){
+                    std::cout << "-> :: Error writing to file " << std::endl;
+                    file.clear();
+                }
+            }
+        file.close();
     }
 
 }  // end namespace dictionary

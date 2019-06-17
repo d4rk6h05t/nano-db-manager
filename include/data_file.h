@@ -39,6 +39,7 @@ namespace archive {
             std::string GetExt();                        
             long int GetFileHeader();
             long int GetFileSize();
+            long int GetLengthStructLog(std::list<dictionary::Attribute> list_attributes);
 
             // Methods of File
             void CreateFile();
@@ -53,6 +54,8 @@ namespace archive {
 
             long int AppendData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data, const std::string& entity_active, std::list<std::pair<int,long int>> list_multilist);
 
+            //long int UpdateData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data, const std::string& entity_active, std::list<std::pair<int,long int>> list_multilist);
+            //long int RemoveData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data, const std::string& entity_active, std::list<std::pair<int,long int>> list_multilist);
             
             void ReadRegister(std::list<dictionary::Attribute> list_attributes);
             std::list<std::pair<int,long int>> GetListDataMultilist(std::list<dictionary::Attribute> list_attributes, dictionary::Attribute attribute);
@@ -60,7 +63,11 @@ namespace archive {
             int GetSizeRegister(std::list<dictionary::Attribute> list_attributes);
             static std::list<long int> GetAddressBySearchKey(const std::string & name,const std::string & search_key, long int file_header, std::list<dictionary::Attribute> list_attributes);
             
+            long int GetAddress(std::list<dictionary::Attribute> list_attributes,  long int length_struct_log , int key);
+            long int GetAddress(std::list<dictionary::Attribute> list_attributes,  long int length_struct_log ,long int key_addr);
+            long int GetNextAddress(std::list<dictionary::Attribute> list_attributes,  long int length_struct_log , int key);
 
+            
 
         private:
 

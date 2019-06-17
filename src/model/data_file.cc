@@ -45,6 +45,51 @@ namespace archive {
     	file.close();
 		return file_size_;
     }
+
+    long int DataFile::GetLengthStructLog(std::list<dictionary::Attribute> list_attributes){
+      
+        long int length_struct_log = sizeof(long int) * 2; 
+      
+        long int next = file_header_;
+        
+        std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out );
+       
+        while ( next != -1 ) {
+            std::list<dictionary::Attribute>::iterator it = list_attributes.begin();
+            file.exceptions( file.failbit | file.badbit );
+            try {
+              file.seekg( next + sizeof(long int) );
+                  while ( it != list_attributes.end() ){
+                      if ( it->GetDataType() == 'c' ){
+
+                          char str[ it->GetLengthDataType() ];
+                          file.read( reinterpret_cast<char*>(str) , it->GetLengthDataType() );
+                          length_struct_log = length_struct_log + it->GetLengthDataType(); 
+                      
+                      } else if ( it->GetDataType() == 'i' ){
+                          int  x;
+                          file.read( reinterpret_cast<char*>(&x), sizeof( int ) );
+                          
+                          if ( it->GetTypeIndex() == 5  ){
+                              long int x_address; 
+                              file.read( reinterpret_cast<char*>(&x_address), sizeof( long int ) );
+                              length_struct_log = length_struct_log  + sizeof( int ) + sizeof( long int );  
+                          } else {
+                              length_struct_log = length_struct_log  + sizeof( int );
+                          } 
+                    }
+                  it++;
+                  }
+                  next = -1;
+                  file.close();
+              } catch (const std::ios_base::failure & e) {
+                     std::cout << std::endl << "*:: Warning Exception: " << e.what() 
+                               << std::endl << "*:: Error code: " << e.code() 
+                               << std::endl;
+              }
+      } // end while != -1
+      return length_struct_log;
+    }
     
    // Methods of file 
    void DataFile::CreateFile(){
@@ -788,6 +833,166 @@ while ( next_row != -1 ) {
       file.close();
       return list_address;
     }
+    
+    long int DataFile::GetAddress(std::list<dictionary::Attribute> list_attributes, long int length_struct_log ,int key){
+        long int addr = -1;
+        long int register_address;
+        long int next_register_address;
+        long int next = file_header_;
+        int found = 0;
+        std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out );
+        while ( next != -1 ) {
+            std::list<dictionary::Attribute>::iterator it = list_attributes.begin();
+            file.exceptions( file.failbit | file.badbit );
+            try {
+              file.seekg( next );
+              file.read( reinterpret_cast<char*>(&register_address) , sizeof(long int) );
+                  while ( it != list_attributes.end() ){
+                      if ( it->GetDataType() == 'c' ){
+                          char str[ it->GetLengthDataType() ];
+                          file.read( reinterpret_cast<char*>(str) , it->GetLengthDataType() );
+                      } else if ( it->GetDataType() == 'i' ){
+                          int  x;
+                          file.read( reinterpret_cast<char*>(&x), sizeof( int ) );
+                          if ( it->GetTypeIndex() == 5  ){
+                              long int x_address; 
+                              file.read( reinterpret_cast<char*>(&x_address), sizeof( long int ) ); 
+                          } else if ( it->GetTypeIndex() == 1 ){
+                              if ( key == x ){
+                                  addr = register_address;
+                                  found = 1;
+                                  break;
+                              }
+                          } 
+                    }
+                  it++;
+                  }
+                  if ( found == 0 ) { 
+                    file.read( reinterpret_cast<char*>(&next_register_address) , sizeof(long int) );
+                    next = next_register_address;
+                  } else {
+                    next = -1;
+                  }
+                  if ( next_register_address == -1 )
+                      break;
+              } catch (const std::ios_base::failure & e) {
+                     std::cout << std::endl << "* :: Warning Exception: ->" << e.what() 
+                               << std::endl << "* :: Error code: ->" << e.code() 
+                               << std::endl;
+              }
+      }
+      file.close();
+      return addr;
+    }
+
+    long int DataFile::GetAddress(std::list<dictionary::Attribute> list_attributes, long int length_struct_log ,long int key_addr){
+        long int addr = -1;
+        long int register_address;
+        long int next_register_address;
+        long int next = file_header_;
+        int found = 0;
+        std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out );
+        while ( next != -1 ) {
+            std::list<dictionary::Attribute>::iterator it = list_attributes.begin();
+            file.exceptions( file.failbit | file.badbit );
+            try {
+              file.seekg( next );
+              file.read( reinterpret_cast<char*>(&register_address) , sizeof(long int) );
+                  while ( it != list_attributes.end() ){
+                      if ( it->GetDataType() == 'c' ){
+                          char str[ it->GetLengthDataType() ];
+                          file.read( reinterpret_cast<char*>(str) , it->GetLengthDataType() );
+                      } else if ( it->GetDataType() == 'i' ){
+                          int  x;
+                          file.read( reinterpret_cast<char*>(&x), sizeof( int ) );
+                          if ( it->GetTypeIndex() == 5  ){
+                              long int x_address; 
+                              file.read( reinterpret_cast<char*>(&x_address), sizeof( long int ) );
+                          
+                          } 
+                    }
+                  it++;
+                  }
+                  if ( found == 0 ) { 
+                    file.read( reinterpret_cast<char*>(&next_register_address) , sizeof(long int) );
+                    if ( key_addr == next_register_address ){
+                        found = 1;          
+                        addr = register_address;
+                        next = -1;
+                    } else {
+                      next = next_register_address;
+                    }
+                  } else {
+                    next = -1;
+                  }
+                  if ( next_register_address == -1 )
+                      break;
+              } catch (const std::ios_base::failure & e) {
+                     std::cout << std::endl << "-> :: Warning Exception: ->" << e.what() 
+                               << std::endl << "-> :: Error code: ->" << e.code() 
+                               << std::endl;
+              }
+      }
+      file.close();
+      return addr;
+    }
+    
+    long int DataFile::GetNextAddress(std::list<dictionary::Attribute> list_attributes, long int length_struct_log ,int key){
+        long int addr_next = -1;
+        long int register_address;
+        long int next_register_address;
+        long int next = file_header_;
+        std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out );
+        while ( next != -1 ) {
+            std::list<dictionary::Attribute>::iterator it = list_attributes.begin();
+            file.exceptions( file.failbit | file.badbit );
+            try {
+              file.seekg( next );
+              file.read( reinterpret_cast<char*>(&register_address) , sizeof(long int) );
+                  while ( it != list_attributes.end() ){
+                      if ( it->GetDataType() == 'c' ){
+                          char str[ it->GetLengthDataType() ];
+                          file.read( reinterpret_cast<char*>(str) , it->GetLengthDataType() );
+                      } else if ( it->GetDataType() == 'i' ){
+
+                          int  x;
+                          file.read( reinterpret_cast<char*>(&x), sizeof( int ) );
+                          if ( it->GetTypeIndex() == 5  ){
+                              long int x_address; 
+                              file.read( reinterpret_cast<char*>(&x_address), sizeof( long int ) );
+                              std::cout << x_address << "\t";  
+                          } else if ( it->GetTypeIndex() == 1 ){
+                              if ( key == x ){
+                                 file.seekg(register_address + length_struct_log - sizeof( long int ) );
+                                 file.read( reinterpret_cast<char*>(&addr_next), sizeof( long int ) );
+                                 break;
+                              }
+                          } 
+                      }
+                  it++;
+                  }
+                  if ( file.tellg() == file_size_ ) {
+                      file.seekg( file_size_ - sizeof(long int) );
+                  }
+                  file.read( reinterpret_cast<char*>(&next_register_address) , sizeof(long int) );
+                  next = next_register_address;
+              } catch (const std::ios_base::failure & e) {
+                      std::cout << std::endl << "=>:: Warning Exception : =>" << e.what() 
+                                << std::endl << "=> :: Error code : => " << e.code() 
+                                << std::endl;
+                      std::cout << std::endl << ":: Fail file in:" 
+                                << std::endl << ":: failbit: " << file.fail() 
+                                << std::endl << ":: eofbit: " << file.eof()
+                                << std::endl << ":: badbit: " << file.bad();
+              }
+      }
+      file.close();
+      return addr_next;
+    }
+    
+
+    
+
 
 
 }  // end namespace archive

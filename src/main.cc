@@ -381,7 +381,10 @@ int main( int argc, char* argv[] ){
 												cout << endl << " ::  block empty ";			
 										
 										}
-										cout << endl;
+										if ( count_hash == 0 || count_hash == 1 || count_hash == 2 || count_hash == 4 || count_hash == 6|| count_hash ==  7)
+											cout << "\t\t";
+										else if ( count_hash == 3 || count_hash == 5 )
+										 	cout << endl; 
 									itr_bck++;
 									count_hash++;
 									}
@@ -415,18 +418,59 @@ int main( int argc, char* argv[] ){
 						}
 						case 6 : { // Show Data File
 				    		view.ShowStatusBar(data_file.GetName(), data_file.GetFileHeader(), data_file.GetFileSize() );
-							current_entity = data_dictionary.SearchEntity( data_dictionary.ReadListEntities(), current_entity_name);
-							data_file.ReadRegister( data_dictionary.ReadListAttributes(current_entity) );
+							Entity current_entity_new = data_dictionary.SearchEntity( data_dictionary.ReadListEntities(), current_entity_name);
+							data_file.ReadRegister( data_dictionary.ReadListAttributes(current_entity_new) );
 							break;
 						}
 						case 7 : { // Update a register
-				    		view.ShowMessage("===> Update a register");
+				    		view.ShowMessage("\n\t\t ===> Remove a register use Primary Index");
 				    		view.ShowStatusBar(data_file.GetName(), data_file.GetFileHeader(), data_file.GetFileSize() );
+				    		int data_search;
+				    		string name_primary_index;
+				    		view.ShowMessage("\n\t\t ::: select of data for remove :");
+							cin >> data_search;
+							
+							for( list<Attribute>::iterator j = list_attributes.begin(); j != list_attributes.end(); j++ ){
+								if ( j->GetTypeIndex() == 1  ){
+									string attr_name_key( j->GetName() );
+									name_primary_index = current_entity_name + "_" + attr_name_key;
+								}
+							}
+
+							list<pair< int, long int>> bucket = PrimaryIndexFile::ReadBlock(name_primary_index,0);	
+							PrimaryIndexFile::RemoveDataInt(name_primary_index, 0 , data_search, bucket );
+
+							long int length_struct_log = data_file.GetLengthStructLog( list_attributes );
+
+                            long int addr_select = data_file.GetAddress(list_attributes, length_struct_log, data_search);
+                            long int addr_select_point_me = data_file.GetAddress(list_attributes, length_struct_log, addr_select);
+
+                            long int next_addr_select = data_file.GetNextAddress(list_attributes, length_struct_log, data_search);
+							cout << ":: " << length_struct_log << " /  " << addr_select << " /  " << next_addr_select << " / " << addr_select_point_me;
+							
+							// first
+                            if ( addr_select_point_me == -1){
+                                data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) , -1  );
+				    			data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , next_addr_select); 	
+				    			data_file.SetFileHeader(next_addr_select);
+                            }
+							// remove midle
+							else if ( addr_select_point_me != -1){
+								data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) , next_addr_select );
+								data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) , -1  );
+							}
+							// last 
+							else if ( next_addr_select == -1){
+								data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) , -1 );
+								data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) , -1  );
+							}
+								
 							break;
 						}
+						case 8 : break; 
 				    }
-	    		} while(option_file < 7);
-	    		if (option_file > 6 ) view.Clear();
+	    		} while(option_file < 8);
+	    		if (option_file > 7 ) view.Clear();
 	    			break;
 	    		//}
 	    	} //  end if current_entity

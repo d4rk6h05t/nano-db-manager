@@ -191,7 +191,7 @@ namespace ui {
           std::cout << std::endl << " \t\t [ 4 ]: Show Static Hashing";
           std::cout << std::endl << " \t\t [ 5 ]: Show Multilist";	
     			std::cout << std::endl << " \t\t [ 6 ]: Show Data File ";	
-    			std::cout << std::endl << " \t\t [ 7 ]: Update a register ";
+    			std::cout << std::endl << " \t\t [ 7 ]: Remove use Primary Index ";
     			std::cout << std::endl << " \t\t [ 8 ]: Back to main menu ";	
 		}
 
