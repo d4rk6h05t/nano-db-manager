@@ -961,7 +961,7 @@ while ( next_row != -1 ) {
                               long int x_address; 
                               file.read( reinterpret_cast<char*>(&x_address), sizeof( long int ) );
                               std::cout << x_address << "\t";  
-                          } else if ( it->GetTypeIndex() == 1 ){
+                          } else if ( it->GetTypeIndex() == 1 || it->GetTypeIndex() == 4 ){
                               if ( key == x ){
                                  file.seekg(register_address + length_struct_log - sizeof( long int ) );
                                  file.read( reinterpret_cast<char*>(&addr_next), sizeof( long int ) );
