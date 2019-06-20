@@ -47,12 +47,16 @@ namespace dictionary {
             static void UpdateAddress(const std::string& name, long int position, long int new_address);
             void UpdateName(long int position, std::string new_name);
             
-            static std::vector<long int> GetBucketsAddress(const std::string& name); 
+            static std::vector<long int> GetBucketsAddress(const std::string& name);
+
             static void CreateBlock(const std::string& name, int position);
             static int GetHash(int key);
-            static std::list< std::pair< int, long int> > ReadBlock(const std::string& name,int position);
+            static std::list< std::pair< int, long int>> ReadBlock(const std::string& name,int position);
             static void AddLineToBlock(const std::string& name,int position, std::list< std::pair<int, long int> > list_data_pair, int data, long int data_address);
-
+            static long int GetAddress(const std::string& name,long int bucket_address, int key );
+            static long int GetBucketAddress(const std::string& name,int hash);
+            static void RemoveDataInt(const std::string& name, int position, int data, std::list< std::pair<int, long int>> list_data_pair);
+        
         private:
 
             std::string name_;

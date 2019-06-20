@@ -191,8 +191,13 @@ namespace ui {
           std::cout << std::endl << " \t\t [ 4 ]: Show Static Hashing";
           std::cout << std::endl << " \t\t [ 5 ]: Show Multilist";	
     			std::cout << std::endl << " \t\t [ 6 ]: Show Data File ";	
-    			std::cout << std::endl << " \t\t [ 7 ]: Update a register ";
-    			std::cout << std::endl << " \t\t [ 8 ]: Back to main menu ";	
+    			std::cout << std::endl << " \t\t [ 7 ]: Remove use Primary Index ";
+          std::cout << std::endl << " \t\t [ 8 ]: Remove use Secondary Index ";
+          std::cout << std::endl << " \t\t [ 9 ]: Remove use Static Hashing ";
+          std::cout << std::endl << " \t\t [ 10 ]: Update use Primary Index ";
+          std::cout << std::endl << " \t\t [ 11 ]: Update use Secondary Index ";
+          std::cout << std::endl << " \t\t [ 12 ]: Update use Static Hashing ";
+    			std::cout << std::endl << " \t\t [ 13 ]: Back to main menu ";	
 		}
 
 
