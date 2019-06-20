@@ -53,7 +53,7 @@ namespace archive {
             void AppendAddress(long int new_address);
 
             long int AppendData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data, const std::string& entity_active, std::list<std::pair<int,long int>> list_multilist);
-
+            long int UpdateData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data, const std::string& entity_active, std::list<std::pair<int,long int>> list_multilist, long int log_address);
             //long int UpdateData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data, const std::string& entity_active, std::list<std::pair<int,long int>> list_multilist);
             //long int RemoveData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data, const std::string& entity_active, std::list<std::pair<int,long int>> list_multilist);
             
@@ -66,6 +66,7 @@ namespace archive {
             long int GetAddress(std::list<dictionary::Attribute> list_attributes,  long int length_struct_log , int key);
             long int GetAddress(std::list<dictionary::Attribute> list_attributes,  long int length_struct_log ,long int key_addr);
             long int GetNextAddress(std::list<dictionary::Attribute> list_attributes,  long int length_struct_log , int key);
+            long int GetNextAddress(std::list<dictionary::Attribute> list_attributes,  long int length_struct_log , long int key_addr);
 
             
 

@@ -284,6 +284,10 @@ namespace dictionary {
                 std::cout << std::endl << ":: Warning Exception: " << e.what() 
                           << std::endl << ":: Error code: " << e.code() 
                           << std::endl;
+                std::cout << std::endl << ":: Fail file in:" 
+                                << std::endl << ":: failbit: " << file.fail() 
+                                << std::endl << ":: eofbit: " << file.eof()
+                                << std::endl << ":: badbit: " << file.bad();
             }
         file.close();  
     }

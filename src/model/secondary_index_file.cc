@@ -347,7 +347,6 @@ namespace dictionary {
     }
 
     void SecondaryIndexFile::RemoveItem(const std::string& name,int position, int key, long int key_address, std::list< std::pair< int, std::vector<long int>>> bucket){
-        
         std::string dir = "tmp/";
         std::string ext = ".idx";
         int current_position = 0;
@@ -356,59 +355,29 @@ namespace dictionary {
         file.exceptions( file.failbit | file.badbit );
             try {
                 file.seekp( position );
-                
                 std::list< std::pair< int, std::vector<long int>>>::iterator i_ = bucket.begin();
-
                 while ( i_ != bucket.end() ) { 
-                
                     file.write( reinterpret_cast<const char*>(&(i_->first)), sizeof(int) );
                     std::vector<long int> datablock = i_->second;
                     std::vector<long int>::iterator j_ =  datablock.begin();
                     int count_save = 0;
-
                     while ( j_ != datablock.end() ){
                         if ( key != i_->first &&  key_address !=  *j_ ){
                             file.write( reinterpret_cast<const char*>(&(*j_)), sizeof(long int) );
+                           
+                        } else if ( key == i_->first &&  key_address !=  *j_ ) {
+                            file.write( reinterpret_cast<const char*>(&(*j_)), sizeof(long int) );
                             count_save = count_save + 1;
-                        }
-                        if ( key == i_->first && count_save == SIZE_DATA_BLOCK_-1 ) {
-                           file.write( reinterpret_cast<const char*>(&data_null), sizeof(long int) );
-                        }
-
-                    j_++;  
-                    }
-
-                i_++;
-                }
-
-                // overflow chain
-                file.write( reinterpret_cast<const char*>(&data_null), sizeof(long int) );
-                /*
-                file.seekp( position );
-                for ( int i = 0; i < ROW_CAPACITY_I_; i++ ) { 
-                    int data = -1;                  
-                    file.read( reinterpret_cast<char*>(&data) , sizeof(int) );
-                    current_position = current_position  + sizeof(int);
-                    if ( data != -1  ) {
-                        for ( int j = 0; j < SIZE_DATA_BLOCK_; j++ ){
-                            long int data_address = -1;
-                            file.read( reinterpret_cast<char*>(&data_address), sizeof(long int) );
-                            current_position = current_position  +  sizeof(long int);
-                            if ( key == data &&  key_address == data_address ){
-                                std::cout << std::endl << "Eureka I Found ->  ptr: " << current_position - 8;
-                                file.seekp( current_position - sizeof(long int) );
-                                
-                                file.write( reinterpret_cast<const char*>(&data_null), sizeof(long int) );
-                                
-                                break;
+                            if ( count_save == SIZE_DATA_BLOCK_ - 1 )   {
+                                file.write( reinterpret_cast<const char*>(&data_null), sizeof(long int) );       
                             }
                         }
-                    } else {
-                        break;
+                    j_++;  
                     }
-                    
+                i_++;
                 }
-                */
+                // overflow chain
+                file.write( reinterpret_cast<const char*>(&data_null), sizeof(long int) );
             } catch (const std::ios_base::failure & e) {
                 std::cout << std::endl << ":: Warning Exception: " << e.what() 
                           << std::endl << ":: Error code: " << e.code() 
@@ -419,6 +388,90 @@ namespace dictionary {
                 }
             }
         file.close();
+    }
+
+    void SecondaryIndexFile::RemoveLine(const std::string& name,int position, int key, long int key_address, std::list< std::pair< int, std::vector<long int>>> bucket){
+        std::string dir = "tmp/";
+        std::string ext = ".idx";
+        int current_position = 0;
+        long int data_null = -1;
+        std::fstream file( dir + name + ext, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
+        file.exceptions( file.failbit | file.badbit );
+            try {
+                file.seekp( position );
+                std::list< std::pair< int, std::vector<long int>>>::iterator i_ = bucket.begin();
+                while ( i_ != bucket.end() ) { 
+                    if ( key != i_->first ){
+                        file.write( reinterpret_cast<const char*>(&(i_->first)), sizeof(int) );
+                        std::vector<long int> datablock = i_->second;
+                        std::vector<long int>::iterator j_ =  datablock.begin();
+                        while ( j_ != datablock.end() ){
+                                file.write( reinterpret_cast<const char*>(&(*j_)), sizeof(long int) );
+                        j_++;  
+                        }
+                    }
+                i_++;
+                }
+                // overflow chain
+                file.write( reinterpret_cast<const char*>(&data_null), sizeof(long int) );
+            } catch (const std::ios_base::failure & e) {
+                std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                          << std::endl << ":: Error code: " << e.code() 
+                          << std::endl;
+                if ( file.fail() ){
+                    std::cout << " Error writing to file " << std::endl;
+                    file.clear();
+                }
+            }
+        file.close();
+    }
+
+    std::vector<long int> SecondaryIndexFile::GetCollectionAddress(const std::string& name,int position, int key){
+
+        std::vector<long int> datablock;
+        std::string dir = "tmp/";
+        std::string ext = ".idx";
+
+        std::fstream file( dir + name + ext, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
+        file.exceptions( file.failbit | file.badbit );
+            try {
+                file.seekp( position );
+                for ( int i = 0; i < ROW_CAPACITY_I_; i++ ) { 
+                    int data = -1;
+                    
+                    file.read( reinterpret_cast<char*>(&data) , sizeof(int) );
+
+                    if ( data != -1 ) {
+                        if (  key == data ) {
+                            for ( int j = 0; j < SIZE_DATA_BLOCK_; j++ ){
+                                long int data_address = -1;
+                                file.read( reinterpret_cast<char*>(&data_address), sizeof(long int) );
+                                datablock.push_back(data_address);
+                            }
+                            break;
+                        } else {
+                             for ( int j = 0; j < SIZE_DATA_BLOCK_; j++ ){
+                                long int data_address_x = -1;
+                                file.read( reinterpret_cast<char*>(&data_address_x), sizeof(long int) );
+                            }  
+                        }    
+
+                    } else {
+                        break;
+                    }
+                    
+                }
+            } catch (const std::ios_base::failure & e) {
+                std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                          << std::endl << ":: Error code: " << e.code() 
+                          << std::endl;
+                if ( file.fail() ){
+                    std::cout << " Error writing to file " << std::endl;
+                    file.clear();
+                }
+            }
+        file.close();
+        return datablock;
     }
 
 }  // end namespace dictionary

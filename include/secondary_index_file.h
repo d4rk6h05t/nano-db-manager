@@ -53,7 +53,9 @@ namespace dictionary {
             static void UpdateLineToBlock(const std::string& name,int position, int data, std::vector<long int> block_address);
 
             static void RemoveItem(const std::string& name,int position, int key, long int key_address, std::list< std::pair< int, std::vector<long int>>> bucket);
-
+            static void RemoveLine(const std::string& name,int position, int key, long int key_address, std::list< std::pair< int, std::vector<long int>>> bucket);
+            static std::vector<long int> GetCollectionAddress(const std::string& name,int position, int key);
+                          
         private:
 
             std::string name_;
