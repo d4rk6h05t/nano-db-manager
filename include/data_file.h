@@ -67,7 +67,7 @@ namespace archive {
             long int GetAddress(std::list<dictionary::Attribute> list_attributes,  long int length_struct_log ,long int key_addr);
             long int GetNextAddress(std::list<dictionary::Attribute> list_attributes,  long int length_struct_log , int key);
             long int GetNextAddress(std::list<dictionary::Attribute> list_attributes,  long int length_struct_log , long int key_addr);
-
+            int GetDataInt(std::list<dictionary::Attribute> list_attributes, int index, long int length_struct_log ,long int key_addr);
             
 
         private:

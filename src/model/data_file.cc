@@ -446,7 +446,11 @@ namespace archive {
 				    file.write( reinterpret_cast<const char*>(&next_address), sizeof(long int) );
 
 				    		   	
-				} else if ( disable_index == false && (file_size >  length_struct_register) ) {
+				}  else if ( disable_index == false && length_struct_register  == file_size ) {
+
+            address_header = file_size - length_struct_register; 
+
+      }  else if ( disable_index == false && (file_size >  length_struct_register) ) {
                    
             std::list<std::string>::iterator current_data = list_data.begin();       
                     
@@ -666,8 +670,6 @@ while ( next_row != -1 ) {
       std::list<dictionary::Attribute>::iterator it = list_attributes.begin();
       std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
       file.exceptions( file.failbit | file.badbit );
-      
-    
 
       try {
             
@@ -876,30 +878,34 @@ while ( next_row != -1 ) {
           }
           
           file.write( reinterpret_cast<const char*>(&end_address), sizeof(long int) ); // e n d   w r i t e   f i r s t   p a r t
-          // : : : : :   R e w ri t e      f o r     u p d a t e    f i l e  : : : : : 
+
+/* *****************************************************************************************************************************************
+*       
+*                     ::::::::::      R e w ri t e      f o r     u p d a t e    f i l e  ::::::::::::::::                                 *
+*
+********************************************************************************************************************************************/
                  
           file.seekg(0, std::ios::end);
           file_size = file.tellg(); 
           
-          if ( disable_index && (file_size >  length_struct_register) ) {
+      if ( disable_index && (file_size >  length_struct_register) ) {
               
             file_header_ = 0;   
             long int previus_next_address = file_size_ - ( length_struct_register  + sizeof(long int) ); 
-            long int next_address = file_size - length_struct_register;     
-            
+            long int next_address = file_size - length_struct_register;
 
             file.seekp(previus_next_address);
             file.write( reinterpret_cast<const char*>(&next_address), sizeof(long int) );
 
                     
-        } else if ( disable_index == false && file_size == (log_address + length_struct_register) ) {
+      } else if ( disable_index == false && file_size == (log_address + length_struct_register) ) {
 
             long int data_null_z = -1;
             file.seekp( log_address + ( length_struct_register -  sizeof(long int) ) );
             file.write( reinterpret_cast<const char*>(&data_null_z), sizeof(long int) );
             address_header = log_address; 
 
-        } else if ( disable_index == false && (file_size >  length_struct_register) ) {
+      } else if ( disable_index == false && (file_size >  length_struct_register) ) {
                    
             std::list<std::string>::iterator current_data = list_data.begin();       
                     
@@ -1469,6 +1475,42 @@ while ( next_row != -1 ) {
       
       
       return addr_next;
+    }
+
+    int DataFile::GetDataInt(std::list<dictionary::Attribute> list_attributes, int index, long int length_struct_log ,long int key_addr){
+        int data = -1;
+
+        std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out );
+      
+            std::list<dictionary::Attribute>::iterator it = list_attributes.begin();
+            file.exceptions( file.failbit | file.badbit );
+            try {
+              file.seekg( key_addr + sizeof(long int) );
+                  while ( it != list_attributes.end() ){
+                      if ( it->GetDataType() == 'c' ){
+                          char str[ it->GetLengthDataType() ];
+                          file.read( reinterpret_cast<char*>(str) , it->GetLengthDataType() );
+                      } else if ( it->GetDataType() == 'i' ){
+                          int  x;
+                          file.read( reinterpret_cast<char*>(&x), sizeof( int ) );
+                          if ( it->GetTypeIndex() == index ){
+                              data = x;
+                              break;
+                          }  else if ( it->GetTypeIndex() == 5  ){
+                              long int x_address; 
+                              file.read( reinterpret_cast<char*>(&x_address), sizeof( long int ) );
+                          } 
+                    }
+                  it++;
+                  }
+              } catch (const std::ios_base::failure & e) {
+                     std::cout << std::endl << ":: Warning Exception: ->" << e.what() 
+                               << std::endl << ":: Error code: ->" << e.code() 
+                               << std::endl;
+              }
+    
+      file.close();
+      return data;
     }
     
 
