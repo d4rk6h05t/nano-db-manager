@@ -1223,8 +1223,9 @@ while ( next_row != -1 ) {
                  
                     char str[ it->GetLengthDataType() ];
                     std::cin >> str; 
+                    //std::getline(std::cin,str);
                     file.write( reinterpret_cast<const char*>(&str),  it->GetLengthDataType() );
-                    
+                    std::cin.ignore();
                     if ( it->GetTypeIndex() == 3 ) 
                         data_string = str;
 
@@ -1232,6 +1233,7 @@ while ( next_row != -1 ) {
                     
                     int  x;
                     std::cin >> x;
+                    std::cin.ignore();
                     file.write( reinterpret_cast<const char*>(&x), sizeof(int) );
                     
                     if ( it->GetTypeIndex() == 3 )
