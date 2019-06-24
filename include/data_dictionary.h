@@ -60,6 +60,8 @@ namespace dictionary {
             void RemoveAttribute(Entity current_entity, std::list<Attribute> list_attributes, std::string remove_attribute);
             Attribute SearchAttribute(std::list<Attribute> list_attributes, std::string name_attribute);
 
+            long int LengthStartToSearchKey(std::list<Attribute> list_attributes); 
+
         private:
             // file metadata
             int id_;

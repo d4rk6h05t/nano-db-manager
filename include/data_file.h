@@ -57,16 +57,30 @@ namespace archive {
             //long int UpdateData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data, const std::string& entity_active, std::list<std::pair<int,long int>> list_multilist);
             //long int RemoveData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data, const std::string& entity_active, std::list<std::pair<int,long int>> list_multilist);
             
+              
+            
             void ReadRegister(std::list<dictionary::Attribute> list_attributes);
+            
+            std::string Update(std::list<dictionary::Attribute> list_attributes, const std::string& entity_active, long int log_address);
+            int GetAmountLog(std::list<dictionary::Attribute> list_attributes);
+            std::list<std::string> GetListStr(std::list<dictionary::Attribute> list_attributes, dictionary::Attribute attr, long int length_struct_log, long int length_ks, int amount_log );
+            std::pair<std::string,std::string> GetPrevNext(std::list<std::string> list_str,const std::string& key_str);
+
             std::list<std::pair<int,long int>> GetListDataMultilist(std::list<dictionary::Attribute> list_attributes, dictionary::Attribute attribute);
 
             int GetSizeRegister(std::list<dictionary::Attribute> list_attributes);
             static std::list<long int> GetAddressBySearchKey(const std::string & name,const std::string & search_key, long int file_header, std::list<dictionary::Attribute> list_attributes);
             
-            long int GetAddress(std::list<dictionary::Attribute> list_attributes,  long int length_struct_log , int key);
-            long int GetAddress(std::list<dictionary::Attribute> list_attributes,  long int length_struct_log ,long int key_addr);
-            long int GetNextAddress(std::list<dictionary::Attribute> list_attributes,  long int length_struct_log , int key);
-            long int GetNextAddress(std::list<dictionary::Attribute> list_attributes,  long int length_struct_log , long int key_addr);
+            long int GetAddress(std::list<dictionary::Attribute> list_attributes, long int length_struct_log , int key);
+            long int GetAddress(std::list<dictionary::Attribute> list_attributes, long int length_struct_log ,long int key_addr);
+            
+            long int GetAddressByNextAddress(std::list<dictionary::Attribute> list_attributes, long int length_struct_log ,long int next_addr);
+            
+            long int GetAddress(std::list<dictionary::Attribute> list_attributes, long int length_struct_log , const std::string& key_addr);
+            
+            long int GetNextAddress(std::list<dictionary::Attribute> list_attributes, long int length_struct_log , int key);
+            long int GetNextAddress(std::list<dictionary::Attribute> list_attributes, long int length_struct_log , long int key_addr);
+
             int GetDataInt(std::list<dictionary::Attribute> list_attributes, int index, long int length_struct_log ,long int key_addr);
             
 

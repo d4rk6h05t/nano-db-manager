@@ -599,4 +599,24 @@ namespace dictionary {
     	return attribute;
     }
 
+    long int DataDictionary::LengthStartToSearchKey(std::list<Attribute> list_attributes){
+    	
+    	long int length = sizeof(long int); // first address of data file
+    	
+    	for (std::list<Attribute>::iterator it = list_attributes.begin(); it != list_attributes.end(); it++){
+    	    
+    	    if ( it->GetTypeIndex() != 3 ){
+    	    	if ( it->GetDataType() == 'i' )
+    	    		length += sizeof(int);
+    	    	else if ( it->GetDataType() == 'c' )
+    	    		length += it->GetLengthDataType();
+    	    } else
+    	     	break;
+
+    	
+    	}
+
+    	return length;
+    }
+
 }  // end namespace dictionary
