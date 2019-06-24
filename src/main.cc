@@ -729,6 +729,7 @@ int main( int argc, char* argv[] ){
 				    		int primary_index_active = 0;
 				    		int secondary_index_active = 0;
 				    		int static_hashing_active = 0;
+				    		bool exist_search_key = false;
 				    		string name_primary_index;
 				    		string name_secondary_index;
 				    		string name_static_hashing;
@@ -749,6 +750,7 @@ int main( int argc, char* argv[] ){
 									name_static_hashing = current_entity_name + "_" + attr_name_sh;
 								} else if ( j->GetTypeIndex() == 3 ) {
 									attr = *j;
+									exist_search_key = true;
 								}
 							}
 							cin >> data_search;
@@ -787,74 +789,91 @@ int main( int argc, char* argv[] ){
                             }
 
                             string data_key_search = data_file.Update(list_attributes, current_entity_name ,addr_select);
-							int amount_log = data_file.GetAmountLog(list_attributes);
-							int length_to_search_key = data_dictionary.LengthStartToSearchKey(list_attributes);
-							long int prev_point_me = data_file.GetAddress(list_attributes,length_struct_log,addr_select);
-							list<string> list_str = data_file.GetListStr(list_attributes,attr,length_struct_log,length_to_search_key,amount_log);
-                            list_str.sort();
-							pair<string,string> next_prev = data_file.GetPrevNext(list_str,data_key_search);
-							long int previus_addr_i = -1;
-							long int previus_next_addr_i = -1;
-							long int next_addr_j = -1;
-							long int next_next_addr_j = -1;
-                            // previus
-							if ( next_prev.first != "-1" ) {
-								previus_addr_i = data_file.GetAddress(list_attributes,length_struct_log,next_prev.first); 
-								previus_next_addr_i = data_file.GetNextAddress(list_attributes,length_struct_log,previus_addr_i);
-							}
-							// next
-							if ( next_prev.second != "-1"  ) {
-								next_addr_j = data_file.GetAddress(list_attributes,length_struct_log,next_prev.second);
-								next_next_addr_j = data_file.GetNextAddress(list_attributes,length_struct_log,next_addr_j);
-							}
-							if ( amount_log == 2 ) {
-								// first 
-								if (  next_prev.first == "-1" && next_prev.second != "-1" ) {
-									data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  next_addr_j );
-									data_file.UpdateAddress( next_addr_j + length_struct_log - sizeof(long int) ,  -1 );
-				    				data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , addr_select ); 	
-				    				data_file.SetFileHeader( addr_select );
-								} // last 
-								else if ( next_prev.first != "-1" && next_prev.second == "-1" ) {
-									data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) , addr_select );
-									data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) , -1 );
+							
+							if ( exist_search_key == true ) {
+								int amount_log = data_file.GetAmountLog(list_attributes);
+								int length_to_search_key = data_dictionary.LengthStartToSearchKey(list_attributes);
+								long int prev_point_me = data_file.GetAddress(list_attributes,length_struct_log,addr_select);
+								list<string> list_str = data_file.GetListStr(list_attributes,attr,length_struct_log,length_to_search_key,amount_log);
+	                            list_str.sort();
+								pair<string,string> next_prev = data_file.GetPrevNext(list_str,data_key_search);
+								long int previus_addr_i = -1;
+								long int previus_next_addr_i = -1;
+								long int next_addr_j = -1;
+								long int next_next_addr_j = -1;
+	                            // previus
+								if ( next_prev.first != "-1" ) {
+									previus_addr_i = data_file.GetAddress(list_attributes,length_struct_log,next_prev.first); 
+									previus_next_addr_i = data_file.GetNextAddress(list_attributes,length_struct_log,previus_addr_i);
 								}
-							} else if ( amount_log > 3 ) {
-                                // Update_First ( TOP ) 
-								if ( ( next_addr_select != -1 &&  addr_select_point_me != data_file.GetFileHeader() && next_prev.first == "-1" && next_prev.second != "-1"  )  || ( addr_select_point_me == data_file.GetFileHeader() && next_prev.first == "-1" && next_prev.second != "-1" ) || ( addr_select != data_file.GetFileHeader() && next_addr_select != -1 && next_prev.first == "-1" && next_prev.second != "-1" ) ){
-										data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  data_file.GetFileHeader() ); 
-										data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) ,  next_addr_select );  
-										data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , addr_select );
-										data_file.SetFileHeader( addr_select );	
-								}	else if ( next_addr_select == -1 && next_prev.first == "-1" && next_prev.second != "-1") {
-										data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  data_file.GetFileHeader() );
-										data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) ,  -1 );
-										data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , addr_select );
-										data_file.SetFileHeader( addr_select );
-								}   else if ( addr_select != data_file.GetFileHeader() && next_addr_select == -1 && next_prev.first != "-1" && next_prev.second != "-1" ) {
-										data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) ,  -1 );
+								// next
+								if ( next_prev.second != "-1"  ) {
+									next_addr_j = data_file.GetAddress(list_attributes,length_struct_log,next_prev.second);
+									next_next_addr_j = data_file.GetNextAddress(list_attributes,length_struct_log,next_addr_j);
+								}
+
+								if ( amount_log == 2 ) {
+									// first 
+									if (  next_prev.first == "-1" && next_prev.second != "-1" ) {
 										data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  next_addr_j );
-										data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) ,  addr_select );
-								}   else if ( addr_select != data_file.GetFileHeader() && next_addr_select != -1 && next_prev.first != "-1" && next_prev.second != "-1" ) {
-										data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) ,  next_addr_select );
-										data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) ,  addr_select );
-										data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  next_addr_j );
-								}   else if ( addr_select == data_file.GetFileHeader() && next_addr_select != -1 && next_prev.first != "-1" && next_prev.second != "-1" ) {
-										data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  next_addr_j );
-										data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) ,  addr_select );
-										data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , next_addr_select );
-										data_file.SetFileHeader( next_addr_select );
-								}	else if (  addr_select == data_file.GetFileHeader() && next_prev.second == "-1" ) {
-										data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) , -1 );
+										data_file.UpdateAddress( next_addr_j + length_struct_log - sizeof(long int) ,  -1 );
+					    				data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , addr_select ); 	
+					    				data_file.SetFileHeader( addr_select );
+									} // last 
+									else if ( next_prev.first != "-1" && next_prev.second == "-1" ) {
 										data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) , addr_select );
-										data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , next_addr_select );
-										data_file.SetFileHeader( next_addr_select );
-								}	else if (  addr_select != data_file.GetFileHeader() && next_addr_select != -1  && next_prev.second == "-1" ) {
 										data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) , -1 );
-										data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) , addr_select );
-										data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) , next_addr_select );	
-								}	
-							} 
+									}
+								} else if ( amount_log > 3 ) {
+	                                //  ==> SEND TO TOP  [ midle :: TO :: top ]
+									if ( addr_select != data_file.GetFileHeader() && next_addr_select != -1 && next_prev.first == "-1" && next_prev.second != "-1" ) {
+											std::cout << std::endl << "==> SEND TO TOP X ==>  [ midle :: TO :: top ]";
+											data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  data_file.GetFileHeader() ); 
+											data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) ,  next_addr_select );  
+											data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , addr_select );
+											data_file.SetFileHeader( addr_select );	
+									//  ==> SEND TO TOP [ last :: TO :: top ]
+									}	else if ( addr_select != data_file.GetFileHeader() && next_addr_select == -1 && next_prev.first == "-1" && next_prev.second != "-1") {
+											std::cout << std::endl << "==> SEND TO TOP Y  ==>  [ last :: TO :: top ]";
+											data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  data_file.GetFileHeader() );
+											data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) ,  -1 );
+											data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , addr_select );
+											data_file.SetFileHeader( addr_select );
+									//  ==> SEND TO MIDLE [  last :: TO :: midle ]
+									}   else if ( addr_select != data_file.GetFileHeader() && next_addr_select == -1 && next_prev.first != "-1" && next_prev.second != "-1" ) {
+											std::cout << std::endl << "==> SEND TO MIDLE  X ==> [  last :: TO :: midle ]";
+											data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) ,  -1 );
+											data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  next_addr_j );
+											data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) ,  addr_select );
+									//  ==> SEND TO MIDLE [ midle :: TO :: midle ]
+									}   else if ( addr_select != data_file.GetFileHeader() && next_addr_select != -1 && next_prev.first != "-1" && next_prev.second != "-1" ) {
+											std::cout << std::endl << "==> SEND TO MIDLE  Y ==> [ midle :: TO :: midle ]";
+											data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) ,  next_addr_select );
+											data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) ,  addr_select );
+											data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  next_addr_j );
+									//  ==> SEND TO MIDLE [ top :: TO :: midle ]
+									}   else if ( addr_select == data_file.GetFileHeader() && next_addr_select != -1 && next_prev.first != "-1" && next_prev.second != "-1" ) {
+											std::cout << std::endl << "==> SEND TO MIDLE  Z ==> [ top :: TO :: midle ]";
+											data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  next_addr_j );
+											data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) ,  addr_select );
+											data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , next_addr_select );
+											data_file.SetFileHeader( next_addr_select );
+									//  ==> SEND TO LAST   [  top :: TO :: last ]
+									}	else if ( addr_select == data_file.GetFileHeader() && next_addr_select != -1 && next_prev.first != "-1" && next_prev.second == "-1" ) {
+											std::cout << std::endl << "==> SEND TO LAST  X   ==> [  top :: TO :: last ]";
+											data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) , -1 );
+											data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) , addr_select );
+											data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , next_addr_select );
+											data_file.SetFileHeader( next_addr_select );
+									// 	==> SEND TO LAST  [ midle  :: TO :: last ]
+									}	else if (  addr_select != data_file.GetFileHeader() && next_addr_select != -1  && next_prev.first != "-1" && next_prev.second == "-1" ) {
+											std::cout << std::endl << "==> SEND TO LAST  Z ==> [ midle  :: TO :: last ]";
+											data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) , -1 );
+											data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) , addr_select );
+											data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) , next_addr_select );	
+									}	
+								}
+							} // end if exist_search_key
 							break;
 						}  
 						case 11 : { 
@@ -864,6 +883,7 @@ int main( int argc, char* argv[] ){
 				    		int primary_index_active = 0;
 				    		int secondary_index_active = 0;
 				    		int static_hashing_active = 0;
+				    		bool exist_search_key = false;
 				    		string name_primary_index;
 				    		string name_secondary_index;
 				    		string name_static_hashing;
@@ -888,6 +908,7 @@ int main( int argc, char* argv[] ){
 									name_static_hashing = current_entity_name + "_" + attr_name_sh;
 								} else if ( j->GetTypeIndex() == 3 ) {
 									attr = *j;
+									exist_search_key = true;
 								}
 							}
 							
@@ -922,75 +943,90 @@ int main( int argc, char* argv[] ){
 							}
 
 							string data_key_search = data_file.Update(list_attributes, current_entity_name ,addr_select);
-							int amount_log = data_file.GetAmountLog(list_attributes);
-							int length_to_search_key = data_dictionary.LengthStartToSearchKey(list_attributes);
-							long int prev_point_me = data_file.GetAddress(list_attributes,length_struct_log,addr_select);
-							list<string> list_str = data_file.GetListStr(list_attributes,attr,length_struct_log,length_to_search_key,amount_log);
-                            list_str.sort();
-							pair<string,string> next_prev = data_file.GetPrevNext(list_str,data_key_search);
-							long int previus_addr_i = -1;
-							long int previus_next_addr_i = -1;
-							long int next_addr_j = -1;
-							long int next_next_addr_j = -1;
-                            // previus
-							if ( next_prev.first != "-1" ) {
-								previus_addr_i = data_file.GetAddress(list_attributes,length_struct_log,next_prev.first); 
-								previus_next_addr_i = data_file.GetNextAddress(list_attributes,length_struct_log,previus_addr_i);
-							}
-							// next
-							if ( next_prev.second != "-1"  ) {
-								next_addr_j = data_file.GetAddress(list_attributes,length_struct_log,next_prev.second);
-								next_next_addr_j = data_file.GetNextAddress(list_attributes,length_struct_log,next_addr_j);
-							}
-							if ( amount_log == 2 ) {
-								// first 
-								if (  next_prev.first == "-1" && next_prev.second != "-1" ) {
-									data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  next_addr_j );
-									data_file.UpdateAddress( next_addr_j + length_struct_log - sizeof(long int) ,  -1 );
-				    				data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , addr_select ); 	
-				    				data_file.SetFileHeader( addr_select );
-								} // last 
-								else if ( next_prev.first != "-1" && next_prev.second == "-1" ) {
-									data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) , addr_select );
-									data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) , -1 );
-								}
-							} else if ( amount_log > 3 ) {
-                                // Update_First ( TOP ) 
-								if ( ( next_addr_select != -1 &&  addr_select_point_me != data_file.GetFileHeader() && next_prev.first == "-1" && next_prev.second != "-1"  )  || ( addr_select_point_me == data_file.GetFileHeader() && next_prev.first == "-1" && next_prev.second != "-1" ) || ( addr_select != data_file.GetFileHeader() && next_addr_select != -1 && next_prev.first == "-1" && next_prev.second != "-1" ) ){
-										data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  data_file.GetFileHeader() ); 
-										data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) ,  next_addr_select );  
-										data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , addr_select );
-										data_file.SetFileHeader( addr_select );	
-								}	else if ( next_addr_select == -1 && next_prev.first == "-1" && next_prev.second != "-1") {
-										data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  data_file.GetFileHeader() );
-										data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) ,  -1 );
-										data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , addr_select );
-										data_file.SetFileHeader( addr_select );
-								}   else if ( addr_select != data_file.GetFileHeader() && next_addr_select == -1 && next_prev.first != "-1" && next_prev.second != "-1" ) {
-										data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) ,  -1 );
-										data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  next_addr_j );
-										data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) ,  addr_select );
-								}   else if ( addr_select != data_file.GetFileHeader() && next_addr_select != -1 && next_prev.first != "-1" && next_prev.second != "-1" ) {
-										data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) ,  next_addr_select );
-										data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) ,  addr_select );
-										data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  next_addr_j );
-								}   else if ( addr_select == data_file.GetFileHeader() && next_addr_select != -1 && next_prev.first != "-1" && next_prev.second != "-1" ) {
-										data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  next_addr_j );
-										data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) ,  addr_select );
-										data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , next_addr_select );
-										data_file.SetFileHeader( next_addr_select );
-								}	else if (  addr_select == data_file.GetFileHeader() && next_prev.second == "-1" ) {
-										data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) , -1 );
-										data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) , addr_select );
-										data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , next_addr_select );
-										data_file.SetFileHeader( next_addr_select );
-								}	else if (  addr_select != data_file.GetFileHeader() && next_addr_select != -1  && next_prev.second == "-1" ) {
-										data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) , -1 );
-										data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) , addr_select );
-										data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) , next_addr_select );	
-								}	
-							}
 							
+							if ( exist_search_key == true ) {
+								int amount_log = data_file.GetAmountLog(list_attributes);
+								int length_to_search_key = data_dictionary.LengthStartToSearchKey(list_attributes);
+								long int prev_point_me = data_file.GetAddress(list_attributes,length_struct_log,addr_select);
+								list<string> list_str = data_file.GetListStr(list_attributes,attr,length_struct_log,length_to_search_key,amount_log);
+	                            list_str.sort();
+								pair<string,string> next_prev = data_file.GetPrevNext(list_str,data_key_search);
+								long int previus_addr_i = -1;
+								long int previus_next_addr_i = -1;
+								long int next_addr_j = -1;
+								long int next_next_addr_j = -1;
+	                            // previus
+								if ( next_prev.first != "-1" ) {
+									previus_addr_i = data_file.GetAddress(list_attributes,length_struct_log,next_prev.first); 
+									previus_next_addr_i = data_file.GetNextAddress(list_attributes,length_struct_log,previus_addr_i);
+								}
+								// next
+								if ( next_prev.second != "-1"  ) {
+									next_addr_j = data_file.GetAddress(list_attributes,length_struct_log,next_prev.second);
+									next_next_addr_j = data_file.GetNextAddress(list_attributes,length_struct_log,next_addr_j);
+								}
+								if ( amount_log == 2 ) {
+									// first 
+									if (  next_prev.first == "-1" && next_prev.second != "-1" ) {
+										data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  next_addr_j );
+										data_file.UpdateAddress( next_addr_j + length_struct_log - sizeof(long int) ,  -1 );
+					    				data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , addr_select ); 	
+					    				data_file.SetFileHeader( addr_select );
+									} // last 
+									else if ( next_prev.first != "-1" && next_prev.second == "-1" ) {
+										data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) , addr_select );
+										data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) , -1 );
+									}
+								} else if ( amount_log > 3 ) {
+	                                //  ==> SEND TO TOP  [ midle :: TO :: top ]
+									if ( addr_select != data_file.GetFileHeader() && next_addr_select != -1 && next_prev.first == "-1" && next_prev.second != "-1" ) {
+											std::cout << std::endl << "==> SEND TO TOP X ==>  [ midle :: TO :: top ]";
+											data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  data_file.GetFileHeader() ); 
+											data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) ,  next_addr_select );  
+											data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , addr_select );
+											data_file.SetFileHeader( addr_select );	
+									//  ==> SEND TO TOP [ last :: TO :: top ]
+									}	else if ( addr_select != data_file.GetFileHeader() && next_addr_select == -1 && next_prev.first == "-1" && next_prev.second != "-1") {
+											std::cout << std::endl << "==> SEND TO TOP Y  ==>  [ last :: TO :: top ]";
+											data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  data_file.GetFileHeader() );
+											data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) ,  -1 );
+											data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , addr_select );
+											data_file.SetFileHeader( addr_select );
+									//  ==> SEND TO MIDLE [  last :: TO :: midle ]
+									}   else if ( addr_select != data_file.GetFileHeader() && next_addr_select == -1 && next_prev.first != "-1" && next_prev.second != "-1" ) {
+											std::cout << std::endl << "==> SEND TO MIDLE  X ==> [  last :: TO :: midle ]";
+											data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) ,  -1 );
+											data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  next_addr_j );
+											data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) ,  addr_select );
+									//  ==> SEND TO MIDLE [ midle :: TO :: midle ]
+									}   else if ( addr_select != data_file.GetFileHeader() && next_addr_select != -1 && next_prev.first != "-1" && next_prev.second != "-1" ) {
+											std::cout << std::endl << "==> SEND TO MIDLE  Y ==> [ midle :: TO :: midle ]";
+											data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) ,  next_addr_select );
+											data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) ,  addr_select );
+											data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  next_addr_j );
+									//  ==> SEND TO MIDLE [ top :: TO :: midle ]
+									}   else if ( addr_select == data_file.GetFileHeader() && next_addr_select != -1 && next_prev.first != "-1" && next_prev.second != "-1" ) {
+											std::cout << std::endl << "==> SEND TO MIDLE  Z ==> [ top :: TO :: midle ]";
+											data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  next_addr_j );
+											data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) ,  addr_select );
+											data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , next_addr_select );
+											data_file.SetFileHeader( next_addr_select );
+									//  ==> SEND TO LAST   [  top :: TO :: last ]
+									}	else if ( addr_select == data_file.GetFileHeader() && next_addr_select != -1 && next_prev.first != "-1" && next_prev.second == "-1" ) {
+											std::cout << std::endl << "==> SEND TO LAST  X   ==> [  top :: TO :: last ]";
+											data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) , -1 );
+											data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) , addr_select );
+											data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , next_addr_select );
+											data_file.SetFileHeader( next_addr_select );
+									// 	==> SEND TO LAST  [ midle  :: TO :: last ]
+									}	else if (  addr_select != data_file.GetFileHeader() && next_addr_select != -1  && next_prev.first != "-1" && next_prev.second == "-1" ) {
+											std::cout << std::endl << "==> SEND TO LAST  Z ==> [ midle  :: TO :: last ]";
+											data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) , -1 );
+											data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) , addr_select );
+											data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) , next_addr_select );	
+									}	
+								}
+							}
 							break; 
 						}  
 						case 12 : { 
@@ -1000,6 +1036,7 @@ int main( int argc, char* argv[] ){
 				    		int primary_index_active = 0;
 				    		int secondary_index_active = 0;
 				    		int static_hashing_active = 0;
+				    		bool exist_search_key = false;
 				    		string name_primary_index;
 				    		string name_secondary_index;
 				    		string name_static_hashing;
@@ -1020,6 +1057,7 @@ int main( int argc, char* argv[] ){
 									view.ShowMessage("\n\t\t ::: select of " + attr_name_sh + " to update =>  : ");	
 								}  else if ( j->GetTypeIndex() == 3 ) {
 									attr = *j;
+									exist_search_key = true;
 								}
 							}
 							cin >> data_search;
@@ -1052,75 +1090,90 @@ int main( int argc, char* argv[] ){
                             }
 
                             string data_key_search = data_file.Update(list_attributes, current_entity_name ,addr_select);
-							int amount_log = data_file.GetAmountLog(list_attributes);
-							int length_to_search_key = data_dictionary.LengthStartToSearchKey(list_attributes);
-							long int prev_point_me = data_file.GetAddress(list_attributes,length_struct_log,addr_select);
-							list<string> list_str = data_file.GetListStr(list_attributes,attr,length_struct_log,length_to_search_key,amount_log);
-                            list_str.sort();
-							pair<string,string> next_prev = data_file.GetPrevNext(list_str,data_key_search);
-							long int previus_addr_i = -1;
-							long int previus_next_addr_i = -1;
-							long int next_addr_j = -1;
-							long int next_next_addr_j = -1;
-                            // previus
-							if ( next_prev.first != "-1" ) {
-								previus_addr_i = data_file.GetAddress(list_attributes,length_struct_log,next_prev.first); 
-								previus_next_addr_i = data_file.GetNextAddress(list_attributes,length_struct_log,previus_addr_i);
-							}
-							// next
-							if ( next_prev.second != "-1"  ) {
-								next_addr_j = data_file.GetAddress(list_attributes,length_struct_log,next_prev.second);
-								next_next_addr_j = data_file.GetNextAddress(list_attributes,length_struct_log,next_addr_j);
-							}
-							if ( amount_log == 2 ) {
-								// first 
-								if (  next_prev.first == "-1" && next_prev.second != "-1" ) {
-									data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  next_addr_j );
-									data_file.UpdateAddress( next_addr_j + length_struct_log - sizeof(long int) ,  -1 );
-				    				data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , addr_select ); 	
-				    				data_file.SetFileHeader( addr_select );
-								} // last 
-								else if ( next_prev.first != "-1" && next_prev.second == "-1" ) {
-									data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) , addr_select );
-									data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) , -1 );
+
+                            if ( exist_search_key == true ) {
+								int amount_log = data_file.GetAmountLog(list_attributes);
+								int length_to_search_key = data_dictionary.LengthStartToSearchKey(list_attributes);
+								long int prev_point_me = data_file.GetAddress(list_attributes,length_struct_log,addr_select);
+								list<string> list_str = data_file.GetListStr(list_attributes,attr,length_struct_log,length_to_search_key,amount_log);
+	                            list_str.sort();
+								pair<string,string> next_prev = data_file.GetPrevNext(list_str,data_key_search);
+								long int previus_addr_i = -1;
+								long int previus_next_addr_i = -1;
+								long int next_addr_j = -1;
+								long int next_next_addr_j = -1;
+	                            // previus
+								if ( next_prev.first != "-1" ) {
+									previus_addr_i = data_file.GetAddress(list_attributes,length_struct_log,next_prev.first); 
+									previus_next_addr_i = data_file.GetNextAddress(list_attributes,length_struct_log,previus_addr_i);
 								}
-							} else if ( amount_log > 3 ) {
-                                // Update_First ( TOP ) 
-								if ( ( next_addr_select != -1 &&  addr_select_point_me != data_file.GetFileHeader() && next_prev.first == "-1" && next_prev.second != "-1"  )  || ( addr_select_point_me == data_file.GetFileHeader() && next_prev.first == "-1" && next_prev.second != "-1" ) || ( addr_select != data_file.GetFileHeader() && next_addr_select != -1 && next_prev.first == "-1" && next_prev.second != "-1" ) ){
-										data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  data_file.GetFileHeader() ); 
-										data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) ,  next_addr_select );  
-										data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , addr_select );
-										data_file.SetFileHeader( addr_select );	
-								}	else if ( next_addr_select == -1 && next_prev.first == "-1" && next_prev.second != "-1") {
-										data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  data_file.GetFileHeader() );
-										data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) ,  -1 );
-										data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , addr_select );
-										data_file.SetFileHeader( addr_select );
-								}   else if ( addr_select != data_file.GetFileHeader() && next_addr_select == -1 && next_prev.first != "-1" && next_prev.second != "-1" ) {
-										data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) ,  -1 );
+								// next
+								if ( next_prev.second != "-1"  ) {
+									next_addr_j = data_file.GetAddress(list_attributes,length_struct_log,next_prev.second);
+									next_next_addr_j = data_file.GetNextAddress(list_attributes,length_struct_log,next_addr_j);
+								}
+								if ( amount_log == 2 ) {
+									// first 
+									if (  next_prev.first == "-1" && next_prev.second != "-1" ) {
 										data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  next_addr_j );
-										data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) ,  addr_select );
-								}   else if ( addr_select != data_file.GetFileHeader() && next_addr_select != -1 && next_prev.first != "-1" && next_prev.second != "-1" ) {
-										data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) ,  next_addr_select );
-										data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) ,  addr_select );
-										data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  next_addr_j );
-								}   else if ( addr_select == data_file.GetFileHeader() && next_addr_select != -1 && next_prev.first != "-1" && next_prev.second != "-1" ) {
-										data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  next_addr_j );
-										data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) ,  addr_select );
-										data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , next_addr_select );
-										data_file.SetFileHeader( next_addr_select );
-								}	else if (  addr_select == data_file.GetFileHeader() && next_prev.second == "-1" ) {
-										data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) , -1 );
+										data_file.UpdateAddress( next_addr_j + length_struct_log - sizeof(long int) ,  -1 );
+					    				data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , addr_select ); 	
+					    				data_file.SetFileHeader( addr_select );
+									} // last 
+									else if ( next_prev.first != "-1" && next_prev.second == "-1" ) {
 										data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) , addr_select );
-										data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , next_addr_select );
-										data_file.SetFileHeader( next_addr_select );
-								}	else if (  addr_select != data_file.GetFileHeader() && next_addr_select != -1  && next_prev.second == "-1" ) {
 										data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) , -1 );
-										data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) , addr_select );
-										data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) , next_addr_select );	
-								}	
+									}
+								} else if ( amount_log > 3 ) {
+	                                //  ==> SEND TO TOP  [ midle :: TO :: top ]
+									if ( addr_select != data_file.GetFileHeader() && next_addr_select != -1 && next_prev.first == "-1" && next_prev.second != "-1" ) {
+											std::cout << std::endl << "==> SEND TO TOP X ==>  [ midle :: TO :: top ]";
+											data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  data_file.GetFileHeader() ); 
+											data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) ,  next_addr_select );  
+											data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , addr_select );
+											data_file.SetFileHeader( addr_select );	
+									//  ==> SEND TO TOP [ last :: TO :: top ]
+									}	else if ( addr_select != data_file.GetFileHeader() && next_addr_select == -1 && next_prev.first == "-1" && next_prev.second != "-1") {
+											std::cout << std::endl << "==> SEND TO TOP Y  ==>  [ last :: TO :: top ]";
+											data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  data_file.GetFileHeader() );
+											data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) ,  -1 );
+											data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , addr_select );
+											data_file.SetFileHeader( addr_select );
+									//  ==> SEND TO MIDLE [  last :: TO :: midle ]
+									}   else if ( addr_select != data_file.GetFileHeader() && next_addr_select == -1 && next_prev.first != "-1" && next_prev.second != "-1" ) {
+											std::cout << std::endl << "==> SEND TO MIDLE  X ==> [  last :: TO :: midle ]";
+											data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) ,  -1 );
+											data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  next_addr_j );
+											data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) ,  addr_select );
+									//  ==> SEND TO MIDLE [ midle :: TO :: midle ]
+									}   else if ( addr_select != data_file.GetFileHeader() && next_addr_select != -1 && next_prev.first != "-1" && next_prev.second != "-1" ) {
+											std::cout << std::endl << "==> SEND TO MIDLE  Y ==> [ midle :: TO :: midle ]";
+											data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) ,  next_addr_select );
+											data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) ,  addr_select );
+											data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  next_addr_j );
+									//  ==> SEND TO MIDLE [ top :: TO :: midle ]
+									}   else if ( addr_select == data_file.GetFileHeader() && next_addr_select != -1 && next_prev.first != "-1" && next_prev.second != "-1" ) {
+											std::cout << std::endl << "==> SEND TO MIDLE  Z ==> [ top :: TO :: midle ]";
+											data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) ,  next_addr_j );
+											data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) ,  addr_select );
+											data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , next_addr_select );
+											data_file.SetFileHeader( next_addr_select );
+									//  ==> SEND TO LAST   [  top :: TO :: last ]
+									}	else if ( addr_select == data_file.GetFileHeader() && next_addr_select != -1 && next_prev.first != "-1" && next_prev.second == "-1" ) {
+											std::cout << std::endl << "==> SEND TO LAST  X   ==> [  top :: TO :: last ]";
+											data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) , -1 );
+											data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) , addr_select );
+											data_dictionary.UpdateAddress( current_entity.GetEntityAddress() + 35 + 8 + 8 , next_addr_select );
+											data_file.SetFileHeader( next_addr_select );
+									// 	==> SEND TO LAST  [ midle  :: TO :: last ]
+									}	else if (  addr_select != data_file.GetFileHeader() && next_addr_select != -1  && next_prev.first != "-1" && next_prev.second == "-1" ) {
+											std::cout << std::endl << "==> SEND TO LAST  Z ==> [ midle  :: TO :: last ]";
+											data_file.UpdateAddress( addr_select + length_struct_log - sizeof(long int) , -1 );
+											data_file.UpdateAddress( previus_addr_i + length_struct_log - sizeof(long int) , addr_select );
+											data_file.UpdateAddress( addr_select_point_me + length_struct_log - sizeof(long int) , next_addr_select );	
+									}	
+								}
 							}
-							
 
 							break; 
 						} 
