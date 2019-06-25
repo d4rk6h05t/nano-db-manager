@@ -55,7 +55,7 @@ namespace dictionary {
         std::ifstream in_file( dir_ + name_ + ext_, std::ios::binary | std::ios::in );
         if ( !in_file.good() ){
             std::ofstream out_file( dir_ + name_ + ext_, std::ios::binary | std::ios::out );
-            for (int i = 0; i <= NO_BUCKETS_SH_; i++)
+            for (int i = 0; i < NO_BUCKETS_SH_; i++)
                 out_file.write( reinterpret_cast<const char*>(&data_null), sizeof(long int) );
             out_file.close();
         } else {
@@ -168,7 +168,7 @@ namespace dictionary {
         file.exceptions( file.failbit | file.badbit );
             try {
                 file.seekp( 0 );
-                for ( int i = 0; i <= NO_BUCKETS_SH_; i++ ){
+                for ( int i = 0; i < NO_BUCKETS_SH_; i++ ){
                     file.read( reinterpret_cast<char*>(&bucket_addr) , sizeof(long int) );
                     address.push_back(bucket_addr);
                 }
@@ -404,7 +404,7 @@ namespace dictionary {
         file.exceptions( file.failbit | file.badbit );
             try {
                 file.seekp( 0 );
-                for ( int i = 0; i <= NO_BUCKETS_SH_; i++ ){
+                for ( int i = 0; i < NO_BUCKETS_SH_; i++ ){
                     if ( hash == i ){
                         file.read( reinterpret_cast<char*>(&bucket_addr) , sizeof(long int) );
                         ptr_current_position = ptr_current_position + sizeof(long int);

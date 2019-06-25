@@ -49,46 +49,24 @@ namespace archive {
     long int DataFile::GetLengthStructLog(std::list<dictionary::Attribute> list_attributes){
       
         long int length_struct_log = sizeof(long int) * 2; 
-      
-        long int next = file_header_;
-        
-        std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out );
-       
-        while ( next != -1 ) {
-            std::list<dictionary::Attribute>::iterator it = list_attributes.begin();
-            file.exceptions( file.failbit | file.badbit );
-            try {
-              file.seekg( next + sizeof(long int) );
-                  while ( it != list_attributes.end() ){
-                      if ( it->GetDataType() == 'c' ){
+        std::list<dictionary::Attribute>::iterator it = list_attributes.begin();
+    
+        while ( it != list_attributes.end() ) {
 
-                          char str[ it->GetLengthDataType() ];
-                          file.read( reinterpret_cast<char*>(str) , it->GetLengthDataType() );
-                          length_struct_log = length_struct_log + it->GetLengthDataType(); 
+            if ( it->GetDataType() == 'c' )
+
+                length_struct_log += it->GetLengthDataType(); 
                       
-                      } else if ( it->GetDataType() == 'i' ){
-                          int  x;
-                          file.read( reinterpret_cast<char*>(&x), sizeof( int ) );
+            else if ( it->GetDataType() == 'i' ){
+                
+                length_struct_log +=  sizeof( int );
                           
-                          if ( it->GetTypeIndex() == 5  ){
-                              long int x_address; 
-                              file.read( reinterpret_cast<char*>(&x_address), sizeof( long int ) );
-                              length_struct_log = length_struct_log  + sizeof( int ) + sizeof( long int );  
-                          } else {
-                              length_struct_log = length_struct_log  + sizeof( int );
-                          } 
-                    }
-                  it++;
-                  }
-                  next = -1;
-                  file.close();
-              } catch (const std::ios_base::failure & e) {
-                     std::cout << std::endl << "*:: Warning Exception: " << e.what() 
-                               << std::endl << "*:: Error code: " << e.code() 
-                               << std::endl;
-              }
-      } // end while != -1
-      return length_struct_log;
+                if ( it->GetTypeIndex() == 5  )
+                    length_struct_log += sizeof( long int );       
+            }
+            it++;
+        }  // end while lis attr       
+        return length_struct_log;
     }
     
    // Methods of file 
@@ -213,14 +191,13 @@ namespace archive {
 		file.close();	
     }
 
-    long int DataFile::AppendData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data, const std::string& entity_active, std::list<std::pair<int,long int>> list_multilist){
-    	long int address_header = -1;
+    long int DataFile::AppendData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data, const std::string& entity_active, long int length_struct_log){
+    	
+      long int address_header = -1;
     	std::list<dictionary::Attribute>::iterator it = list_attributes.begin();
     	std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
 		  file.exceptions( file.failbit | file.badbit );
 			
-    
-
 			try {
 		       	
 		      file.seekg(0, std::ios::end);
@@ -236,9 +213,9 @@ namespace archive {
           file.seekp(file_size);
 				  
           file.write( reinterpret_cast<const char*>(&file_size), sizeof(long int)  );
-				
+			
 				while ( it != list_attributes.end() ) {
-			        std::cout <<":: " << it->GetName() << " : ";
+			        std::cout <<"\t\t:: " << it->GetName() << " : ";
                     
                     if ( it->GetTypeIndex() == 3 ){
                     	disable_index = false;
@@ -360,69 +337,48 @@ namespace archive {
 
             }  // end // Type Index # 5
 
+            long int current_position_ptr = file.tellg();
+            
             file.write( reinterpret_cast<const char*>(&x), sizeof(int) );
             
             if ( it->GetTypeIndex() == 5  ){
-                long int next_addr_multilist;
-                if ( list_multilist.empty() )
-                    next_addr_multilist = -1;
-                else {
-                    std::pair<int, long int> data_pair_x;
-                    data_pair_x.first = x;
-                    data_pair_x.second = file_size;
-                    list_multilist.push_back(data_pair_x);
-                    list_multilist.sort([](const std::pair<int, long int> & a, const std::pair<int, long int> & b) { return a.first < b.first; });
-                    std::list<std::pair<int, long int>>::iterator j_ = list_multilist.begin();
-                    std::list<std::pair<int, long int>>::iterator j_prev = std::prev( j_ , 1 );
-                    std::list<std::pair<int, long int>>::iterator j_next = std::next( j_ , 1 );
-                        
-                    while ( j_ != list_multilist.end() ) {
-                      
-                      if ( x == j_->first ){
-                          long int first_block_multilist = file.tellg() - j_->second;
-                          //if ( list_multilist.size() == 2 ){
-                              if ( j_prev !=  list_multilist.begin() ) { 
-                                next_addr_multilist = j_prev->second; 
-                              } else {
-                                next_addr_multilist = j_next->second;
-                              }
-                              
-                              if ( j_next !=  list_multilist.end() ) { 
-                                next_addr_multilist = j_next->second;
-                              } else {
-                                // prev point me length_struct_register
-                                next_addr_multilist = -1;
-                                file.seekp(j_prev->second+first_block_multilist);
-                                file.write( reinterpret_cast<const char*>(&(j_->second)), sizeof(long int) );
-                                file.seekp(j_->second+first_block_multilist);
-                              }   
-                         // } else if ( list_multilist.size() > 2 ) {
-                              
-                              if ( j_ !=  list_multilist.begin() && j_ !=  list_multilist.end() ){
-                                  file.seekp(j_prev->second+first_block_multilist);
-                                  long int data_save_tmp;
-                                  file.read( reinterpret_cast<char*>(&data_save_tmp) , sizeof(long int) );
-                                  next_addr_multilist = data_save_tmp;
-                                  file.seekp(j_prev->second+first_block_multilist);
-                                  file.write( reinterpret_cast<const char*>(&(j_->second)), sizeof(long int) );
-                                  file.seekp(j_->second+first_block_multilist);
-                              }
+                
+                file.write( reinterpret_cast<const char*>(&end_address), sizeof(long int) );
+               
+                if ( file_size >= length_struct_log ) {
+                    
+                    int previus_x = -1;
+                    long int previus_addr_x = -1;
+                    long int length_begin_to_multilist = current_position_ptr - file_size;
+                    long int start_position = file_size - length_struct_log ;
 
-                          //}
-                          
-                          
-                      }
-
-                      j_++;
-                      j_prev++;
-                      j_next;
-                    }  
+                    file.seekp( start_position + length_begin_to_multilist );  // jump to multilist
+                    file.read( reinterpret_cast<char*>(&previus_x) , sizeof( int ) );
+                    
+                    
+                    while ( start_position >= length_struct_log ){
+                        if ( previus_x == x ) {
+                            
+                            file.write( reinterpret_cast<const char*>(&file_size), sizeof(long int) );
+                            break;
+                        } else {
+                            // go to start adn jump oter level 
+                            start_position = start_position - length_struct_log; 
+                            file.seekp( start_position + length_begin_to_multilist );  // jump to multilist
+                            file.read( reinterpret_cast<char*>(&previus_x) , sizeof( int ) );                            
+                            
+                        }
+                    }  // end while 
+                      if ( (previus_x == x ) && start_position < length_struct_log ) {
+                            if ( file.tellg() != ( start_position + ( length_struct_log - 8 ))  ){
+                                file.write( reinterpret_cast<const char*>(&file_size), sizeof(long int) );
+                            }
+                        }
+                    
                 }
                 
-
-                file.write( reinterpret_cast<const char*>(&next_addr_multilist), sizeof(long int) ); 
-                
-            }
+                file.seekp(current_position_ptr + 4 + 8 ); 
+            } // # END GETTYPE MULTILIST
             
 					} // :: => [ End else if ( it->GetDataType() == 'i' ) ]
 			       	it++;
@@ -1436,50 +1392,43 @@ while ( next_row != -1 ) {
         return pair;
     }
 
-    std::list<std::pair<int,long int>> DataFile::GetListDataMultilist(std::list<dictionary::Attribute> list_attributes, dictionary::Attribute attribute){
-      
+    /*
+    std::list<long int> DataFile::GetPointersToMultilist(std::list<dictionary::Attribute> list_attributes ){
+        
+        long int ptr_multilist = 0;
         long int register_address;
         long int next_register_address;
         long int next = file_header_;
-
-        std::pair<int,long int> data_pair;
-        std::list<std::pair<int,long int>> list_multilist;
-        std::string attr_select(attribute.GetName());
-
-        std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out );
+        std::list<long int> pointers_multilist;
         
+        std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate); 
         while ( next != -1 ) {
             std::list<dictionary::Attribute>::iterator it = list_attributes.begin();
             file.exceptions( file.failbit | file.badbit );
             try {
               file.seekg( next );
               file.read( reinterpret_cast<char*>(&register_address) , sizeof(long int) );
-              data_pair.second = register_address;
-                  while ( it != list_attributes.end() ){
+              ptr_multilist += sizeof(long int);
+              while ( it != list_attributes.end() ){
                       if ( it->GetDataType() == 'c' ){
                           char str[ it->GetLengthDataType() ];
                           file.read( reinterpret_cast<char*>(str) , it->GetLengthDataType() );
-                      } else if ( it->GetDataType() == 'i' ){
+                          ptr_multilist += it->GetLengthDataType();
+                      } else if ( it->GetDataType() == 'i' ){     
                           int  x;
                           file.read( reinterpret_cast<char*>(&x), sizeof( int ) );
+                          ptr_multilist += sizeof(int);
                           if ( it->GetTypeIndex() == 5  ){
+                              std::list<std::pair<int,long int>> list_pairs;
                               long int x_address; 
+                              pointers_multilist.push_back(ptr_multilist);
                               file.read( reinterpret_cast<char*>(&x_address), sizeof( long int ) );
-                              std::string attr_current(it->GetName());
-                              if( attr_select.compare( attr_current ) == 0 ){
-                                   data_pair.first = x;
-                                   list_multilist.push_back(data_pair);
-                              }
-
-                          } 
+                              ptr_multilist += sizeof(long int);
+                          }
                     }
                   it++;
                   }
-                  file.read( reinterpret_cast<char*>(&next_register_address) , sizeof(long int) );
-                  next = next_register_address;
-                  std::cout << std::endl;
-                  if ( next_register_address == -1 )
-                      break;
+                  next = -1;
               } catch (const std::ios_base::failure & e) {
                      std::cout << std::endl << ":: Warning Exception: " << e.what() 
                                << std::endl << ":: Error code: " << e.code() 
@@ -1487,10 +1436,53 @@ while ( next_row != -1 ) {
               }
       }
       file.close();
-      
-
-      return list_multilist;
+      return pointers_multilist;
     }
+
+    void DataFile::SetMultilist( std::list<std::list<std::pair<int,long int>>> list_address, std::list<long int> pointers_multilist, long int length_struct_log ){
+        
+        long int register_address;
+        long int next_register_address;
+        long int next = file_header_;
+      
+        std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate); 
+        int i = 1; 
+        while ( next != -1 ) {
+            
+            file.exceptions( file.failbit | file.badbit );
+            try {
+              file.seekg( next );
+              file.read( reinterpret_cast<char*>(&register_address) , sizeof(long int) );
+              //int n = 0;
+              std::list<long int>::iterator j = pointers_multilist.begin(); 
+              while ( j != pointers_multilist.end()  ) {
+                  int x;
+
+                  file.seekg( ( register_address +  *j ) - sizeof( int ) );
+                  file.read( reinterpret_cast<char*>(&x) , sizeof( int ) );
+
+                  std::pair<int,long int> new_pair;
+                  new_pair.first = x;
+                  new_pair.second = register_address;
+
+                  //n++;
+                  j++;
+              }
+
+              file.seekg( ( length_struct_log - sizeof(long int) ) * i );
+              file.read( reinterpret_cast<char*>(& next_register_address) , sizeof(long int) );
+              
+              next =  next_register_address;
+              } catch (const std::ios_base::failure & e) {
+                     std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                               << std::endl << ":: Error code: " << e.code() 
+                               << std::endl;
+              }
+      i++;
+      }
+      file.close();
+    }
+    */
 
     int DataFile::GetSizeRegister(std::list<dictionary::Attribute> list_attributes){
     	int length = sizeof(long int)*2; // because start address & end addres
