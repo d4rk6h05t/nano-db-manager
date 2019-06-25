@@ -52,12 +52,8 @@ namespace archive {
             void AppendIntData(int int_data);
             void AppendAddress(long int new_address);
 
-            long int AppendData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data, const std::string& entity_active, std::list<std::pair<int,long int>> list_multilist);
+            long int AppendData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data, const std::string& entity_active, long int length_struct_log);
             long int UpdateData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data, const std::string& entity_active, std::list<std::pair<int,long int>> list_multilist, long int log_address);
-            //long int UpdateData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data, const std::string& entity_active, std::list<std::pair<int,long int>> list_multilist);
-            //long int RemoveData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data, const std::string& entity_active, std::list<std::pair<int,long int>> list_multilist);
-            
-              
             
             void ReadRegister(std::list<dictionary::Attribute> list_attributes);
             
@@ -66,7 +62,8 @@ namespace archive {
             std::list<std::string> GetListStr(std::list<dictionary::Attribute> list_attributes, dictionary::Attribute attr, long int length_struct_log, long int length_ks, int amount_log );
             std::pair<std::string,std::string> GetPrevNext(std::list<std::string> list_str,const std::string& key_str);
 
-            std::list<std::pair<int,long int>> GetListDataMultilist(std::list<dictionary::Attribute> list_attributes, dictionary::Attribute attribute);
+            //std::list<long int> GetPointersToMultilist(std::list<dictionary::Attribute> list_attributes);
+            //void SetMultilist(std::list<std::list<std::pair<int,long int>>> list_address, std::list<long int> pointers_multilist, long int length_struct_log);
 
             int GetSizeRegister(std::list<dictionary::Attribute> list_attributes);
             static std::list<long int> GetAddressBySearchKey(const std::string & name,const std::string & search_key, long int file_header, std::list<dictionary::Attribute> list_attributes);
