@@ -10,10 +10,10 @@
 
 #include "entity.h"
 #include "attribute.h"
-#include "primary_index_file.h"
-#include "secondary_index_file.h"
-#include "static_hashing_file.h"
-#include "multilist_file.h"
+#include "primary_index.h"
+#include "secondary_index.h"
+#include "static_hashing.h"
+#include "multilist.h"
 
 const int MAX_LENGTH_NAME_DATA_FILE_ = 35;
 const long int NULL_DATA_FILE_ = -1;
@@ -61,9 +61,6 @@ namespace archive {
             int GetAmountLog(std::list<dictionary::Attribute> list_attributes);
             std::list<std::string> GetListStr(std::list<dictionary::Attribute> list_attributes, dictionary::Attribute attr, long int length_struct_log, long int length_ks, int amount_log );
             std::pair<std::string,std::string> GetPrevNext(std::list<std::string> list_str,const std::string& key_str);
-
-            //std::list<long int> GetPointersToMultilist(std::list<dictionary::Attribute> list_attributes);
-            //void SetMultilist(std::list<std::list<std::pair<int,long int>>> list_address, std::list<long int> pointers_multilist, long int length_struct_log);
 
             int GetSizeRegister(std::list<dictionary::Attribute> list_attributes);
             static std::list<long int> GetAddressBySearchKey(const std::string & name,const std::string & search_key, long int file_header, std::list<dictionary::Attribute> list_attributes);

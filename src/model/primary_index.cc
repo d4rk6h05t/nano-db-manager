@@ -1,39 +1,39 @@
-#include "primary_index_file.h"
+#include "primary_index.h"
 
 namespace dictionary {
 
     // Constructors & destructosr
-    PrimaryIndexFile::PrimaryIndexFile(){ 
+    PrimaryIndex::PrimaryIndex(){ 
         dir_ = "tmp/";
         name_ = "unamed"; 
         ext_ = ".idx";
         file_header_ = -1;
     }
 
-    PrimaryIndexFile::PrimaryIndexFile(const std::string& name){ 
+    PrimaryIndex::PrimaryIndex(const std::string& name){ 
         dir_ = "tmp/";
         name_ = name; 
         ext_ = ".idx";
         file_header_ = -1;
     }
 
-    PrimaryIndexFile::~PrimaryIndexFile(){}
+    PrimaryIndex::~PrimaryIndex(){}
     
     // Setters
-    void PrimaryIndexFile::SetName(const std::string& name){ name_ = name; }
-    void PrimaryIndexFile::SetDir(const std::string& dir){ dir_ = dir; }
-    void PrimaryIndexFile::SetExt(const std::string& ext){ ext_ = ext; }
+    void PrimaryIndex::SetName(const std::string& name){ name_ = name; }
+    void PrimaryIndex::SetDir(const std::string& dir){ dir_ = dir; }
+    void PrimaryIndex::SetExt(const std::string& ext){ ext_ = ext; }
     
-    void PrimaryIndexFile::SetFileHeader(long int file_header){ file_header_ = file_header; }
+    void PrimaryIndex::SetFileHeader(long int file_header){ file_header_ = file_header; }
     
     // Getters
-    std::string PrimaryIndexFile::GetName(){ return name_;}
-    std::string PrimaryIndexFile::GetDir(){ return dir_;}
-    std::string PrimaryIndexFile::GetExt(){ return ext_;}
+    std::string PrimaryIndex::GetName(){ return name_;}
+    std::string PrimaryIndex::GetDir(){ return dir_;}
+    std::string PrimaryIndex::GetExt(){ return ext_;}
 
-    long int PrimaryIndexFile::GetFileHeader(){return file_header_;}
+    long int PrimaryIndex::GetFileHeader(){return file_header_;}
     
-    long int PrimaryIndexFile::GetFileSize(){
+    long int PrimaryIndex::GetFileSize(){
         std::ifstream file ( dir_ + name_ + ext_, std::ios::binary | std::ios::in );
         file.exceptions( file.failbit | file.badbit );
             try { 
@@ -49,7 +49,7 @@ namespace dictionary {
     }
 
     // Methods of file 
-   void PrimaryIndexFile::CreateFile(){
+   void PrimaryIndex::CreateFile(){
         std::ifstream in_file( dir_ + name_ + ext_, std::ios::binary | std::ios::in );
         if ( !in_file.good() ){
             std::ofstream out_file( dir_ + name_ + ext_, std::ios::binary | std::ios::out );
@@ -61,7 +61,7 @@ namespace dictionary {
         }
    }
 
-   void PrimaryIndexFile::UpdateHeader(){
+   void PrimaryIndex::UpdateHeader(){
         std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
         file.exceptions( file.failbit | file.badbit );
             try {
@@ -80,7 +80,7 @@ namespace dictionary {
         file.close();
     }
     
-    long int PrimaryIndexFile::ReadAddress(long int position){
+    long int PrimaryIndex::ReadAddress(long int position){
         long int data;
         std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out );
         file.exceptions( file.failbit | file.badbit );
@@ -97,7 +97,7 @@ namespace dictionary {
         return data;
     }
 
-    void PrimaryIndexFile::UpdateAddress(long int position, long int new_address){
+    void PrimaryIndex::UpdateAddress(long int position, long int new_address){
         
         std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
         file.exceptions( file.failbit | file.badbit );
@@ -116,7 +116,7 @@ namespace dictionary {
         file.close();
     }
 
-    void PrimaryIndexFile::CreateBlock(int position){
+    void PrimaryIndex::CreateBlock(int position){
         
         int x = -1;
         long int y = -1;
@@ -145,7 +145,7 @@ namespace dictionary {
         
     }
 
-    std::list< std::pair< int, long int> > PrimaryIndexFile::ReadBlock(const std::string& name,int position){
+    std::list< std::pair< int, long int> > PrimaryIndex::ReadBlock(const std::string& name,int position){
         
         std::list< std::pair< int, long int> > block_data_int;
             
@@ -184,7 +184,7 @@ namespace dictionary {
         return block_data_int;
     }
 
-    void PrimaryIndexFile::AddLineToBlock(const std::string& name,int position, std::list< std::pair<int, long int>> list_data_pair, int data, long int data_address){
+    void PrimaryIndex::AddLineToBlock(const std::string& name,int position, std::list< std::pair<int, long int>> list_data_pair, int data, long int data_address){
         
         std::pair<int, long int> new_pair;
         new_pair.first = data;
@@ -292,7 +292,7 @@ namespace dictionary {
         file.close();  
     }
 
-    long int PrimaryIndexFile::SearchDataInt(const std::string& name, int position, int data){
+    long int PrimaryIndex::SearchDataInt(const std::string& name, int position, int data){
         int data_saved;
         long int data_address_saved;
         std::string dir = "tmp/";
@@ -325,7 +325,7 @@ namespace dictionary {
         return data_address_saved;
     }
 
-    void PrimaryIndexFile::RemoveDataInt(const std::string& name, int position, int data, std::list< std::pair<int, long int>> list_data_pair){
+    void PrimaryIndex::RemoveDataInt(const std::string& name, int position, int data, std::list< std::pair<int, long int>> list_data_pair){
         int x = -1;
         long int y = -1;
         std::string dir = "tmp/";
@@ -345,8 +345,8 @@ namespace dictionary {
                 file.write( reinterpret_cast<const char*>(&x), sizeof(int) );
                 file.write( reinterpret_cast<const char*>(&y), sizeof(long int) );
             } catch (const std::ios_base::failure & e) {
-                std::cout << std::endl << "-> :: Warning Exception: " << e.what() 
-                          << std::endl << "-> :: Error code: " << e.code() 
+                std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                          << std::endl << ":: Error code: " << e.code() 
                           << std::endl;
                 if ( file.fail() ){
                     std::cout << "-> :: Error writing to file " << std::endl;

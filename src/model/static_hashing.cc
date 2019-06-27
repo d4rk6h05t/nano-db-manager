@@ -1,37 +1,37 @@
-#include "static_hashing_file.h"
+#include "static_hashing.h"
 
 namespace dictionary {
 
     // Constructors & destructosr
-    StaticHashingFile::StaticHashingFile(){ 
+    StaticHashing::StaticHashing(){ 
         dir_ = "tmp/";
         name_ = "unamed"; 
         ext_ = ".idx";
         file_header_ = -1;
     }
 
-    StaticHashingFile::StaticHashingFile(const std::string& name){ 
+    StaticHashing::StaticHashing(const std::string& name){ 
         dir_ = "tmp/";
         name_ = name; 
         ext_ = ".idx";
         file_header_ = -1;
     }
 
-    StaticHashingFile::~StaticHashingFile(){}
+    StaticHashing::~StaticHashing(){}
     
     // Setters
-    void StaticHashingFile::SetName(const std::string& name){ name_ = name; }
-    void StaticHashingFile::SetDir(const std::string& dir){ dir_ = dir; }
-    void StaticHashingFile::SetExt(const std::string& ext){ ext_ = ext; }
-    void StaticHashingFile::SetFileHeader(long int file_header){ file_header_ = file_header; }
+    void StaticHashing::SetName(const std::string& name){ name_ = name; }
+    void StaticHashing::SetDir(const std::string& dir){ dir_ = dir; }
+    void StaticHashing::SetExt(const std::string& ext){ ext_ = ext; }
+    void StaticHashing::SetFileHeader(long int file_header){ file_header_ = file_header; }
     
     // Getters
-    std::string StaticHashingFile::GetName(){ return name_;}
-    std::string StaticHashingFile::GetDir(){ return dir_;}
-    std::string StaticHashingFile::GetExt(){ return ext_;}
-    long int StaticHashingFile::GetFileHeader(){return file_header_;}
+    std::string StaticHashing::GetName(){ return name_;}
+    std::string StaticHashing::GetDir(){ return dir_;}
+    std::string StaticHashing::GetExt(){ return ext_;}
+    long int StaticHashing::GetFileHeader(){return file_header_;}
     
-    long int StaticHashingFile::GetFileSize(const std::string& name){
+    long int StaticHashing::GetFileSize(const std::string& name){
         long int file_size = 0;
         std::string dir = "tmp/";
         std::string ext = ".idx";
@@ -50,7 +50,7 @@ namespace dictionary {
     }
 
     // Methods of file 
-   void StaticHashingFile::CreateFile(){
+   void StaticHashing::CreateFile(){
         long int data_null = -1;
         std::ifstream in_file( dir_ + name_ + ext_, std::ios::binary | std::ios::in );
         if ( !in_file.good() ){
@@ -63,7 +63,7 @@ namespace dictionary {
         }
    }
 
-   void StaticHashingFile::UpdateHeader(){
+   void StaticHashing::UpdateHeader(){
         std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
         file.exceptions( file.failbit | file.badbit );
             try {
@@ -81,7 +81,7 @@ namespace dictionary {
         file.close();
     }
     
-    int StaticHashingFile::ReadInt(const std::string& name,long int position){
+    int StaticHashing::ReadInt(const std::string& name,long int position){
         int data;
         std::string dir = "tmp/";
         std::string ext = ".idx";
@@ -100,7 +100,7 @@ namespace dictionary {
         return data;
     }
 
-    long int StaticHashingFile::ReadAddress(const std::string& name,long int position){
+    long int StaticHashing::ReadAddress(const std::string& name,long int position){
         long int data;
         std::string dir = "tmp/";
         std::string ext = ".idx";
@@ -119,7 +119,7 @@ namespace dictionary {
         return data;
     }
 
-    void StaticHashingFile::UpdateInt(const std::string& name,long int position, int new_address){
+    void StaticHashing::UpdateInt(const std::string& name,long int position, int new_address){
         std::string dir = "tmp/";
         std::string ext = ".idx";
         std::fstream file( dir + name + ext, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
@@ -139,7 +139,7 @@ namespace dictionary {
         file.close();
     }
 
-    void StaticHashingFile::UpdateAddress(const std::string& name,long int position, long int new_address){
+    void StaticHashing::UpdateAddress(const std::string& name,long int position, long int new_address){
         std::string dir = "tmp/";
         std::string ext = ".idx";
         std::fstream file( dir + name + ext, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
@@ -159,7 +159,7 @@ namespace dictionary {
         file.close();
     }
 
-    std::vector<long int> StaticHashingFile::GetBucketsAddress(const std::string& name){
+    std::vector<long int> StaticHashing::GetBucketsAddress(const std::string& name){
         std::vector<long int> address;
         long int bucket_addr;
         std::string dir = "tmp/";
@@ -182,7 +182,7 @@ namespace dictionary {
         return address;
     }   
 
-    void StaticHashingFile::CreateBlock(const std::string& name,int position){
+    void StaticHashing::CreateBlock(const std::string& name,int position){
         
         int x = -1;
         long int y = -1;
@@ -213,13 +213,13 @@ namespace dictionary {
         
     }
 
-    int StaticHashingFile::GetHash(int key){
+    int StaticHashing::GetHash(int key){
        int hash;
        hash = key % NO_BUCKETS_SH_;
        return hash; 
     }
 
-    std::list< std::pair< int, long int> > StaticHashingFile::ReadBlock(const std::string& name,int position){
+    std::list< std::pair< int, long int> > StaticHashing::ReadBlock(const std::string& name,int position){
         
         std::list< std::pair< int, long int> > block_data_int;
             
@@ -258,7 +258,7 @@ namespace dictionary {
         return block_data_int;
     }
 
-    void StaticHashingFile::AddLineToBlock(const std::string& name,int position, std::list< std::pair<int, long int>> list_data_pair, int data, long int data_address){
+    void StaticHashing::AddLineToBlock(const std::string& name,int position, std::list< std::pair<int, long int>> list_data_pair, int data, long int data_address){
         
         std::pair<int, long int> new_pair;
         new_pair.first = data;
@@ -362,7 +362,7 @@ namespace dictionary {
         file.close();  
     }
 
-    long int StaticHashingFile::GetAddress(const std::string& name,long int bucket_address, int key ){
+    long int StaticHashing::GetAddress(const std::string& name,long int bucket_address, int key ){
         int data_saved;
         long int data_address_saved;
         std::string dir = "tmp/";
@@ -395,7 +395,7 @@ namespace dictionary {
         return data_address_saved;
     }
 
-    long int StaticHashingFile::GetBucketAddress(const std::string& name, int hash){
+    long int StaticHashing::GetBucketAddress(const std::string& name, int hash){
         long int bucket_addr;
         int ptr_current_position = 0;
         std::string dir = "tmp/";
@@ -423,7 +423,7 @@ namespace dictionary {
         return bucket_addr;
     }
 
-    void StaticHashingFile::RemoveDataInt(const std::string& name, int position, int data, std::list< std::pair<int, long int>> list_data_pair){
+    void StaticHashing::RemoveDataInt(const std::string& name, int position, int data, std::list< std::pair<int, long int>> list_data_pair){
         int x = -1;
         long int y = -1;
         std::string dir = "tmp/";
