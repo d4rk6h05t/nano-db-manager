@@ -1,9 +1,9 @@
-#include "secondary_index_file.h"
+#include "secondary_index.h"
 
 namespace dictionary {
 
     // Constructors & destructosr
-    SecondaryIndexFile::SecondaryIndexFile(){ 
+    SecondaryIndex::SecondaryIndex(){ 
         dir_ = "tmp/";
         name_ = "unamed"; 
         ext_ = ".idx";
@@ -11,7 +11,7 @@ namespace dictionary {
     
     }
 
-    SecondaryIndexFile::SecondaryIndexFile(const std::string& name){ 
+    SecondaryIndex::SecondaryIndex(const std::string& name){ 
         dir_ = "tmp/";
         name_ = name; 
         ext_ = ".idx";
@@ -19,23 +19,23 @@ namespace dictionary {
         
     }
 
-    SecondaryIndexFile::~SecondaryIndexFile(){}
+    SecondaryIndex::~SecondaryIndex(){}
     
     // Setters
-    void SecondaryIndexFile::SetName(const std::string& name){ name_ = name; }
-    void SecondaryIndexFile::SetDir(const std::string& dir){ dir_ = dir; }
-    void SecondaryIndexFile::SetExt(const std::string& ext){ ext_ = ext; }
+    void SecondaryIndex::SetName(const std::string& name){ name_ = name; }
+    void SecondaryIndex::SetDir(const std::string& dir){ dir_ = dir; }
+    void SecondaryIndex::SetExt(const std::string& ext){ ext_ = ext; }
     
-    void SecondaryIndexFile::SetFileHeader(long int file_header){ file_header_ = file_header; }
+    void SecondaryIndex::SetFileHeader(long int file_header){ file_header_ = file_header; }
     
     // Getters
-    std::string SecondaryIndexFile::GetName(){ return name_;}
-    std::string SecondaryIndexFile::GetDir(){ return dir_;}
-    std::string SecondaryIndexFile::GetExt(){ return ext_;}
+    std::string SecondaryIndex::GetName(){ return name_;}
+    std::string SecondaryIndex::GetDir(){ return dir_;}
+    std::string SecondaryIndex::GetExt(){ return ext_;}
 
-    long int SecondaryIndexFile::GetFileHeader(){return file_header_;}
+    long int SecondaryIndex::GetFileHeader(){return file_header_;}
     
-    long int SecondaryIndexFile::GetFileSize(){
+    long int SecondaryIndex::GetFileSize(){
         std::ifstream file ( dir_ + name_ + ext_, std::ios::binary | std::ios::in );
         file.exceptions( file.failbit | file.badbit );
             try { 
@@ -51,7 +51,7 @@ namespace dictionary {
     }
 
     // Methods of file 
-   void SecondaryIndexFile::CreateFile(){
+   void SecondaryIndex::CreateFile(){
         std::ifstream in_file( dir_ + name_ + ext_, std::ios::binary | std::ios::in );
         if ( !in_file.good() ){
             std::ofstream out_file( dir_ + name_ + ext_, std::ios::binary | std::ios::out );
@@ -61,7 +61,7 @@ namespace dictionary {
         }
    }
 
-   void SecondaryIndexFile::UpdateHeader(){
+   void SecondaryIndex::UpdateHeader(){
         std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
         file.exceptions( file.failbit | file.badbit );
             try {
@@ -80,7 +80,7 @@ namespace dictionary {
         file.close();
     }
     
-    long int SecondaryIndexFile::ReadAddress(long int position){
+    long int SecondaryIndex::ReadAddress(long int position){
         long int data;
         std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out );
         file.exceptions( file.failbit | file.badbit );
@@ -97,7 +97,7 @@ namespace dictionary {
         return data;
     }
 
-    void SecondaryIndexFile::UpdateAddress(long int position, long int new_address){
+    void SecondaryIndex::UpdateAddress(long int position, long int new_address){
         
         std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
         file.exceptions( file.failbit | file.badbit );
@@ -116,7 +116,7 @@ namespace dictionary {
         file.close();
     }
 
-    void SecondaryIndexFile::CreateBlock(int position){
+    void SecondaryIndex::CreateBlock(int position){
         
         int x = -1;
         long int y = -1;
@@ -145,7 +145,7 @@ namespace dictionary {
         file.close();
     }
 
-    std::list< std::pair< int, std::vector<long int>>> SecondaryIndexFile::ReadBlock(const std::string& name,int position){
+    std::list< std::pair< int, std::vector<long int>>> SecondaryIndex::ReadBlock(const std::string& name,int position){
         
         std::list< std::pair< int, std::vector<long int>> > block;
         
@@ -188,7 +188,7 @@ namespace dictionary {
         return block;
     }
 
-    void SecondaryIndexFile::AddLineToBlock(const std::string& name,int position, std::list< std::pair<int, std::vector<long int>>> list_data_pair, int data, std::vector<long int> block_address){
+    void SecondaryIndex::AddLineToBlock(const std::string& name,int position, std::list< std::pair<int, std::vector<long int>>> list_data_pair, int data, std::vector<long int> block_address){
         
         std::pair<int, std::vector<long int>> new_pair;
         new_pair.first = data;
@@ -314,7 +314,7 @@ namespace dictionary {
         //file.close();  
     }
 
-    void SecondaryIndexFile::UpdateLineToBlock(const std::string& name,int position, int data, std::vector<long int> block_address){
+    void SecondaryIndex::UpdateLineToBlock(const std::string& name,int position, int data, std::vector<long int> block_address){
         
         if ( block_address.size() < SIZE_DATA_BLOCK_ ){
             for (int i = block_address.size(); i < SIZE_DATA_BLOCK_; i++){
@@ -346,7 +346,7 @@ namespace dictionary {
         file.close();  
     }
 
-    void SecondaryIndexFile::RemoveItem(const std::string& name,int position, int key, long int key_address, std::list< std::pair< int, std::vector<long int>>> bucket){
+    void SecondaryIndex::RemoveItem(const std::string& name,int position, int key, long int key_address, std::list< std::pair< int, std::vector<long int>>> bucket){
         std::string dir = "tmp/";
         std::string ext = ".idx";
         int current_position = 0;
@@ -390,7 +390,7 @@ namespace dictionary {
         file.close();
     }
 
-    void SecondaryIndexFile::RemoveLine(const std::string& name,int position, int key, long int key_address, std::list< std::pair< int, std::vector<long int>>> bucket){
+    void SecondaryIndex::RemoveLine(const std::string& name,int position, int key, long int key_address, std::list< std::pair< int, std::vector<long int>>> bucket){
         std::string dir = "tmp/";
         std::string ext = ".idx";
         int current_position = 0;
@@ -426,7 +426,7 @@ namespace dictionary {
         file.close();
     }
 
-    std::vector<long int> SecondaryIndexFile::GetCollectionAddress(const std::string& name,int position, int key){
+    std::vector<long int> SecondaryIndex::GetCollectionAddress(const std::string& name,int position, int key){
 
         std::vector<long int> datablock;
         std::string dir = "tmp/";

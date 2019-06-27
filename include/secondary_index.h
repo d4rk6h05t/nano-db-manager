@@ -1,5 +1,5 @@
-#ifndef DICTIONARY_CC_SECONDARY_INDEX_FILE_H_
-#define DICTIONARY_CC_SECONDARY_INDEX_FILE_H_
+#ifndef DICTIONARY_CC_SECONDARY_INDEX_H_
+#define DICTIONARY_CC_SECONDARY_INDEX_H_
 
 #include <iostream>
 #include <string>
@@ -18,13 +18,13 @@ const int ROW_CAPACITY_I_ = SIZE_BLOCK_I_ / SIZE_ROW_INT_I_;  // 23
 
 namespace dictionary {
 
-    class SecondaryIndexFile {
+    class SecondaryIndex {
     
         public:
              
-            SecondaryIndexFile();
-            SecondaryIndexFile(const std::string& name);
-            ~SecondaryIndexFile();
+            SecondaryIndex();
+            SecondaryIndex(const std::string& name);
+            ~SecondaryIndex();
 
             // Setters
             void SetName(const std::string& name);
@@ -69,4 +69,4 @@ namespace dictionary {
 
 }  // end namespace dictionary
 
-#endif  // DICTIONARY_CC_SECONDARY_INDEX_FILE_H_
+#endif  // DICTIONARY_CC_SECONDARY_INDEX_H_

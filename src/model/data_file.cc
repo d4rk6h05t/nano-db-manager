@@ -258,16 +258,16 @@ namespace archive {
             } else if ( it->GetTypeIndex() == 1 ){ // Type Index # 1
             
               std::string attr_active( entity_active + "_" + it->GetName() );
-              std::list< std::pair< int, long int> > block = dictionary::PrimaryIndexFile::ReadBlock( attr_active, 0 );
-              dictionary::PrimaryIndexFile::AddLineToBlock(attr_active, 0, block, x, file_size);
+              std::list< std::pair< int, long int> > block = dictionary::PrimaryIndex::ReadBlock( attr_active, 0 );
+              dictionary::PrimaryIndex::AddLineToBlock(attr_active, 0, block, x, file_size);
             
             } else if ( it->GetTypeIndex() == 2 ){ // Type Index # 2
 
               std::string attr_active_x( entity_active + "_" + it->GetName() );
-              std::list< std::pair< int, std::vector<long int>> > block_x = dictionary::SecondaryIndexFile::ReadBlock( attr_active_x, 0 );
+              std::list< std::pair< int, std::vector<long int>> > block_x = dictionary::SecondaryIndex::ReadBlock( attr_active_x, 0 );
               if ( block_x.empty() ){
                     std::vector<long int> block_addr = {file_size,-1,-1,-1,-1};
-                    dictionary::SecondaryIndexFile::AddLineToBlock(attr_active_x, 0, block_x, x, block_addr);
+                    dictionary::SecondaryIndex::AddLineToBlock(attr_active_x, 0, block_x, x, block_addr);
               } else if ( !block_x.empty() ) {
                 std::list< std::pair< int, std::vector<long int>>>::iterator itr = block_x.begin();
                 int z = 0;
@@ -286,7 +286,7 @@ namespace archive {
                           }
                       }
                       int row_addr = (z * SIZE_ROW_INT_I_) - SIZE_ROW_INT_I_;
-                      dictionary::SecondaryIndexFile::UpdateLineToBlock(attr_active_x, row_addr, x, block_addr_v);
+                      dictionary::SecondaryIndex::UpdateLineToBlock(attr_active_x, row_addr, x, block_addr_v);
                       break;
                   }
                   itr++;
@@ -295,7 +295,7 @@ namespace archive {
                   for (std::list< std::pair< int, std::vector<long int>>>::iterator itr_next = block_x.begin();  itr_next != block_x.end(); itr_next++){
                     if ( itr_next->first != -1 && itr_next->first != x  ){
                         std::vector<long int> new_block_addr = {file_size,-1,-1,-1,-1};
-                        dictionary::SecondaryIndexFile::AddLineToBlock(attr_active_x, 0, block_x, x, new_block_addr);
+                        dictionary::SecondaryIndex::AddLineToBlock(attr_active_x, 0, block_x, x, new_block_addr);
                         break;
                     } //end if
                   } // end for  
@@ -306,24 +306,24 @@ namespace archive {
 
             else if ( it->GetTypeIndex() == 4 ){ // Type Index # 4
                 std::string attr_active_sh( entity_active + "_" + it->GetName() );
-                int hash = dictionary::StaticHashingFile::GetHash(x);
-                long int current_bucket_addr = dictionary::StaticHashingFile::ReadAddress( attr_active_sh, hash * sizeof(long int) );
+                int hash = dictionary::StaticHashing::GetHash(x);
+                long int current_bucket_addr = dictionary::StaticHashing::ReadAddress( attr_active_sh, hash * sizeof(long int) );
                 if ( current_bucket_addr == -1){
-                    dictionary::StaticHashingFile::UpdateAddress(attr_active_sh, (hash*sizeof(long int)), dictionary::StaticHashingFile::GetFileSize(attr_active_sh));
-                    dictionary::StaticHashingFile::CreateBlock( attr_active_sh, dictionary::StaticHashingFile::GetFileSize(attr_active_sh) );
-                    long int init_block = dictionary::StaticHashingFile::GetFileSize(attr_active_sh) - 1040;
-                    std::list<std::pair<int, long int>> bucket = dictionary::StaticHashingFile::ReadBlock( attr_active_sh, init_block );
-                    dictionary::StaticHashingFile::AddLineToBlock( attr_active_sh, init_block, bucket, x, file_size );
+                    dictionary::StaticHashing::UpdateAddress(attr_active_sh, (hash*sizeof(long int)), dictionary::StaticHashing::GetFileSize(attr_active_sh));
+                    dictionary::StaticHashing::CreateBlock( attr_active_sh, dictionary::StaticHashing::GetFileSize(attr_active_sh) );
+                    long int init_block = dictionary::StaticHashing::GetFileSize(attr_active_sh) - 1040;
+                    std::list<std::pair<int, long int>> bucket = dictionary::StaticHashing::ReadBlock( attr_active_sh, init_block );
+                    dictionary::StaticHashing::AddLineToBlock( attr_active_sh, init_block, bucket, x, file_size );
                 } else { // update block
-                    std::list<std::pair<int, long int>> bucket = dictionary::StaticHashingFile::ReadBlock( attr_active_sh, current_bucket_addr );
-                    dictionary::StaticHashingFile::AddLineToBlock( attr_active_sh, current_bucket_addr, bucket, x, file_size );
+                    std::list<std::pair<int, long int>> bucket = dictionary::StaticHashing::ReadBlock( attr_active_sh, current_bucket_addr );
+                    dictionary::StaticHashing::AddLineToBlock( attr_active_sh, current_bucket_addr, bucket, x, file_size );
                 }
             } // end // Type Index # 4
 
             else if ( it->GetTypeIndex() == 5 ){ // Type Index # 5
               int exist = 0;
               std::string attr_active( entity_active + "_" + it->GetName() );
-              std::list< std::pair< int, long int>> block_m = dictionary::MultilistFile::ReadBlock( attr_active, 0 );
+              std::list< std::pair< int, long int>> block_m = dictionary::Multilist::ReadBlock( attr_active, 0 );
               std::list< std::pair< int, long int>>::iterator itr_m = block_m.begin();
               while ( itr_m != block_m.end() ){
                 if ( itr_m->first == x ) {
@@ -333,7 +333,7 @@ namespace archive {
                 itr_m++;
               }
               if ( exist == 0)
-                dictionary::MultilistFile::AddLineToBlock(attr_active, 0, block_m, x, file_size);
+                dictionary::Multilist::AddLineToBlock(attr_active, 0, block_m, x, file_size);
 
             }  // end // Type Index # 5
 
@@ -689,18 +689,18 @@ while ( next_row != -1 ) {
                     } else if ( it->GetTypeIndex() == 1 ){ 
                     
                         std::string attr_active( entity_active + "_" + it->GetName() );
-                        std::list< std::pair< int, long int> > block = dictionary::PrimaryIndexFile::ReadBlock( attr_active, 0 );
-                        dictionary::PrimaryIndexFile::AddLineToBlock(attr_active, 0, block, x, log_address);
+                        std::list< std::pair< int, long int> > block = dictionary::PrimaryIndex::ReadBlock( attr_active, 0 );
+                        dictionary::PrimaryIndex::AddLineToBlock(attr_active, 0, block, x, log_address);
                       
                     } else if ( it->GetTypeIndex() == 2 ){ 
 
                         std::string attr_active_x( entity_active + "_" + it->GetName() );
-                        std::list< std::pair< int, std::vector<long int>> > block_x = dictionary::SecondaryIndexFile::ReadBlock( attr_active_x, 0 );
+                        std::list< std::pair< int, std::vector<long int>> > block_x = dictionary::SecondaryIndex::ReadBlock( attr_active_x, 0 );
                         
                         if ( block_x.empty() ){
                             
                             std::vector<long int> block_addr = {log_address,-1,-1,-1,-1};
-                            dictionary::SecondaryIndexFile::AddLineToBlock(attr_active_x, 0, block_x, x, block_addr);
+                            dictionary::SecondaryIndex::AddLineToBlock(attr_active_x, 0, block_x, x, block_addr);
                         
                         } else if ( !block_x.empty() ) {
                             
@@ -723,7 +723,7 @@ while ( next_row != -1 ) {
                                     }
 
                                     int row_addr = (z * SIZE_ROW_INT_I_) - SIZE_ROW_INT_I_;
-                                    dictionary::SecondaryIndexFile::UpdateLineToBlock(attr_active_x, row_addr, x, block_addr_v);
+                                    dictionary::SecondaryIndex::UpdateLineToBlock(attr_active_x, row_addr, x, block_addr_v);
                                     break;
                                 
                                 } // end if itr->first == x
@@ -734,7 +734,7 @@ while ( next_row != -1 ) {
                                 for (std::list< std::pair< int, std::vector<long int>>>::iterator itr_next = block_x.begin();  itr_next != block_x.end(); itr_next++){
                                     if ( itr_next->first != -1 && itr_next->first != x  ){
                                         std::vector<long int> new_block_addr = {log_address,-1,-1,-1,-1};
-                                        dictionary::SecondaryIndexFile::AddLineToBlock(attr_active_x, 0, block_x, x, new_block_addr);
+                                        dictionary::SecondaryIndex::AddLineToBlock(attr_active_x, 0, block_x, x, new_block_addr);
                                         break;
                                     } //end if
                                 } // end for  
@@ -747,21 +747,21 @@ while ( next_row != -1 ) {
                     else if ( it->GetTypeIndex() == 4 ){ 
                         
                         std::string attr_active_sh( entity_active + "_" + it->GetName() );
-                        int hash = dictionary::StaticHashingFile::GetHash(x);
-                        long int current_bucket_addr = dictionary::StaticHashingFile::ReadAddress( attr_active_sh, hash * sizeof(long int) );
+                        int hash = dictionary::StaticHashing::GetHash(x);
+                        long int current_bucket_addr = dictionary::StaticHashing::ReadAddress( attr_active_sh, hash * sizeof(long int) );
                         
                         if ( current_bucket_addr == -1){
                             
-                            dictionary::StaticHashingFile::UpdateAddress(attr_active_sh, (hash*sizeof(long int)), dictionary::StaticHashingFile::GetFileSize(attr_active_sh));
-                            dictionary::StaticHashingFile::CreateBlock( attr_active_sh, dictionary::StaticHashingFile::GetFileSize(attr_active_sh) );
-                            long int init_block = dictionary::StaticHashingFile::GetFileSize(attr_active_sh) - 1040;
-                            std::list<std::pair<int, long int>> bucket = dictionary::StaticHashingFile::ReadBlock( attr_active_sh, init_block );
-                            dictionary::StaticHashingFile::AddLineToBlock( attr_active_sh, init_block, bucket, x, log_address );
+                            dictionary::StaticHashing::UpdateAddress(attr_active_sh, (hash*sizeof(long int)), dictionary::StaticHashing::GetFileSize(attr_active_sh));
+                            dictionary::StaticHashing::CreateBlock( attr_active_sh, dictionary::StaticHashing::GetFileSize(attr_active_sh) );
+                            long int init_block = dictionary::StaticHashing::GetFileSize(attr_active_sh) - 1040;
+                            std::list<std::pair<int, long int>> bucket = dictionary::StaticHashing::ReadBlock( attr_active_sh, init_block );
+                            dictionary::StaticHashing::AddLineToBlock( attr_active_sh, init_block, bucket, x, log_address );
                        
                         } else { // update block
                             
-                            std::list<std::pair<int, long int>> bucket = dictionary::StaticHashingFile::ReadBlock( attr_active_sh, current_bucket_addr );
-                            dictionary::StaticHashingFile::AddLineToBlock( attr_active_sh, current_bucket_addr, bucket, x, log_address );
+                            std::list<std::pair<int, long int>> bucket = dictionary::StaticHashing::ReadBlock( attr_active_sh, current_bucket_addr );
+                            dictionary::StaticHashing::AddLineToBlock( attr_active_sh, current_bucket_addr, bucket, x, log_address );
                         
                         }
                     } // end // Type Index # 4
@@ -770,7 +770,7 @@ while ( next_row != -1 ) {
 
                         int exist = 0;
                         std::string attr_active( entity_active + "_" + it->GetName() );
-                        std::list< std::pair< int, long int>> block_m = dictionary::MultilistFile::ReadBlock( attr_active, 0 );
+                        std::list< std::pair< int, long int>> block_m = dictionary::Multilist::ReadBlock( attr_active, 0 );
                         std::list< std::pair< int, long int>>::iterator itr_m = block_m.begin();
                         while ( itr_m != block_m.end() ){
                             if ( itr_m->first == x ) {
@@ -780,7 +780,7 @@ while ( next_row != -1 ) {
                             itr_m++;
                         }
                         if ( exist == 0)
-                            dictionary::MultilistFile::AddLineToBlock(attr_active, 0, block_m, x, file_size);
+                            dictionary::Multilist::AddLineToBlock(attr_active, 0, block_m, x, file_size);
 
                     }  // end // Type Index # 5
 
@@ -1197,14 +1197,14 @@ while ( next_row != -1 ) {
 /******************************************************************************************************************/
                     else if ( it->GetTypeIndex() == 1 ){ 
                         std::string attr_active( entity_active + "_" + it->GetName() );
-                        std::list< std::pair< int, long int> > block = dictionary::PrimaryIndexFile::ReadBlock( attr_active, 0 );
-                        dictionary::PrimaryIndexFile::AddLineToBlock(attr_active, 0, block, x, log_address);
+                        std::list< std::pair< int, long int> > block = dictionary::PrimaryIndex::ReadBlock( attr_active, 0 );
+                        dictionary::PrimaryIndex::AddLineToBlock(attr_active, 0, block, x, log_address);
                     } else if ( it->GetTypeIndex() == 2 ){ 
                         std::string attr_active_x( entity_active + "_" + it->GetName() );
-                        std::list< std::pair< int, std::vector<long int>> > block_x = dictionary::SecondaryIndexFile::ReadBlock( attr_active_x, 0 );
+                        std::list< std::pair< int, std::vector<long int>> > block_x = dictionary::SecondaryIndex::ReadBlock( attr_active_x, 0 );
                         if ( block_x.empty() ){
                             std::vector<long int> block_addr = {log_address,-1,-1,-1,-1};
-                            dictionary::SecondaryIndexFile::AddLineToBlock(attr_active_x, 0, block_x, x, block_addr);
+                            dictionary::SecondaryIndex::AddLineToBlock(attr_active_x, 0, block_x, x, block_addr);
                         } else if ( !block_x.empty() ) {
                             std::list< std::pair< int, std::vector<long int>>>::iterator itr = block_x.begin();
                             int z = 0;
@@ -1223,7 +1223,7 @@ while ( next_row != -1 ) {
                                         }
                                     }
                                     int row_addr = (z * SIZE_ROW_INT_I_) - SIZE_ROW_INT_I_;
-                                    dictionary::SecondaryIndexFile::UpdateLineToBlock(attr_active_x, row_addr, x, block_addr_v);
+                                    dictionary::SecondaryIndex::UpdateLineToBlock(attr_active_x, row_addr, x, block_addr_v);
                                     break;
                                 } // end if itr->first == x
                                 itr++;
@@ -1232,7 +1232,7 @@ while ( next_row != -1 ) {
                                 for (std::list< std::pair< int, std::vector<long int>>>::iterator itr_next = block_x.begin();  itr_next != block_x.end(); itr_next++){
                                     if ( itr_next->first != -1 && itr_next->first != x  ){
                                         std::vector<long int> new_block_addr = {log_address,-1,-1,-1,-1};
-                                        dictionary::SecondaryIndexFile::AddLineToBlock(attr_active_x, 0, block_x, x, new_block_addr);
+                                        dictionary::SecondaryIndex::AddLineToBlock(attr_active_x, 0, block_x, x, new_block_addr);
                                         break;
                                     } //end if
                                 } // end for  
@@ -1241,17 +1241,17 @@ while ( next_row != -1 ) {
                     } // end // Type Index # 2
                     else if ( it->GetTypeIndex() == 4 ){ 
                         std::string attr_active_sh( entity_active + "_" + it->GetName() );
-                        int hash = dictionary::StaticHashingFile::GetHash(x);
-                        long int current_bucket_addr = dictionary::StaticHashingFile::ReadAddress( attr_active_sh, hash * sizeof(long int) );
+                        int hash = dictionary::StaticHashing::GetHash(x);
+                        long int current_bucket_addr = dictionary::StaticHashing::ReadAddress( attr_active_sh, hash * sizeof(long int) );
                         if ( current_bucket_addr == -1){
-                            dictionary::StaticHashingFile::UpdateAddress(attr_active_sh, (hash*sizeof(long int)), dictionary::StaticHashingFile::GetFileSize(attr_active_sh));
-                            dictionary::StaticHashingFile::CreateBlock( attr_active_sh, dictionary::StaticHashingFile::GetFileSize(attr_active_sh) );
-                            long int init_block = dictionary::StaticHashingFile::GetFileSize(attr_active_sh) - 1040;
-                            std::list<std::pair<int, long int>> bucket = dictionary::StaticHashingFile::ReadBlock( attr_active_sh, init_block );
-                            dictionary::StaticHashingFile::AddLineToBlock( attr_active_sh, init_block, bucket, x, log_address );
+                            dictionary::StaticHashing::UpdateAddress(attr_active_sh, (hash*sizeof(long int)), dictionary::StaticHashing::GetFileSize(attr_active_sh));
+                            dictionary::StaticHashing::CreateBlock( attr_active_sh, dictionary::StaticHashing::GetFileSize(attr_active_sh) );
+                            long int init_block = dictionary::StaticHashing::GetFileSize(attr_active_sh) - 1040;
+                            std::list<std::pair<int, long int>> bucket = dictionary::StaticHashing::ReadBlock( attr_active_sh, init_block );
+                            dictionary::StaticHashing::AddLineToBlock( attr_active_sh, init_block, bucket, x, log_address );
                         } else { // update block
-                            std::list<std::pair<int, long int>> bucket = dictionary::StaticHashingFile::ReadBlock( attr_active_sh, current_bucket_addr );
-                            dictionary::StaticHashingFile::AddLineToBlock( attr_active_sh, current_bucket_addr, bucket, x, log_address );
+                            std::list<std::pair<int, long int>> bucket = dictionary::StaticHashing::ReadBlock( attr_active_sh, current_bucket_addr );
+                            dictionary::StaticHashing::AddLineToBlock( attr_active_sh, current_bucket_addr, bucket, x, log_address );
                         }
                     } // end // Type Index # 4
 /******************************************************************************************************************/
@@ -1392,98 +1392,6 @@ while ( next_row != -1 ) {
         return pair;
     }
 
-    /*
-    std::list<long int> DataFile::GetPointersToMultilist(std::list<dictionary::Attribute> list_attributes ){
-        
-        long int ptr_multilist = 0;
-        long int register_address;
-        long int next_register_address;
-        long int next = file_header_;
-        std::list<long int> pointers_multilist;
-        
-        std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate); 
-        while ( next != -1 ) {
-            std::list<dictionary::Attribute>::iterator it = list_attributes.begin();
-            file.exceptions( file.failbit | file.badbit );
-            try {
-              file.seekg( next );
-              file.read( reinterpret_cast<char*>(&register_address) , sizeof(long int) );
-              ptr_multilist += sizeof(long int);
-              while ( it != list_attributes.end() ){
-                      if ( it->GetDataType() == 'c' ){
-                          char str[ it->GetLengthDataType() ];
-                          file.read( reinterpret_cast<char*>(str) , it->GetLengthDataType() );
-                          ptr_multilist += it->GetLengthDataType();
-                      } else if ( it->GetDataType() == 'i' ){     
-                          int  x;
-                          file.read( reinterpret_cast<char*>(&x), sizeof( int ) );
-                          ptr_multilist += sizeof(int);
-                          if ( it->GetTypeIndex() == 5  ){
-                              std::list<std::pair<int,long int>> list_pairs;
-                              long int x_address; 
-                              pointers_multilist.push_back(ptr_multilist);
-                              file.read( reinterpret_cast<char*>(&x_address), sizeof( long int ) );
-                              ptr_multilist += sizeof(long int);
-                          }
-                    }
-                  it++;
-                  }
-                  next = -1;
-              } catch (const std::ios_base::failure & e) {
-                     std::cout << std::endl << ":: Warning Exception: " << e.what() 
-                               << std::endl << ":: Error code: " << e.code() 
-                               << std::endl;
-              }
-      }
-      file.close();
-      return pointers_multilist;
-    }
-
-    void DataFile::SetMultilist( std::list<std::list<std::pair<int,long int>>> list_address, std::list<long int> pointers_multilist, long int length_struct_log ){
-        
-        long int register_address;
-        long int next_register_address;
-        long int next = file_header_;
-      
-        std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate); 
-        int i = 1; 
-        while ( next != -1 ) {
-            
-            file.exceptions( file.failbit | file.badbit );
-            try {
-              file.seekg( next );
-              file.read( reinterpret_cast<char*>(&register_address) , sizeof(long int) );
-              //int n = 0;
-              std::list<long int>::iterator j = pointers_multilist.begin(); 
-              while ( j != pointers_multilist.end()  ) {
-                  int x;
-
-                  file.seekg( ( register_address +  *j ) - sizeof( int ) );
-                  file.read( reinterpret_cast<char*>(&x) , sizeof( int ) );
-
-                  std::pair<int,long int> new_pair;
-                  new_pair.first = x;
-                  new_pair.second = register_address;
-
-                  //n++;
-                  j++;
-              }
-
-              file.seekg( ( length_struct_log - sizeof(long int) ) * i );
-              file.read( reinterpret_cast<char*>(& next_register_address) , sizeof(long int) );
-              
-              next =  next_register_address;
-              } catch (const std::ios_base::failure & e) {
-                     std::cout << std::endl << ":: Warning Exception: " << e.what() 
-                               << std::endl << ":: Error code: " << e.code() 
-                               << std::endl;
-              }
-      i++;
-      }
-      file.close();
-    }
-    */
-
     int DataFile::GetSizeRegister(std::list<dictionary::Attribute> list_attributes){
     	int length = sizeof(long int)*2; // because start address & end addres
     	std::list<dictionary::Attribute>::iterator it = list_attributes.begin();
@@ -1536,7 +1444,7 @@ while ( next_row != -1 ) {
                   } // end while
                   file.read( reinterpret_cast<char*>(&next_register_address) , sizeof(long int) );
                     next = next_register_address;
-                    std::cout << std::endl;
+                
                     if ( next_register_address == -1 )
                       break; 
                   } catch (const std::ios_base::failure & e) {
@@ -1730,7 +1638,7 @@ while ( next_row != -1 ) {
                           if ( it->GetTypeIndex() == 5  ){
                               long int x_address; 
                               file.read( reinterpret_cast<char*>(&x_address), sizeof( long int ) );
-                              std::cout << x_address << "\t";  
+                                
                           } else if ( it->GetTypeIndex() == 1 || it->GetTypeIndex() == 2 || it->GetTypeIndex() == 4 ){
                               if ( key == x ){
                                  file.seekg(register_address + length_struct_log - sizeof( long int ) );
@@ -1747,8 +1655,8 @@ while ( next_row != -1 ) {
                   file.read( reinterpret_cast<char*>(&next_register_address) , sizeof(long int) );
                   next = next_register_address;
               } catch (const std::ios_base::failure & e) {
-                      std::cout << std::endl << "=>:: Warning Exception : =>" << e.what() 
-                                << std::endl << "=> :: Error code : => " << e.code() 
+                      std::cout << std::endl << ":: Warning Exception : " << e.what() 
+                                << std::endl << ":: Error code : " << e.code() 
                                 << std::endl;
                       std::cout << std::endl << ":: Fail file in:" 
                                 << std::endl << ":: failbit: " << file.fail() 
@@ -1774,8 +1682,8 @@ while ( next_row != -1 ) {
               file.read( reinterpret_cast<char*>(&addr_next), sizeof( long int ) );
               file.close();
             } catch (const std::ios_base::failure & e) {
-                      std::cout << std::endl << "=>:: Warning Exception : =>" << e.what() 
-                                << std::endl << "=> :: Error code : => " << e.code() 
+                      std::cout << std::endl << ":: Warning Exception : " << e.what() 
+                                << std::endl << ":: Error code : " << e.code() 
                                 << std::endl;
                       std::cout << std::endl << ":: Fail file in:" 
                                 << std::endl << ":: failbit: " << file.fail() 
@@ -1809,7 +1717,7 @@ while ( next_row != -1 ) {
                           if ( it->GetTypeIndex() == 5  ){
                               long int x_address; 
                               file.read( reinterpret_cast<char*>(&x_address), sizeof( long int ) );
-                              std::cout << x_address << "\t";  
+                                
                           } 
                       }
                   it++;

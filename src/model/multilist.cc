@@ -1,39 +1,39 @@
-#include "multilist_file.h"
+#include "multilist.h"
 
 namespace dictionary {
 
     // Constructors & destructosr
-    MultilistFile::MultilistFile(){ 
+    Multilist::Multilist(){ 
         dir_ = "tmp/";
         name_ = "unamed"; 
         ext_ = ".idx";
         file_header_ = -1;
     }
 
-    MultilistFile::MultilistFile(const std::string& name){ 
+    Multilist::Multilist(const std::string& name){ 
         dir_ = "tmp/";
         name_ = name; 
         ext_ = ".idx";
         file_header_ = -1;
     }
 
-    MultilistFile::~MultilistFile(){}
+    Multilist::~Multilist(){}
     
     // Setters
-    void MultilistFile::SetName(const std::string& name){ name_ = name; }
-    void MultilistFile::SetDir(const std::string& dir){ dir_ = dir; }
-    void MultilistFile::SetExt(const std::string& ext){ ext_ = ext; }
+    void Multilist::SetName(const std::string& name){ name_ = name; }
+    void Multilist::SetDir(const std::string& dir){ dir_ = dir; }
+    void Multilist::SetExt(const std::string& ext){ ext_ = ext; }
     
-    void MultilistFile::SetFileHeader(long int file_header){ file_header_ = file_header; }
+    void Multilist::SetFileHeader(long int file_header){ file_header_ = file_header; }
     
     // Getters
-    std::string MultilistFile::GetName(){ return name_;}
-    std::string MultilistFile::GetDir(){ return dir_;}
-    std::string MultilistFile::GetExt(){ return ext_;}
+    std::string Multilist::GetName(){ return name_;}
+    std::string Multilist::GetDir(){ return dir_;}
+    std::string Multilist::GetExt(){ return ext_;}
 
-    long int MultilistFile::GetFileHeader(){return file_header_;}
+    long int Multilist::GetFileHeader(){return file_header_;}
     
-    long int MultilistFile::GetFileSize(){
+    long int Multilist::GetFileSize(){
         std::ifstream file ( dir_ + name_ + ext_, std::ios::binary | std::ios::in );
         file.exceptions( file.failbit | file.badbit );
             try { 
@@ -49,7 +49,7 @@ namespace dictionary {
     }
 
     // Methods of file 
-   void MultilistFile::CreateFile(){
+   void Multilist::CreateFile(){
         std::ifstream in_file( dir_ + name_ + ext_, std::ios::binary | std::ios::in );
         if ( !in_file.good() ){
             std::ofstream out_file( dir_ + name_ + ext_, std::ios::binary | std::ios::out );
@@ -61,7 +61,7 @@ namespace dictionary {
         }
    }
 
-   void MultilistFile::UpdateHeader(){
+   void Multilist::UpdateHeader(){
         std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
         file.exceptions( file.failbit | file.badbit );
             try {
@@ -80,7 +80,7 @@ namespace dictionary {
         file.close();
     }
     
-    long int MultilistFile::ReadAddress(long int position){
+    long int Multilist::ReadAddress(long int position){
         long int data;
         std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out );
         file.exceptions( file.failbit | file.badbit );
@@ -97,7 +97,7 @@ namespace dictionary {
         return data;
     }
 
-    void MultilistFile::UpdateAddress(long int position, long int new_address){
+    void Multilist::UpdateAddress(long int position, long int new_address){
         
         std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
         file.exceptions( file.failbit | file.badbit );
@@ -116,7 +116,7 @@ namespace dictionary {
         file.close();
     }
 
-    void MultilistFile::CreateBlock(int position){
+    void Multilist::CreateBlock(int position){
         
         int x = -1;
         long int y = -1;
@@ -145,7 +145,7 @@ namespace dictionary {
         
     }
 
-    std::list< std::pair< int, long int> > MultilistFile::ReadBlock(const std::string& name,int position){
+    std::list< std::pair< int, long int> > Multilist::ReadBlock(const std::string& name,int position){
         
         std::list< std::pair< int, long int> > block_data_int;
             
@@ -184,7 +184,7 @@ namespace dictionary {
         return block_data_int;
     }
 
-    void MultilistFile::AddLineToBlock(const std::string& name,int position, std::list< std::pair<int, long int>> list_data_pair, int data, long int data_address){
+    void Multilist::AddLineToBlock(const std::string& name,int position, std::list< std::pair<int, long int>> list_data_pair, int data, long int data_address){
         
         std::pair<int, long int> new_pair;
         new_pair.first = data;

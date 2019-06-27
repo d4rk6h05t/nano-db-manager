@@ -1,5 +1,5 @@
-#ifndef DICTIONARY_CC_STATIC_HASHING_FILE_H_
-#define DICTIONARY_CC_STATIC_HASHING_FILE_H_
+#ifndef DICTIONARY_CC_STATIC_HASHING_H_
+#define DICTIONARY_CC_STATIC_HASHING_H_
 
 #include <iostream>
 #include <string>
@@ -17,13 +17,13 @@ const int ROW_CAPACITY_SH_ = SIZE_BLOCK_SH_ / SIZE_ROW_INT_SH_;
 
 namespace dictionary {
 
-    class StaticHashingFile {
+    class StaticHashing {
     
         public:
              
-            StaticHashingFile();
-            StaticHashingFile(const std::string& name);
-            ~StaticHashingFile();
+            StaticHashing();
+            StaticHashing(const std::string& name);
+            ~StaticHashing();
 
             // Setters
             void SetName(const std::string& name);
@@ -70,4 +70,4 @@ namespace dictionary {
 
 }  // end namespace dictionary
 
-#endif  // DICTIONARY_CC_STATIC_HASHING_FILE_H_
+#endif  // DICTIONARY_CC_STATIC_HASHING_H_
