@@ -11,6 +11,7 @@
 #include "attribute.h"
 #include "data_dictionary.h"
 #include "data_file.h"
+#include "file.h"
 #include "primary_index.h"
 #include "secondary_index.h"
 #include "static_hashing.h"
@@ -277,6 +278,7 @@ int main( int argc, char* argv[] ){
 								string name_static_hashing = current_entity_name + "_" + attr_name;
 								StaticHashing static_hashing_file( name_static_hashing );
 								static_hashing_file.CreateFile();
+								static_hashing_file.InitAddressBucket();
 								if ( i->GetIndexAddress() == -1 )
 									data_dictionary.UpdateAddress( i->GetAttributeAddress() + 52, ( sizeof(long int) * ( NO_BUCKETS_SH_ + 1 ) ) );
 							} else if ( i->GetTypeIndex() == 5 ) {

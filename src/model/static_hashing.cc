@@ -2,36 +2,24 @@
 
 namespace dictionary {
 
-    // Constructors & destructosr
-    StaticHashing::StaticHashing(){ 
-        dir_ = "tmp/";
-        name_ = "unamed"; 
-        ext_ = ".idx";
-        file_header_ = -1;
-    }
+    // Methods of file 
+   void StaticHashing::InitAddressBucket(){
+        long int data_null = -1;
+        std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out );
+        file.exceptions( file.failbit | file.badbit );
+            try {
+                for (int i = 0; i < NO_BUCKETS_SH_; i++)
+                    file.write( reinterpret_cast<const char*>(&data_null), sizeof(long int) );
+             } catch (const std::ios_base::failure & e) {
+                std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                          << std::endl << ":: Error code: " << e.code() 
+                          << std::endl;
 
-    StaticHashing::StaticHashing(const std::string& name){ 
-        dir_ = "tmp/";
-        name_ = name; 
-        ext_ = ".idx";
-        file_header_ = -1;
-    }
+            }
+        file.close();
+   }
 
-    StaticHashing::~StaticHashing(){}
-    
-    // Setters
-    void StaticHashing::SetName(const std::string& name){ name_ = name; }
-    void StaticHashing::SetDir(const std::string& dir){ dir_ = dir; }
-    void StaticHashing::SetExt(const std::string& ext){ ext_ = ext; }
-    void StaticHashing::SetFileHeader(long int file_header){ file_header_ = file_header; }
-    
-    // Getters
-    std::string StaticHashing::GetName(){ return name_;}
-    std::string StaticHashing::GetDir(){ return dir_;}
-    std::string StaticHashing::GetExt(){ return ext_;}
-    long int StaticHashing::GetFileHeader(){return file_header_;}
-    
-    long int StaticHashing::GetFileSize(const std::string& name){
+   long int StaticHashing::GetFileSizeSH(const std::string& name){
         long int file_size = 0;
         std::string dir = "tmp/";
         std::string ext = ".idx";
@@ -47,38 +35,6 @@ namespace dictionary {
             }
         file.close();
         return file_size;
-    }
-
-    // Methods of file 
-   void StaticHashing::CreateFile(){
-        long int data_null = -1;
-        std::ifstream in_file( dir_ + name_ + ext_, std::ios::binary | std::ios::in );
-        if ( !in_file.good() ){
-            std::ofstream out_file( dir_ + name_ + ext_, std::ios::binary | std::ios::out );
-            for (int i = 0; i < NO_BUCKETS_SH_; i++)
-                out_file.write( reinterpret_cast<const char*>(&data_null), sizeof(long int) );
-            out_file.close();
-        } else {
-            in_file.close();
-        }
-   }
-
-   void StaticHashing::UpdateHeader(){
-        std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
-        file.exceptions( file.failbit | file.badbit );
-            try {
-                file.seekp(0);
-                file.write( reinterpret_cast<const char*>(&file_header_), sizeof(long int) );
-            } catch (const std::ios_base::failure & e) {
-                std::cout << std::endl << ":: Warning Exception: " << e.what() 
-                          << std::endl << ":: Error code: " << e.code() 
-                          << std::endl;
-                if ( file.fail() ){
-                    std::cout << " Error writing to file " << std::endl;
-                    file.clear();
-                }
-            }
-        file.close();
     }
     
     int StaticHashing::ReadInt(const std::string& name,long int position){

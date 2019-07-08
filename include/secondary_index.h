@@ -7,7 +7,7 @@
 #include <list>
 #include <vector>
 
-//#include "secondary_block.h"
+#include "file.h"
 
 const int READ_HEADER_FILE_I_ = 1048;
 const int SIZE_DATA_BLOCK_ = 5; // last data is next address 
@@ -18,34 +18,13 @@ const int ROW_CAPACITY_I_ = SIZE_BLOCK_I_ / SIZE_ROW_INT_I_;  // 23
 
 namespace dictionary {
 
-    class SecondaryIndex {
+    class SecondaryIndex : public File {
     
         public:
              
-            SecondaryIndex();
-            SecondaryIndex(const std::string& name);
-            ~SecondaryIndex();
-
-            // Setters
-            void SetName(const std::string& name);
-            void SetDir(const std::string& dir); 
-            void SetExt(const std::string& ext);
-            
-            void SetFileHeader(long int file_header);
-            // Getters
-            std::string GetName();
-            std::string GetDir();
-            std::string GetExt();                        
-            
-            long int GetFileHeader();
-            long int GetFileSize();
-            
-            // Methods of File
-            void CreateFile();
-            void UpdateHeader();
-            long int ReadAddress(long int position);
-            void UpdateAddress(long int position, long int new_address);
-            void UpdateName(long int position, std::string new_name);
+            SecondaryIndex(){}
+            SecondaryIndex(const std::string& name){ name_ = name; }
+            ~SecondaryIndex(){}
 
             void CreateBlock(int position);
             static std::list< std::pair< int, std::vector<long int>>> ReadBlock(const std::string& name,int position);
@@ -56,15 +35,7 @@ namespace dictionary {
             static void RemoveLine(const std::string& name,int position, int key, long int key_address, std::list< std::pair< int, std::vector<long int>>> bucket);
             static std::vector<long int> GetCollectionAddress(const std::string& name,int position, int key);
                           
-        private:
-
-            std::string name_;
-            std::string dir_;
-            std::string ext_;
-
-            long int file_header_; 
-            long int file_size_;
-
+    
     }; 
 
 }  // end namespace dictionary

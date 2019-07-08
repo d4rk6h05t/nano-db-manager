@@ -25,13 +25,11 @@ namespace dictionary {
             DataDictionary(const std::string& name);
             ~DataDictionary();
             // Setters
-            void SetId(int id);
             void SetName(const std::string& name);
             void SetDir(const std::string& dir); 
             void SetExt(const std::string& ext);
             void SetFileHeader(long int file_header);
             // Getters
-            int GetId();
             std::string GetName();
             std::string GetDir();
             std::string GetExt();                        
@@ -64,7 +62,6 @@ namespace dictionary {
 
         private:
             // file metadata
-            int id_;
             std::string name_;
             std::string dir_;
             std::string ext_;

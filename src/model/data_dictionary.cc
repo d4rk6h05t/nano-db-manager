@@ -4,7 +4,6 @@ namespace dictionary {
 
 	// Constructors & destructosr
 	DataDictionary::DataDictionary(){ 
-		id_ = 0;
 		dir_ = "tmp/";
 		name_ = "unamed"; 
 		ext_ = ".dd";
@@ -12,7 +11,6 @@ namespace dictionary {
 	}
 
 	DataDictionary::DataDictionary(const std::string& name){ 
-		id_ = 0;
 		dir_ = "tmp/";
 		name_ = name; 
 		ext_ = ".dd";
@@ -22,13 +20,12 @@ namespace dictionary {
 	DataDictionary::~DataDictionary(){}
 	
 	// Setters
-	void DataDictionary::SetId(int id){ id_ = id; }
+
 	void DataDictionary::SetName(const std::string& name){ name_ = name; }
 	void DataDictionary::SetDir(const std::string& dir){ dir_ = dir; }
 	void DataDictionary::SetExt(const std::string& ext){ ext_ = ext; }
     void DataDictionary::SetFileHeader(long int file_header){ file_header_ = file_header; }
     // Getters
-    int DataDictionary::GetId(){ return id_;}
     std::string DataDictionary::GetName(){ return name_;}
     std::string DataDictionary::GetDir(){ return dir_;}
     std::string DataDictionary::GetExt(){ return ext_;}
@@ -71,8 +68,7 @@ namespace dictionary {
                   		      << std::endl << ":: Error code: " << e.code() 
                   		      << std::endl;
   				}
-
-
+  				
 				file.close();
 		    }
 

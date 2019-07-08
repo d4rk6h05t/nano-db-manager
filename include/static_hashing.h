@@ -7,7 +7,8 @@
 #include <list>
 #include <vector>
 
-//#include "secondary_block.h"
+#include "file.h"
+
 const int NO_BUCKETS_SH_ = 7;
 const int READ_HEADER_FILE_SH_ = 1048;
 const int LENGTH_ADDRESS_SH_ = sizeof(long int);
@@ -17,35 +18,22 @@ const int ROW_CAPACITY_SH_ = SIZE_BLOCK_SH_ / SIZE_ROW_INT_SH_;
 
 namespace dictionary {
 
-    class StaticHashing {
+    class StaticHashing : public File {
     
         public:
              
-            StaticHashing();
-            StaticHashing(const std::string& name);
-            ~StaticHashing();
+            StaticHashing(){}
+            StaticHashing(const std::string& name){ name_ = name; }
+            ~StaticHashing(){}
 
-            // Setters
-            void SetName(const std::string& name);
-            void SetDir(const std::string& dir); 
-            void SetExt(const std::string& ext);
-            void SetFileHeader(long int file_header);
-            // Getters
-            std::string GetName();
-            std::string GetDir();
-            std::string GetExt();                        
-
-            long int GetFileHeader();
-            static long int GetFileSize(const std::string& name);
+            void InitAddressBucket();
+            static long int GetFileSizeSH(const std::string& name);
             
-            // Methods of File
-            void CreateFile();
-            void UpdateHeader();
             static int ReadInt(const std::string& name, long int position);
             static long int ReadAddress(const std::string& name, long int position);
             static void UpdateInt(const std::string& name, long int position, int new_address);
             static void UpdateAddress(const std::string& name, long int position, long int new_address);
-            void UpdateName(long int position, std::string new_name);
+            
             
             static std::vector<long int> GetBucketsAddress(const std::string& name);
 
@@ -57,14 +45,6 @@ namespace dictionary {
             static long int GetBucketAddress(const std::string& name,int hash);
             static void RemoveDataInt(const std::string& name, int position, int data, std::list< std::pair<int, long int>> list_data_pair);
         
-        private:
-
-            std::string name_;
-            std::string dir_;
-            std::string ext_;
-
-            long int file_header_; 
-            long int file_size_;
 
     }; 
 
