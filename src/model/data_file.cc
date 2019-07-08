@@ -309,9 +309,9 @@ namespace archive {
                 int hash = dictionary::StaticHashing::GetHash(x);
                 long int current_bucket_addr = dictionary::StaticHashing::ReadAddress( attr_active_sh, hash * sizeof(long int) );
                 if ( current_bucket_addr == -1){
-                    dictionary::StaticHashing::UpdateAddress(attr_active_sh, (hash*sizeof(long int)), dictionary::StaticHashing::GetFileSize(attr_active_sh));
-                    dictionary::StaticHashing::CreateBlock( attr_active_sh, dictionary::StaticHashing::GetFileSize(attr_active_sh) );
-                    long int init_block = dictionary::StaticHashing::GetFileSize(attr_active_sh) - 1040;
+                    dictionary::StaticHashing::UpdateAddress(attr_active_sh, (hash*sizeof(long int)), dictionary::StaticHashing::GetFileSizeSH(attr_active_sh));
+                    dictionary::StaticHashing::CreateBlock( attr_active_sh, dictionary::StaticHashing::GetFileSizeSH(attr_active_sh) );
+                    long int init_block = dictionary::StaticHashing::GetFileSizeSH(attr_active_sh) - 1040;
                     std::list<std::pair<int, long int>> bucket = dictionary::StaticHashing::ReadBlock( attr_active_sh, init_block );
                     dictionary::StaticHashing::AddLineToBlock( attr_active_sh, init_block, bucket, x, file_size );
                 } else { // update block
@@ -752,9 +752,9 @@ while ( next_row != -1 ) {
                         
                         if ( current_bucket_addr == -1){
                             
-                            dictionary::StaticHashing::UpdateAddress(attr_active_sh, (hash*sizeof(long int)), dictionary::StaticHashing::GetFileSize(attr_active_sh));
-                            dictionary::StaticHashing::CreateBlock( attr_active_sh, dictionary::StaticHashing::GetFileSize(attr_active_sh) );
-                            long int init_block = dictionary::StaticHashing::GetFileSize(attr_active_sh) - 1040;
+                            dictionary::StaticHashing::UpdateAddress(attr_active_sh, (hash*sizeof(long int)), dictionary::StaticHashing::GetFileSizeSH(attr_active_sh));
+                            dictionary::StaticHashing::CreateBlock( attr_active_sh, dictionary::StaticHashing::GetFileSizeSH(attr_active_sh) );
+                            long int init_block = dictionary::StaticHashing::GetFileSizeSH(attr_active_sh) - 1040;
                             std::list<std::pair<int, long int>> bucket = dictionary::StaticHashing::ReadBlock( attr_active_sh, init_block );
                             dictionary::StaticHashing::AddLineToBlock( attr_active_sh, init_block, bucket, x, log_address );
                        
@@ -1244,9 +1244,9 @@ while ( next_row != -1 ) {
                         int hash = dictionary::StaticHashing::GetHash(x);
                         long int current_bucket_addr = dictionary::StaticHashing::ReadAddress( attr_active_sh, hash * sizeof(long int) );
                         if ( current_bucket_addr == -1){
-                            dictionary::StaticHashing::UpdateAddress(attr_active_sh, (hash*sizeof(long int)), dictionary::StaticHashing::GetFileSize(attr_active_sh));
-                            dictionary::StaticHashing::CreateBlock( attr_active_sh, dictionary::StaticHashing::GetFileSize(attr_active_sh) );
-                            long int init_block = dictionary::StaticHashing::GetFileSize(attr_active_sh) - 1040;
+                            dictionary::StaticHashing::UpdateAddress(attr_active_sh, (hash*sizeof(long int)), dictionary::StaticHashing::GetFileSizeSH(attr_active_sh));
+                            dictionary::StaticHashing::CreateBlock( attr_active_sh, dictionary::StaticHashing::GetFileSizeSH(attr_active_sh) );
+                            long int init_block = dictionary::StaticHashing::GetFileSizeSH(attr_active_sh) - 1040;
                             std::list<std::pair<int, long int>> bucket = dictionary::StaticHashing::ReadBlock( attr_active_sh, init_block );
                             dictionary::StaticHashing::AddLineToBlock( attr_active_sh, init_block, bucket, x, log_address );
                         } else { // update block
