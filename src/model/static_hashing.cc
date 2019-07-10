@@ -1,6 +1,6 @@
 #include "static_hashing.h"
 
-namespace dictionary {
+namespace repository {
 
     // Methods of file 
    void StaticHashing::InitAddressBucket(){
@@ -410,4 +410,4 @@ namespace dictionary {
         file.close();
     }
 
-}  // end namespace dictionary
+}  // end namespace repository

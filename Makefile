@@ -1,5 +1,5 @@
 # Makefile for project nano-db-manager
-CXX      := -c++
+CXX      := g++
 BUILD    := ./build
 OBJ_DIR  := $(BUILD)/objects
 APP_DIR  := $(BUILD)/apps
@@ -16,11 +16,11 @@ all: build $(APP_DIR)/$(TARGET)
 
 $(OBJ_DIR)/%.o: %.cc
 	@mkdir -p $(@D)
-	$(CXX)  $(INCLUDE) -o $@ -c $<
+	$(CXX) -std=c++17 $(INCLUDE) -o $@ -c $<
 
 $(APP_DIR)/$(TARGET): $(OBJECTS)
 	@mkdir -p $(@D)
-	$(CXX)  $(INCLUDE) $(MAIN) -o $(APP_DIR)/$(TARGET) $(OBJECTS)
+	$(CXX) -std=c++17 $(INCLUDE) $(MAIN) -o $(APP_DIR)/$(TARGET) $(OBJECTS)
 
 .PHONY: all build clean debug release
 

@@ -1,5 +1,5 @@
-#ifndef DICTIONARY_CC_STATIC_HASHING_H_
-#define DICTIONARY_CC_STATIC_HASHING_H_
+#ifndef REPOSITORY_CC_STATIC_HASHING_H_
+#define REPOSITORY_CC_STATIC_HASHING_H_
 
 #include <iostream>
 #include <string>
@@ -16,14 +16,14 @@ const int SIZE_BLOCK_SH_ = READ_HEADER_FILE_SH_ - LENGTH_ADDRESS_SH_;
 const int SIZE_ROW_INT_SH_ = sizeof(int) + sizeof(long int);
 const int ROW_CAPACITY_SH_ = SIZE_BLOCK_SH_ / SIZE_ROW_INT_SH_;
 
-namespace dictionary {
+namespace repository {
 
     class StaticHashing : public File {
     
         public:
              
             StaticHashing(){}
-            StaticHashing(const std::string& name){ name_ = name; }
+            StaticHashing(const std::string& name){ name_ = name; ext_ = EXT_INDEX_; }
             ~StaticHashing(){}
 
             void InitAddressBucket();
@@ -48,6 +48,6 @@ namespace dictionary {
 
     }; 
 
-}  // end namespace dictionary
+}  // end namespace repository
 
-#endif  // DICTIONARY_CC_STATIC_HASHING_H_
+#endif  // REPOSITORY_CC_STATIC_HASHING_H_

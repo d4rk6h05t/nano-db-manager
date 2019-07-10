@@ -1,5 +1,5 @@
-#ifndef ARCHIVE_CC_DATA_FILE_H_
-#define ARCHIVE_CC_DATA_FILE_H_
+#ifndef REPOSITORY_CC_DATA_FILE_H_
+#define REPOSITORY_CC_DATA_FILE_H_
 
 #include <iostream>
 #include <string>
@@ -14,44 +14,27 @@
 #include "secondary_index.h"
 #include "static_hashing.h"
 #include "multilist.h"
+#include "file.h"
 
 const int MAX_LENGTH_NAME_DATA_FILE_ = 35;
 const long int NULL_DATA_FILE_ = -1;
 
-namespace archive {
+namespace repository {
 
-    class DataFile {
+    class DataFile : public File {
     
         public:
              
-            DataFile();
-            DataFile(const std::string& name);
-            ~DataFile();
+            DataFile(){}
+            DataFile(const std::string& name){ name_ = name; ext_ = EXT_DATA_FILE_; }
+            ~DataFile(){}
 
-            // Setters
-            void SetName(const std::string& name);
-            void SetDir(const std::string& dir); 
-            void SetExt(const std::string& ext);
-            void SetFileHeader(long int file_header);
-            // Getters
-            std::string GetName();
-            std::string GetDir();
-            std::string GetExt();                        
-            long int GetFileHeader();
-            long int GetFileSize();
             long int GetLengthStructLog(std::list<dictionary::Attribute> list_attributes);
-
-            // Methods of File
-            void CreateFile();
-            void UpdateHeader();
-            long int ReadAddress(long int position);
-            void UpdateAddress(long int position, long int new_address);
-            void UpdateName(long int position, std::string new_name);
-
             void AppendCharData(char * char_data,int length_char_data);
             void AppendIntData(int int_data);
             void AppendAddress(long int new_address);
 
+            
             long int AppendData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data, const std::string& entity_active, long int length_struct_log);
             long int UpdateData(std::list<dictionary::Attribute> list_attributes, std::list<std::string> & list_data, const std::string& entity_active, std::list<std::pair<int,long int>> list_multilist, long int log_address);
             
@@ -78,17 +61,8 @@ namespace archive {
             int GetDataInt(std::list<dictionary::Attribute> list_attributes, int index, long int length_struct_log ,long int key_addr);
             
 
-        private:
-
-            std::string name_;
-            std::string dir_;
-            std::string ext_;
-            
-            long int file_header_;
-            long int file_size_;
-
     }; 
 
-}  // end namespace archive
+}  // end namespace repository
 
-#endif  // ARCHIVE_CC_DATA_FILE_H_
+#endif  // REPOSITORY_CC_DATA_FILE_H_

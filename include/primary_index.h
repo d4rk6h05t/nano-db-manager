@@ -1,5 +1,5 @@
-#ifndef DICTIONARY_CC_PRIMARY_INDEX_H_
-#define DICTIONARY_CC_PRIMARY_INDEX_H_
+#ifndef REPOSITORY_CC_PRIMARY_INDEX_H_
+#define REPOSITORY_CC_PRIMARY_INDEX_H_
 
 #include <iostream>
 #include <string>
@@ -15,16 +15,14 @@ const int SIZE_ROW_INT = sizeof(int) + sizeof(long int);
 const int ROW_CAPACITY = SIZE_BLOCK_ / SIZE_ROW_INT;
 
 
-namespace dictionary {
+namespace repository {
 
     class PrimaryIndex : public File {
     
         public:
              
             PrimaryIndex(){}
-            PrimaryIndex(const std::string& name){
-                name_ = name;
-            }
+            PrimaryIndex(const std::string& name){ name_ = name; ext_ = EXT_INDEX_; }
             ~PrimaryIndex(){}
 
             void CreateBlock(int position);
@@ -37,6 +35,6 @@ namespace dictionary {
 
     }; 
 
-}  // end namespace dictionary
+}  // end namespace repository
 
-#endif  // DICTIONARY_CC_PRIMARY_INDEX_H_
+#endif  // REPOSITORY_CC_PRIMARY_INDEX_H_

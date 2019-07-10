@@ -21,8 +21,8 @@
 // namespaces to use
 using namespace std; 
 using namespace dictionary;
+using namespace repository;
 using namespace ui;
-using namespace archive;
 
 int main( int argc, char* argv[] ){ 
 	
@@ -35,7 +35,7 @@ int main( int argc, char* argv[] ){
     DataFile data_file;
     Entity current_entity;
 	list<Attribute> list_attributes;
-
+    data_dictionary.CreateDirectory();
     do {    	
 		view.ShowTitle();
 		view.ShowMainMenu();
@@ -56,6 +56,7 @@ int main( int argc, char* argv[] ){
 				    		if ( file_name !="" ){
 				    			data_dictionary.SetName( file_name );
 				    			data_dictionary.CreateFile();
+				    			data_dictionary.UpdateHeader();
 				    		}
 				    		break;
 				    	}

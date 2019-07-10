@@ -1,6 +1,6 @@
 #include "secondary_index.h"
 
-namespace dictionary {
+namespace repository {
 
     void SecondaryIndex::CreateBlock(int position){
         
@@ -360,4 +360,4 @@ namespace dictionary {
         return datablock;
     }
 
-}  // end namespace dictionary
+}  // end namespace repository

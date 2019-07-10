@@ -1,12 +1,20 @@
-#ifndef DICTIONARY_CC_FILE_H_
-#define DICTIONARY_CC_FILE_H_
+#ifndef REPOSITORY_CC_FILE_H_
+#define REPOSITORY_CC_FILE_H_
 
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <list>
 
-namespace dictionary {
+#include <cstdlib>
+#include <filesystem>
+
+const std::string EXT_INDEX_ = ".idx";
+const std::string EXT_DATA_FILE_ = ".dat";
+const std::string EXT_DATA_DICTIONARY_ = ".dd";
+const int MAX_LENGTH_NAME_ = 35;
+
+namespace repository {
 
     class File {
     
@@ -30,10 +38,14 @@ namespace dictionary {
             
             // Methods of File
             void CreateFile();
+            void CreateDirectory();
             void UpdateHeader();
             long int ReadAddress(long int position);
             void UpdateAddress(long int position, long int new_address);
             void UpdateName(long int position, std::string new_name);
+
+            void UpdateChar(long int position, char new_char);
+            void UpdateInt(long int position, int new_int);
 
         public:
             std::string name_;
@@ -45,6 +57,6 @@ namespace dictionary {
 
     }; 
 
-}  // end namespace dictionary
+}  // end namespacerepository
 
-#endif  // DICTIONARY_CC_FILE_H_
+#endif  // REPOSITORY_CC_FILE_H_
