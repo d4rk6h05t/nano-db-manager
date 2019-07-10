@@ -1,19 +1,19 @@
 #include "file.h"
 
-namespace dictionary {
+namespace repository {
 
     // Constructors & destructosr
     File::File(){ 
         dir_ = "tmp/";
         name_ = "unamed"; 
-        ext_ = ".idx";
+        ext_ = ".dat";
         file_header_ = -1;
     }
 
     File::File(const std::string& name){ 
         dir_ = "tmp/";
         name_ = name; 
-        ext_ = ".idx";
+        ext_ = ".dat";
         file_header_ = -1;
     }
 
@@ -47,6 +47,10 @@ namespace dictionary {
         file.close();
         return file_size_;
     }
+
+    void File::CreateDirectory(){
+        std::filesystem::create_directory(dir_);
+   }
 
     // Methods of file 
    void File::CreateFile(){
@@ -115,4 +119,52 @@ namespace dictionary {
             }
         file.close();
     }
-}  // end namespace dictionary
+
+    void File::UpdateName(long int position, std::string new_name){
+        
+        char name[MAX_LENGTH_NAME_];
+        for (int i = 0; i < MAX_LENGTH_NAME_; i++)
+            name[i] = new_name[i];
+
+        std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
+        file.exceptions( file.failbit | file.badbit );
+            try {
+                file.seekp(position);
+                file.write( reinterpret_cast<const char*>(name), MAX_LENGTH_NAME_ );
+            } catch (const std::ios_base::failure & e) {
+                std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                          << std::endl << ":: Error code: " << e.code() 
+                          << std::endl;
+            }
+        file.close();
+    }
+    
+    void File::UpdateChar(long int position, char new_char){
+        std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
+        file.exceptions( file.failbit | file.badbit );
+            try {
+                file.seekp(position);
+                file.write( reinterpret_cast<const char*>(&new_char), sizeof( char ) );
+            } catch (const std::ios_base::failure & e) {
+                std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                          << std::endl << ":: Error code: " << e.code() 
+                          << std::endl;
+            }
+        file.close();
+    }
+
+    void File::UpdateInt(long int position, int new_int){
+        std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
+        file.exceptions( file.failbit | file.badbit );
+            try {
+                file.seekp(position);
+                file.write( reinterpret_cast<const char*>(&new_int), sizeof( int ) );
+            } catch (const std::ios_base::failure & e) {
+                std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                          << std::endl << ":: Error code: " << e.code() 
+                          << std::endl;
+            }
+        file.close();
+    }
+
+}  // end namespace repository

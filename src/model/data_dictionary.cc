@@ -1,158 +1,10 @@
 #include "data_dictionary.h"
 
-namespace dictionary {
-
-	// Constructors & destructosr
-	DataDictionary::DataDictionary(){ 
-		dir_ = "tmp/";
-		name_ = "unamed"; 
-		ext_ = ".dd";
-        file_header_ = -1;
-	}
-
-	DataDictionary::DataDictionary(const std::string& name){ 
-		dir_ = "tmp/";
-		name_ = name; 
-		ext_ = ".dd";
-        file_header_ = -1;
-	}
-
-	DataDictionary::~DataDictionary(){}
-	
-	// Setters
-
-	void DataDictionary::SetName(const std::string& name){ name_ = name; }
-	void DataDictionary::SetDir(const std::string& dir){ dir_ = dir; }
-	void DataDictionary::SetExt(const std::string& ext){ ext_ = ext; }
-    void DataDictionary::SetFileHeader(long int file_header){ file_header_ = file_header; }
-    // Getters
-    std::string DataDictionary::GetName(){ return name_;}
-    std::string DataDictionary::GetDir(){ return dir_;}
-    std::string DataDictionary::GetExt(){ return ext_;}
-    long int DataDictionary::GetFileHeader(){return file_header_;}
-    
-    long int DataDictionary::GetFileSize(){
-    	std::ifstream file ( dir_ + name_ + ext_, std::ios::binary | std::ios::in );
-    	file.exceptions( file.failbit | file.badbit );
-			try { 
-    			file.seekg(0, std::ios::end);
-	    		file_size_ = file.tellg();
-	    	} catch (const std::ios_base::failure & e) {
-    			std::cout << std::endl << ":: Warning Exception: " << e.what() 
-                  		  << std::endl << ":: Error code: " << e.code() 
-                  		  << std::endl;
-  			}
-	    file.close();
-		return file_size_;
-    }
-    
-   // Methods of file 
-   void DataDictionary::CreateFile(){
-   			
-   			char str[dir_.length()];
-           for (int i = 0; i < dir_.length() ; ++i)
-            	str[i] = dir_[i];
-
-		    if (mkdir(str, 0777) == -1) 
-		        std::cerr << "Error :  " << strerror(errno) << std::endl; 
-		    else {
-
-		        std::cout << ":: Successful: Directory created"; 
-		    	std::ofstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::out );
-				file.exceptions( file.failbit | file.badbit );
-				try { 
-					file.seekp( 0 );
-					file.write( reinterpret_cast<const char*>(&file_header_), sizeof(long int) );
-				} catch (const std::ios_base::failure & e) {
-    				std::cout << std::endl << ":: Warning Exception: " << e.what() 
-                  		      << std::endl << ":: Error code: " << e.code() 
-                  		      << std::endl;
-  				}
-  				
-				file.close();
-		    }
-
-   			
-   }
-
-   void DataDictionary::UpdateHeader(){
-   		std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
-   		file.exceptions( file.failbit | file.badbit );
-			try { 
-				file.seekp(0);
-				file.write( reinterpret_cast<const char*>(&file_header_), sizeof(long int) );
-			} catch (const std::ios_base::failure & e) {
-    			std::cout << std::endl << ":: Warning Exception: " << e.what() 
-                  		  << std::endl << ":: Error code: " << e.code() 
-                  		  << std::endl;
-  			}
-		file.close();
-    }
-
-    void DataDictionary::UpdateAddress(long int position, long int new_address){
-   		std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
-		file.exceptions( file.failbit | file.badbit );
-			try {
-				file.seekp( position  );
-				file.write( reinterpret_cast<const char*>(&new_address), sizeof(long int) );
-			} catch (const std::ios_base::failure & e) {
-    			std::cout << std::endl << ":: Warning Exception: " << e.what() 
-                  		  << std::endl << ":: Error code: " << e.code() 
-                  		  << std::endl;
-  			}
-		file.close();
-    }
-
-    void DataDictionary::UpdateName(long int position, std::string new_name){
-   		
-   		char name[MAX_LENGTH_NAME_ENTTITY_];
-        for (int i = 0; i < MAX_LENGTH_NAME_ENTTITY_; i++)
-        	name[i] = new_name[i];
-
-   		std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
-		file.exceptions( file.failbit | file.badbit );
-			try {
-				file.seekp(position);
-				file.write( reinterpret_cast<const char*>(name), MAX_LENGTH_NAME_ENTTITY_ );
-			} catch (const std::ios_base::failure & e) {
-    			std::cout << std::endl << ":: Warning Exception: " << e.what() 
-                  		  << std::endl << ":: Error code: " << e.code() 
-                  		  << std::endl;
-  			}
-		file.close();
-    }
-
-    void DataDictionary::UpdateChar(long int position, char new_char){
-   		std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
-		file.exceptions( file.failbit | file.badbit );
-			try {
-				file.seekp(position);
-				file.write( reinterpret_cast<const char*>(&new_char), sizeof( char ) );
-			} catch (const std::ios_base::failure & e) {
-    			std::cout << std::endl << ":: Warning Exception: " << e.what() 
-                  		  << std::endl << ":: Error code: " << e.code() 
-                  		  << std::endl;
-  			}
-		file.close();
-    }
-
-    void DataDictionary::UpdateInt(long int position, int new_int){
-   		std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate );
-		file.exceptions( file.failbit | file.badbit );
-			try {
-				file.seekp(position);
-				file.write( reinterpret_cast<const char*>(&new_int), sizeof( int ) );
-			} catch (const std::ios_base::failure & e) {
-    			std::cout << std::endl << ":: Warning Exception: " << e.what() 
-                  		  << std::endl << ":: Error code: " << e.code() 
-                  		  << std::endl;
-  			}
-		file.close();
-    }
+namespace repository {
 
     // Methods of entities
 
-    void DataDictionary::AddEntity(Entity entity){
+    void DataDictionary::AddEntity(dictionary::Entity entity){
         std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::app);
 	    
 	    char name[MAX_LENGTH_NAME_ENTTITY_];
@@ -183,7 +35,7 @@ namespace dictionary {
 		file.close();
     }
 
-    void DataDictionary::UpdateEntity(std::list<Entity> list_entities, Entity *entity){
+    void DataDictionary::UpdateEntity(std::list<dictionary::Entity> list_entities, dictionary::Entity *entity){
        	std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
        	file.exceptions( file.failbit | file.badbit );
 			try {
@@ -196,7 +48,7 @@ namespace dictionary {
 				int it_position = i;
 				int flag;
 		        std::string min;
-		        std::list<Entity>::iterator it_current = list_entities.begin();	     								    
+		        std::list<dictionary::Entity>::iterator it_current = list_entities.begin();	     								    
 				if( list_entities.empty() ) {				    	
 					min = entity->GetName();
 					entity_address_min = file_size_;
@@ -242,8 +94,8 @@ namespace dictionary {
 						it_current++;    
 						} // end while
 					} // end else != empty list			
-					std::list<Entity>::iterator current = list_entities.begin();
-					std::list<Entity>::iterator previus = std::prev( current , 1 );
+					std::list<dictionary::Entity>::iterator current = list_entities.begin();
+					std::list<dictionary::Entity>::iterator previus = std::prev( current , 1 );
 					int it_count = 0;
 					if ( flag == -1 ) list_entities.push_back(*entity); 
 					else if ( flag == 0 || it_position == 0){								
@@ -279,7 +131,7 @@ namespace dictionary {
 		file.close();
     }
 
-    void DataDictionary::RemoveEntity(std::list<Entity> list_entities, std::string remove_entity){
+    void DataDictionary::RemoveEntity(std::list<dictionary::Entity> list_entities, std::string remove_entity){
        	
        	long int end_address = -1;
        	std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
@@ -297,8 +149,8 @@ namespace dictionary {
 						file.seekp( list_entities.front().GetEntityAddress() + 59 );
 						file.write( reinterpret_cast<const char*>(&end_address), sizeof(long int) );
 					} else {
-						std::list<Entity>::iterator it_current = list_entities.begin();
-						std::list<Entity>::iterator it_previus = std::prev( it_current , 1 );
+						std::list<dictionary::Entity>::iterator it_current = list_entities.begin();
+						std::list<dictionary::Entity>::iterator it_previus = std::prev( it_current , 1 );
 					    
 						while ( it_current != list_entities.end() ){
 					
@@ -334,11 +186,11 @@ namespace dictionary {
 		file.close();											
     }
 
-    Entity DataDictionary::SearchEntity(std::list<Entity> list_entities, std::string name_entity){
+    dictionary::Entity DataDictionary::SearchEntity(std::list<dictionary::Entity> list_entities, std::string name_entity){
     	
-    	Entity entity;
+    	dictionary::Entity entity;
     	
-    	for (std::list<Entity>::iterator it = list_entities.begin(); it != list_entities.end(); it++){
+    	for (std::list<dictionary::Entity>::iterator it = list_entities.begin(); it != list_entities.end(); it++){
     	
     		std::string current_name( it->GetName() );
     	
@@ -355,9 +207,9 @@ namespace dictionary {
     	return entity;
     }
 
-    std::list<Entity> DataDictionary::ReadListEntities(){
+    std::list<dictionary::Entity> DataDictionary::ReadListEntities(){
     	
-    	std::list<Entity> list_entities;
+    	std::list<dictionary::Entity> list_entities;
        	std::fstream file( dir_ + name_ + ext_, std::ios::in | std::ios::out | std::ios::binary );
        	file.exceptions( file.failbit | file.badbit );
 			try {
@@ -385,7 +237,7 @@ namespace dictionary {
 					next = next_entity_address;
 					
 					std::string str_name(name);
-					Entity entity;
+					dictionary::Entity entity;
 					entity.SetName(str_name);
 					entity.SetEntityAddress(entity_address);
 				    entity.SetAttributeAddress(attribute_address);
@@ -404,7 +256,7 @@ namespace dictionary {
     	return list_entities;
     }
 
-    void DataDictionary::AddAttribute(Attribute attribute){
+    void DataDictionary::AddAttribute(dictionary::Attribute attribute){
     	
     	std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::app);
 	
@@ -443,7 +295,7 @@ namespace dictionary {
     }
 
 
-    void DataDictionary::UpdateAttribute(std::list<Attribute> list_attributes, Attribute attribute){
+    void DataDictionary::UpdateAttribute(std::list<dictionary::Attribute> list_attributes, dictionary::Attribute attribute){
 
        	std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
        	long int end_address = -1;
@@ -464,9 +316,9 @@ namespace dictionary {
 		file.close();
     }
 
-    std::list<Attribute> DataDictionary::ReadListAttributes(Entity entity){
+    std::list<dictionary::Attribute> DataDictionary::ReadListAttributes(dictionary::Entity entity){
     	
-    	std::list<Attribute> list_attributes;
+    	std::list<dictionary::Attribute> list_attributes;
        	std::fstream file( dir_ + name_ + ext_, std::ios::in | std::ios::out | std::ios::binary );
      	
 		long int next = entity.GetAttributeAddress();
@@ -497,7 +349,7 @@ namespace dictionary {
 			next = next_attribute_address;
 			
 			std::string str_name(name);
-			Attribute attribute;
+			dictionary::Attribute attribute;
 			attribute.SetName(str_name);
 			attribute.SetDataType(data_type);
 			attribute.SetLengthDataType(length_data_type);
@@ -514,19 +366,17 @@ namespace dictionary {
     	return list_attributes;
     }
 
-    void DataDictionary::RemoveAttribute(Entity current_entity, std::list<Attribute> list_attributes, std::string remove_attribute){
+    void DataDictionary::RemoveAttribute(dictionary::Entity current_entity, std::list<dictionary::Attribute> list_attributes, std::string remove_attribute){
        	
        	long int end_address = -1;
        	std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
         
         if ( !list_attributes.empty() ){
             
-            
-
         	std::string first_attribute( list_attributes.front().GetName() );
-			std::list<Attribute>::iterator it_current = list_attributes.begin();
-			std::list<Attribute>::iterator it_previus = std::prev( it_current , 1 );
-			std::list<Attribute>::iterator it_next = std::next( it_current , 1 );
+			std::list<dictionary::Attribute>::iterator it_current = list_attributes.begin();
+			std::list<dictionary::Attribute>::iterator it_previus = std::prev( it_current , 1 );
+			std::list<dictionary::Attribute>::iterator it_next = std::next( it_current , 1 );
 		    
 			while ( it_current != list_attributes.end() ){
 		
@@ -572,11 +422,11 @@ namespace dictionary {
 		file.close();											
     }
 
-    Attribute DataDictionary::SearchAttribute(std::list<Attribute> list_attributes, std::string name_attribute){
+    dictionary::Attribute DataDictionary::SearchAttribute(std::list<dictionary::Attribute> list_attributes, std::string name_attribute){
     	
-    	Attribute attribute;
+    	dictionary::Attribute attribute;
     	
-    	for (std::list<Attribute>::iterator it = list_attributes.begin(); it != list_attributes.end(); it++){
+    	for (std::list<dictionary::Attribute>::iterator it = list_attributes.begin(); it != list_attributes.end(); it++){
     	
     		std::string current_name( it->GetName() );
     	
@@ -595,11 +445,11 @@ namespace dictionary {
     	return attribute;
     }
 
-    long int DataDictionary::LengthStartToSearchKey(std::list<Attribute> list_attributes){
+    long int DataDictionary::LengthStartToSearchKey(std::list<dictionary::Attribute> list_attributes){
     	
     	long int length = sizeof(long int); // first address of data file
     	
-    	for (std::list<Attribute>::iterator it = list_attributes.begin(); it != list_attributes.end(); it++){
+    	for (std::list<dictionary::Attribute>::iterator it = list_attributes.begin(); it != list_attributes.end(); it++){
     	    
     	    if ( it->GetTypeIndex() != 3 ){
     	    	if ( it->GetDataType() == 'i' )
@@ -615,4 +465,4 @@ namespace dictionary {
     	return length;
     }
 
-}  // end namespace dictionary
+}  // end namespace repository

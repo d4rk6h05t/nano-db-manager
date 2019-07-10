@@ -1,6 +1,6 @@
 #include "multilist.h"
 
-namespace dictionary {
+namespace repository {
 
     
     void Multilist::CreateBlock(int position){
@@ -175,4 +175,4 @@ namespace dictionary {
         file.close();  
     }
 
-}  // end namespace dictionary
+}  // end namespace repository

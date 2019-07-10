@@ -3,7 +3,6 @@
 
 namespace dictionary {
 
-
     Entity::Entity(){
         entity_address_ = NULL_ENTITY_;
         attribute_address_ = NULL_ENTITY_;

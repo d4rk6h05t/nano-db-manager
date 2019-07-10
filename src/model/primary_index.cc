@@ -1,8 +1,6 @@
 #include "primary_index.h"
 
-namespace dictionary {
-
-    // Constructors & destructosr
+namespace repository {
 
     void PrimaryIndex::CreateBlock(int position){
         
@@ -244,4 +242,4 @@ namespace dictionary {
         file.close();
     }
 
-}  // end namespace dictionary
+}  // end namespace repository

@@ -1,5 +1,5 @@
-#ifndef DICTIONARY_CC_SECONDARY_INDEX_H_
-#define DICTIONARY_CC_SECONDARY_INDEX_H_
+#ifndef REPOSITORY_CC_SECONDARY_INDEX_H_
+#define REPOSITORY_CC_SECONDARY_INDEX_H_
 
 #include <iostream>
 #include <string>
@@ -16,14 +16,14 @@ const int SIZE_BLOCK_I_ = READ_HEADER_FILE_I_ - LENGTH_ADDRESS_I_; // 1040
 const int SIZE_ROW_INT_I_ = sizeof(int) + (SIZE_DATA_BLOCK_ * sizeof(long int)); // 44
 const int ROW_CAPACITY_I_ = SIZE_BLOCK_I_ / SIZE_ROW_INT_I_;  // 23
 
-namespace dictionary {
+namespace repository {
 
     class SecondaryIndex : public File {
     
         public:
              
             SecondaryIndex(){}
-            SecondaryIndex(const std::string& name){ name_ = name; }
+            SecondaryIndex(const std::string& name){ name_ = name; ext_ = EXT_INDEX_; }
             ~SecondaryIndex(){}
 
             void CreateBlock(int position);
@@ -38,6 +38,6 @@ namespace dictionary {
     
     }; 
 
-}  // end namespace dictionary
+}  // end namespace repository
 
-#endif  // DICTIONARY_CC_SECONDARY_INDEX_H_
+#endif  // REPOSITORY_CC_SECONDARY_INDEX_H_
