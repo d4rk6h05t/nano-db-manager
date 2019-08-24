@@ -35,6 +35,66 @@ namespace repository {
 		file.close();
     }
 
+    void DataDictionary::UpdateEntity2(std::list<dictionary::Entity> list_entities, dictionary::Entity *new_entity){
+
+       	std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
+       	file.exceptions( file.failbit | file.badbit );
+       	
+       	try {
+       		
+       		file.seekg(0, std::ios::end);
+		    file_size_ = file.tellg();
+			long int  end_address = -1;
+       		list_entities.push_back(*new_entity);
+       		
+       		if ( list_entities.size() == 1 ) {
+       			file.seekp( 0 );
+				file.write( reinterpret_cast<const char*>(&file_size_), sizeof(long int) );
+				file_header_ = file_size_;
+       		} else if ( list_entities.size() > 1 ){
+
+	       		list_entities.sort([](dictionary::Entity entity_x, dictionary::Entity entity_y){
+		       	 	return entity_x.GetNameStr() < entity_y.GetNameStr(); 
+		       	});
+			
+				std::list<dictionary::Entity>::iterator current_entity = list_entities.begin();
+				std::list<dictionary::Entity>::iterator previus_entity = std::prev( current_entity, 1 );
+				std::list<dictionary::Entity>::iterator next_entity = std::next( current_entity, 1 );
+				
+				while( current_entity != list_entities.end() ){
+					
+					if ( new_entity->GetNameStr().compare( current_entity->GetNameStr() ) == 0 ){
+
+						if ( current_entity == list_entities.begin() ) { // Begin
+							new_entity->SetNextEntityAddress( next_entity->GetEntityAddress() );	
+							file.seekp( 0 );
+							file.write( reinterpret_cast<const char*>(&file_size_), sizeof(long int) );
+							file_header_ = file_size_;
+							break;
+						} else if ( current_entity != list_entities.begin() && next_entity != list_entities.end() ) { // midle
+							new_entity->SetNextEntityAddress( previus_entity->GetEntityAddress() );
+							file.seekp( previus_entity->GetEntityAddress() + 59 );
+							file.write( reinterpret_cast<const char*>(&file_size_), sizeof(long int) );
+							break;
+						} else if ( next_entity == list_entities.end() ) { // last
+							file.seekp( previus_entity->GetEntityAddress() + 59 );
+							file.write( reinterpret_cast<const char*>(&file_size_), sizeof(long int) );
+							break;
+						}	
+					}
+					++current_entity;
+					++previus_entity;
+					++next_entity;
+				}   
+	       	}
+       	} catch (const std::ios_base::failure & e) {
+    			std::cout << std::endl << ":: Warning Exception: " << e.what() 
+                  		  << std::endl << ":: Error code: " << e.code() 
+                  		  << std::endl;
+  			}
+		file.close();
+    }
+
     void DataDictionary::UpdateEntity(std::list<dictionary::Entity> list_entities, dictionary::Entity *entity){
        	std::fstream file( dir_ + name_ + ext_, std::ios::binary | std::ios::in | std::ios::out | std::ios::ate);
        	file.exceptions( file.failbit | file.badbit );

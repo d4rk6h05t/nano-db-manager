@@ -24,7 +24,8 @@ namespace dictionary {
             void SetDataAddress(long int data_address); 
             void SetNextEntityAddress(long int next_entity_address);
                   
-            char* GetName(); 
+            char* GetName();
+            std::string GetNameStr(); 
             long int GetEntityAddress(); 
             long int GetAttributeAddress();
             long int GetDataAddress();
