@@ -99,6 +99,7 @@ int main( int argc, char* argv[] ){
 							    		if ( new_entity !="" ){
 										    Entity entity(new_entity);
 										    entity.SetEntityAddress( data_dictionary.GetFileSize() ); 
+									        //data_dictionary.UpdateEntity2( data_dictionary.ReadListEntities(), &entity);
 									        data_dictionary.UpdateEntity( data_dictionary.ReadListEntities(), &entity); 								        
 									        data_dictionary.AddEntity( entity );
 										}

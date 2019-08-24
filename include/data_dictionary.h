@@ -7,10 +7,6 @@
 #include <list>
 #include <iterator>
 
-//#include <bits/stdc++.h> 
-//#include <sys/stat.h> 
-//#include <sys/types.h> 
-
 #include "entity.h"
 #include "attribute.h"
 #include "file.h"
@@ -27,6 +23,7 @@ namespace repository {
 
             // Methods of entities
             void AddEntity(dictionary::Entity entity);
+            void UpdateEntity2(std::list<dictionary::Entity> list_entities, dictionary::Entity *new_entity);
             void UpdateEntity(std::list<dictionary::Entity> list_entities, dictionary::Entity *entity);
             void RemoveEntity(std::list<dictionary::Entity> list_entities, std::string remove_entity);
             dictionary::Entity SearchEntity(std::list<dictionary::Entity> list_entities, std::string new_entity);            

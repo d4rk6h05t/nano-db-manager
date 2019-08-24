@@ -9,15 +9,21 @@ namespace ui {
 		
 		void View::Clear(){ system("clear"); }
 		
-		void View::ShowTitle(){ std::cout << std::endl << "\t\t Project Structure File "<< std::endl; }
+		void View::ShowTitle(){ 
+         std::cout << std::endl 
+                   << "\t\t   10    11  111     10    11 1111      1011  10110  " << std::endl
+                   << "\t\t  11011 11  1 1 1   11011 11  1  1     10  1  11 1   \t  \033[1;32m Nano-DB-Manager-V1.0.0\033[0m" << std::endl
+                   << "\t\t 11    10  11   11 11    10   1111    11111   10110  \t \033[1;37m By: \033[0m Michani M. De La Calleja E." << std::endl
+                   << std::endl;
+    }
 		
 		void View::ShowMessage(std::string str ){ std::cout << str;  }
 
 		void View::ShowStatusBar(std::string name, long int header, long int size ){
 			
-			std::cout << std::endl << "\t\t:: File Name [ " << name 
+			std::cout << std::endl << "\t\t \033[1;37m :: File Name [ " << name 
 					  << " ] :: File Header [ " << header 
-					  << " ] :: File Size [ " << size << " ]" << std::endl;
+					  << " ] :: File Size [ " << size << " ] \033[0m" << std::endl;
 		}
 
 		void View::ShowListEntities(std::list<dictionary::Entity> list_entities){
@@ -141,7 +147,7 @@ namespace ui {
 		}
 		
 		void View::ShowMainMenu(){
-				std::cout << std::endl << " \t\t::::::::::::: \t Main Menu \t ::::::::::::" << std::endl;
+				std::cout << std::endl << " \t\t \033[1;37m ::::::::::::: \t Main Menu \t :::::::::::: \033[0m" << std::endl;
     			std::cout << std::endl << " \t\t [ 1 ]: File ";
     			std::cout << std::endl << " \t\t [ 2 ]: Dictionary ";	
     			std::cout << std::endl << " \t\t [ 3 ]: Data File ";	
@@ -149,7 +155,7 @@ namespace ui {
 		}
 		
 		void View::ShowFileMenu(){
-				std::cout << std::endl << " \t\t::::::::::::: \t File Menu \t ::::::::::::" << std::endl;
+				std::cout << std::endl << " \t\t \033[1;37m ::::::::::::: \t File Menu \t :::::::::::: \033[0m " << std::endl;
 		    	std::cout << std::endl << " \t\t\t [ 1 ]: New File ";
 		    	std::cout << std::endl << " \t\t\t [ 2 ]: Open File ";
 		    	std::cout << std::endl << " \t\t\t [ 3 ]: Delete File ";
@@ -157,14 +163,14 @@ namespace ui {
 		}
 		
 		void View::ShowDictionaryMenu(){
-				std::cout << std::endl << " \t\t::::::::::::: \t Data Dictionary Menu \t ::::::::::::" << std::endl;
+				std::cout << std::endl << " \t\t \033[1;37m ::::::::::::: \t Data Dictionary Menu \t :::::::::::: \033[0m " << std::endl;
 				std::cout << std::endl << " \t\t\t [ 1 ]: Entity ";
     			std::cout << std::endl << " \t\t\t [ 2 ]: Attribute ";
     			std::cout << std::endl << " \t\t\t [ 3 ]: Back to main menu ";
 		}
 		
 		void View::ShowEntityMenu(){
-				std::cout << std::endl << " \t\t::::::::::::: \t Entity Menu \t ::::::::::::" << std::endl;
+				std::cout << std::endl << " \t\t \033[1;37m ::::::::::::: \t Entity Menu \t :::::::::::: \033[0m " << std::endl;
 				std::cout << std::endl << " \t\t\t [ 1 ]: Add Entity ";
 	    		std::cout << std::endl << " \t\t\t [ 2 ]: Update Entity ";
 	    		std::cout << std::endl << " \t\t\t [ 3 ]: Delete Entity ";
@@ -174,7 +180,7 @@ namespace ui {
 		}
 
 		void View::ShowAttributeMenu(){
-				std::cout << std::endl << " \t\t::::::::::::: \t Attribute Menu \t ::::::::::::" << std::endl;
+				std::cout << std::endl << " \t\t \033[1;37m ::::::::::::: \t Attribute Menu \t :::::::::::: \033[0m " << std::endl;
 				std::cout << std::endl << " \t\t\t [ 1 ]: Add Attribute ";
 	    		std::cout << std::endl << " \t\t\t [ 2 ]: Update Attribute ";
 	    		std::cout << std::endl << " \t\t\t [ 3 ]: Delete Attribute ";
@@ -184,7 +190,7 @@ namespace ui {
 		}
 
 		void View::ShowDataFileMenu(){
-				std::cout << std::endl << " \t\t::::::::::::: \t Data File Menu \t ::::::::::::" << std::endl;
+				std::cout << std::endl << " \t\t \033[1;37m ::::::::::::: \t Data File Menu \t :::::::::::: \033[0m " << std::endl;
     			std::cout << std::endl << " \t\t [ 1 ]: Add a register ";
     			std::cout << std::endl << " \t\t [ 2 ]: Show Primary Index ";
     			std::cout << std::endl << " \t\t [ 3 ]: Show Secondary Index";

@@ -32,6 +32,7 @@ namespace dictionary {
     void Entity::SetNextEntityAddress(long int next_entity_address) { next_entity_address_  = next_entity_address; }
                   
     char* Entity::GetName() {  return name_; }
+    std::string Entity::GetNameStr() {  std::string name(name_); return name; }
     long int Entity::GetEntityAddress() { return entity_address_; }
     long int Entity::GetAttributeAddress() { return attribute_address_; }
     long int Entity::GetDataAddress() { return data_address_; }
