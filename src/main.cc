@@ -37,7 +37,7 @@ int main( int argc, char* argv[] ){
 	list<Attribute> list_attributes;
     data_dictionary.CreateDirectory();
     do {    	
-		view.ShowTitle();
+		view.ShowTitle("Michani M. De La Calleja E.", "V1.0.0");
 		view.ShowMainMenu();
 	    view.ShowMessage("\n\t\t Select a option >_");
 	    cin >> option;
@@ -51,6 +51,7 @@ int main( int argc, char* argv[] ){
 		    		cin >> option_file;
 	    			switch (option_file){
 				    	case 1: { // New file data dictionari [DB] 
+
 				    		view.ShowMessage("\n\t\tfile name: ");
 				    		cin >> file_name;
 				    		if ( file_name !="" ){
@@ -158,9 +159,11 @@ int main( int argc, char* argv[] ){
 					    				do { 
 					    					view.Clear();
 					    					string str_entity_selected(current_entity.GetName());
-					    					view.ShowMessage(":: Entity selected: " +  str_entity_selected );
+
+					    					view.ShowMessage("\n\t\t:: Entity selected: " +  str_entity_selected );
+					    					view.ShowStatusBar(data_dictionary.GetName(), data_dictionary.GetFileHeader(), data_dictionary.GetFileSize() );
 					    					view.ShowAttributeMenu();
-								    		view.ShowMessage("\nSelect an option >_");
+								    		view.ShowMessage("\n\t\tSelect an option >_");
 								    		cin >> option_attribute;
 							    			switch (option_attribute){
 										    	case 1: { // create new attribute 
@@ -192,7 +195,8 @@ int main( int argc, char* argv[] ){
 										    		break;
 										    	} // end case 1 
 										    	case 2: { // Update Attribute
-										    		view.ShowMessage("===> Update Attribute");
+										    		view.ShowMessage("\n\t\t===> Update Attribute");
+										    		view.ShowStatusBar(data_dictionary.GetName(), data_dictionary.GetFileHeader(), data_dictionary.GetFileSize() );
 										    		view.ShowMessage("\n\t\t:: Select a attribute : ");
 										    		string current_attr_name;
 										    		cin >> current_attr_name;
@@ -222,14 +226,19 @@ int main( int argc, char* argv[] ){
 										    		break;
 										    	} // end caase 2
 										    	case 3: { // Delete Attribute
-										    		view.ShowMessage("\n===> Delete Attribute \t\t:: Attribute Name:");
+										    		view.ShowStatusBar(data_dictionary.GetName(), data_dictionary.GetFileHeader(), data_dictionary.GetFileSize() );
+										    		view.ShowMessage("\n\t\t===> Delete Attribute \t\t:: Attribute Name:");
 										    		cin >> attr_name;
 										    		if (attr_name != "")
 										    			data_dictionary.RemoveAttribute(current_entity, data_dictionary.ReadListAttributes(current_entity), attr_name);
 										    		break;
 										    	}
-										    	case 4: view.ShowMessage("===>Select Attribute"); break;
+										    	case 4:
+										    		view.ShowStatusBar(data_dictionary.GetName(), data_dictionary.GetFileHeader(), data_dictionary.GetFileSize() ); 
+										    		view.ShowMessage("\n\t\t===>Select Attribute"); 
+										    		break;
 										    	case 5: { // Show entities
+										    		view.ShowStatusBar(data_dictionary.GetName(), data_dictionary.GetFileHeader(), data_dictionary.GetFileSize() );
 										    		current_entity = data_dictionary.SearchEntity( data_dictionary.ReadListEntities(), current_entity_name);
 										    		view.ShowListAttributes( data_dictionary.ReadListAttributes(current_entity) );
 										    		break;

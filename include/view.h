@@ -18,9 +18,9 @@ class View {
 		View();
 		~View();
 		void Clear();
-		void ShowTitle();
-		void ShowMessage(std::string str );
-		void ShowStatusBar(std::string name, long int header, long int size );
+		void ShowTitle(const std::string & author,const std::string & version);
+		void ShowMessage(const std::string & str );
+		void ShowStatusBar(const std::string & name, long int header, long int size );
 		void ShowListEntities(std::list<dictionary::Entity> list_entities);
 		void ShowListAttributes(std::list<dictionary::Attribute> list_attributes);
 		void ShowMainMenu();

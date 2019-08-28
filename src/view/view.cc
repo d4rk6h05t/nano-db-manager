@@ -9,17 +9,17 @@ namespace ui {
 		
 		void View::Clear(){ system("clear"); }
 		
-		void View::ShowTitle(){ 
+		void View::ShowTitle(const std::string & author,const std::string & version){ 
          std::cout << std::endl 
                    << "\t\t   10    11  111     10    11 1111      1011  10110  " << std::endl
-                   << "\t\t  11011 11  1 1 1   11011 11  1  1     10  1  11 1   \t  \033[1;32m Nano-DB-Manager-V1.0.0\033[0m" << std::endl
-                   << "\t\t 11    10  11   11 11    10   1111    11111   10110  \t \033[1;37m By: \033[0m Michani M. De La Calleja E." << std::endl
+                   << "\t\t  11011 11  1 1 1   11011 11  1  1     10  1  11 1   \t  \033[1;32m Nano-DB-Manager-" << version << "\033[0m" << std::endl
+                   << "\t\t 11    10  11   11 11    10   1111    11111   10110  \t \033[1;37m By: \033[0m " << author << std::endl
                    << std::endl;
     }
 		
-		void View::ShowMessage(std::string str ){ std::cout << str;  }
+		void View::ShowMessage(const std::string & str ){ std::cout << str;  }
 
-		void View::ShowStatusBar(std::string name, long int header, long int size ){
+		void View::ShowStatusBar(const std::string & name, long int header, long int size ){
 			
 			std::cout << std::endl << "\t\t \033[1;37m :: File Name [ " << name 
 					  << " ] :: File Header [ " << header 
