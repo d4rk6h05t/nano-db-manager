@@ -48,6 +48,8 @@ namespace dictionary {
             // 1: Search Key
             // 2: Primary Index
             // 3: Secondary Index
+            // 4: Static Hashing
+            // 5: Multilist
             int type_index_; 
 
             long int index_address_;
