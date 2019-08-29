@@ -2,9 +2,9 @@
 CXX      := g++
 BUILD    := ./build
 OBJ_DIR  := $(BUILD)/objects
-APP_DIR  := $(BUILD)/apps
+APP_DIR  := $(BUILD)/bin
 MAIN     := ./src/main.cc 
-TARGET   := app
+TARGET   := nanodb
 INCLUDE  := -Iinclude/
 SRC      :=                      \
 	$(wildcard src/model/*.cc) \
