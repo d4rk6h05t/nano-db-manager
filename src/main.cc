@@ -52,7 +52,7 @@ int main( int argc, char* argv[] ){
 	    			switch (option_file){
 				    	case 1: { // New file data dictionari [DB] 
 
-				    		view.ShowMessage("\n\t\tfile name: ");
+				    		view.ShowMessage("\n\t\tSchema name: ");
 				    		cin >> file_name;
 				    		if ( file_name !="" ){
 				    			data_dictionary.SetName( file_name );
@@ -62,17 +62,17 @@ int main( int argc, char* argv[] ){
 				    		break;
 				    	}
 				    	case 2: { // Open file data dictionary [DB]
-				    		view.ShowMessage("\n\t\tfile name: ");
+				    		view.ShowMessage("\n\t\tSchema name: ");
 				    		cin >> file_name;
 				    			if ( file_name !="" )
 				    				data_dictionary.SetName( file_name );
 				    		break;
 				    	}
 				    	case 3: {// Delete file data dictionary [DB]
-				    		view.ShowMessage("\n\t\tfile name: ");
+				    		view.ShowMessage("\n\t\tSchema name: ");
 				    		cin >> file_name;
 				    			if ( file_name !="" )
-				    				view.ShowMessage("Deleted file with name ==> " + file_name);
+				    				view.ShowMessage("Deleted schema with name ==> " + file_name);
 				    		break;
 				    	}
 				    }

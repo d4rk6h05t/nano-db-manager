@@ -148,17 +148,17 @@ namespace ui {
 		
 		void View::ShowMainMenu(){
 				std::cout << std::endl << " \t\t \033[1;37m ::::::::::::: \t Main Menu \t :::::::::::: \033[0m" << std::endl;
-    			std::cout << std::endl << " \t\t [ 1 ]: File ";
+    			std::cout << std::endl << " \t\t [ 1 ]: Schema ";
     			std::cout << std::endl << " \t\t [ 2 ]: Dictionary ";	
     			std::cout << std::endl << " \t\t [ 3 ]: Data File ";	
     			std::cout << std::endl << " \t\t [ 4 ]: Exit ";	
 		}
 		
 		void View::ShowFileMenu(){
-				std::cout << std::endl << " \t\t \033[1;37m ::::::::::::: \t File Menu \t :::::::::::: \033[0m " << std::endl;
-		    	std::cout << std::endl << " \t\t\t [ 1 ]: New File ";
-		    	std::cout << std::endl << " \t\t\t [ 2 ]: Open File ";
-		    	std::cout << std::endl << " \t\t\t [ 3 ]: Delete File ";
+				std::cout << std::endl << " \t\t \033[1;37m ::::::::::::: \t Schema Menu \t :::::::::::: \033[0m " << std::endl;
+		    	std::cout << std::endl << " \t\t\t [ 1 ]: New Schama ";
+		    	std::cout << std::endl << " \t\t\t [ 2 ]: Open Schema ";
+		    	std::cout << std::endl << " \t\t\t [ 3 ]: Delete Schema ";
 		    	std::cout << std::endl << " \t\t\t [ 4 ]: Back to main menu ";	
 		}
 		
