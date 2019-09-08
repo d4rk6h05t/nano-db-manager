@@ -7,6 +7,25 @@ Application of simulation of the internal functioning of a relational database e
 # Requirements
 The project can be used with __C++11__. However, it requires __C++17__ to build, including compiler and standard library support. required to build the library __GCC 9.1.0__
 
+# Installation of Package GCC
+```sh
+# normally this package is already installed in most unix-based distributions e.g. GNU/Linux, Freebsd, etc.
+# Install GCC in operating systems based on Debian.
+$ sudo apt update
+$ sudo apt install build-essential
+$ sudo apt-get install manpages-dev
+# Install GCC in operating systems based on ArchLinux
+# alternative to build-essential
+$ sudo pacman -Sy base-devel
+# Install only gcc
+$ sudo pacman -S gcc 
+# Install GCC in operating systems based on redhat
+$ sudo dnf install gcc
+$ sudo dnf groupinstall "Development Tools"
+# Finally check the installed version
+$ gcc --version
+```
+
 # Installation
 ```sh
 # Check out the project.
@@ -28,4 +47,4 @@ License
 
 GNU Lesser General Public License v3.0
 
-**Free Software, Oh Yeah! it's great, enjoy! **
+Oh Yeah! Free Software,  it's great, enjoy!
