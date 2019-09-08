@@ -1,11 +1,4 @@
 # nano-db-manager
-
-10    11  111     10    11 1111      1011  10110  
-11011 11  1 1 1   11011 11  1  1     10  1  11 1   Nano-DB-Manager-V1.0.0  
-11    10  11   11 11    10   1111    11111   10110 By: Michani M. De La C.  
-
-
-# Intro    
 Application of simulation of the internal functioning of a relational database engine. Application written in c++17 to manage database on a small scale, school project for the subject of __file__ __structure__
 
 # Database
