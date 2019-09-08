@@ -27,7 +27,7 @@ $ sudo dnf groupinstall "Development Tools"
 $ gcc --version
 ```
 
-# Installation
+# Installation of nano-db-manager
 ```sh
 # Check out the project.
 $ git clone https://github.com/devMichani/nano-db-manager.git
