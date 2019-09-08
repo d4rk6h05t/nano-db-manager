@@ -9,7 +9,8 @@ The project can be used with __C++11__. However, it requires __C++17__ to build,
 
 # Installation of Package GCC
 ```sh
-# normally this package is already installed in most unix-based distributions e.g. GNU/Linux, Freebsd, etc.
+# normally this package is already installed in most unix-based 
+# distributions e.g. GNU/Linux, Freebsd, etc.
 # Install GCC in operating systems based on Debian.
 $ sudo apt update
 $ sudo apt install build-essential
