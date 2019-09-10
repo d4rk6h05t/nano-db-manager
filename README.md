@@ -1,5 +1,5 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![GitHub release](https://img.shields.io/github/downloads/Naereen/StrapDown.js/v1.0.0/total.svg)](https://github.com/devMichani/nano-db-manager.git)
+[![GitHub release](https://img.shields.io/badge/release-v1.0.0-green)](https://github.com/devMichani/nano-db-manager.git)
 
 # nano-db-manager
 Application of simulation of the internal functioning of a relational database engine. Application written in c++17 to manage database on a small scale, school project for the subject of __file__ __structure__
