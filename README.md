@@ -46,7 +46,7 @@ $ cd /build/bin
 $ ./nanodb
 ```
 # Author
-By: Michani M. De Le Calleja E. ( d4rk6h05t ) 
+By: Michani M. De La Calleja E. ( d4rk6h05t ) 
 
 
 # License
