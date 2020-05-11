@@ -45,7 +45,8 @@ $ cd /build/bin
 # Run the program.
 $ ./nanodb
 ```
-
+# Author
+Michani M. De Le Calleja E. [ d4rk6h05t ]
 License
 ----
 
