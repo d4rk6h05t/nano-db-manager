@@ -47,7 +47,9 @@ $ ./nanodb
 ```
 # Author
 By: Michani M. De Le Calleja E. ( d4rk6h05t ) 
-License
+
+
+# License
 ----
 
 GNU Lesser General Public License v3.0
