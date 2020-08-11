@@ -33,7 +33,7 @@ $ gcc --version
 # Installation of nano-db-manager
 ```sh
 # Check out the project.
-$ git clone https://github.com/devMichani/nano-db-manager.git
+$ git clone https://github.com/d4rk6h05t/nano-db-manager.git
 # Go to the project directory
 $ cd nano-db-manager
 # Generate a the executable file with make. 
